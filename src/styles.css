@@ -59,42 +59,59 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-primary-light: var(--primary-light);
+  --color-primary-soft: var(--primary-soft);
+  --color-urgent-none: var(--urgent-none);
+  --color-urgent-warn: var(--urgent-warn);
+  --color-urgent-soon: var(--urgent-soon);
+  --color-urgent-late: var(--urgent-late);
+  --color-urgent-done: var(--urgent-done);
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.5rem;
+  --background: oklch(0.977 0.010 87.5);
+  --foreground: oklch(0.207 0.030 168.2);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.207 0.030 168.2);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --popover-foreground: oklch(0.207 0.030 168.2);
+  --primary: oklch(0.348 0.055 163.4);
+  --primary-foreground: oklch(0.977 0.010 87.5);
+  --primary-light: oklch(0.476 0.078 162.2);
+  --primary-soft: oklch(0.938 0.042 149.6);
+  --secondary: oklch(0.476 0.078 162.2);
+  --secondary-foreground: oklch(0.977 0.010 87.5);
+  --muted: oklch(0.955 0.012 100);
+  --muted-foreground: oklch(0.480 0.020 160);
+  --accent: oklch(0.728 0.138 89.7);
+  --accent-foreground: oklch(0.207 0.030 168.2);
+  --destructive: oklch(0.510 0.170 27);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.905 0.014 120);
+  --input: oklch(0.905 0.014 120);
+  --ring: oklch(0.476 0.078 162.2);
+  --chart-1: oklch(0.348 0.055 163.4);
+  --chart-2: oklch(0.476 0.078 162.2);
+  --chart-3: oklch(0.596 0.098 161.4);
+  --chart-4: oklch(0.728 0.138 89.7);
+  --chart-5: oklch(0.555 0.146 49.0);
+  --sidebar: oklch(0.290 0.048 164);
+  --sidebar-foreground: oklch(0.955 0.015 120);
+  --sidebar-primary: oklch(0.728 0.138 89.7);
+  --sidebar-primary-foreground: oklch(0.207 0.030 168.2);
+  --sidebar-accent: oklch(0.400 0.062 163);
+  --sidebar-accent-foreground: oklch(0.977 0.010 87.5);
+  --sidebar-border: oklch(0.400 0.062 163);
+  --sidebar-ring: oklch(0.728 0.138 89.7);
+  --urgent-none: oklch(1 0 0);
+  --urgent-warn: oklch(0.960 0.090 100);
+  --urgent-soon: oklch(0.930 0.100 65);
+  --urgent-late: oklch(0.910 0.075 25);
+  --urgent-done: oklch(0.945 0.055 150);
+  --gradient-brand: linear-gradient(135deg, oklch(0.348 0.055 163.4), oklch(0.476 0.078 162.2));
+  --shadow-soft: 0 1px 2px oklch(0.207 0.030 168.2 / 0.06), 0 8px 24px -12px oklch(0.207 0.030 168.2 / 0.18);
 }
 
 .dark {
@@ -141,4 +158,12 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+}
+
+@utility brand-gradient {
+  background-image: var(--gradient-brand);
+}
+
+@utility card-soft {
+  box-shadow: var(--shadow-soft);
 }
