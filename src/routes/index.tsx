@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
-  component: Dashboard;
+  component: Dashboard,
 });
 
 type DueRow = {
