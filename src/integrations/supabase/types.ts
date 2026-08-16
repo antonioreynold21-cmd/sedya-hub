@@ -14,7 +14,267 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cash_requests: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          notes: string | null
+          pic: string | null
+          purpose: string
+          request_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pic?: string | null
+          purpose: string
+          request_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pic?: string | null
+          purpose?: string
+          request_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      clients: {
+        Row: {
+          contact_person: string | null
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          pic: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          contact_person?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          pic?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          contact_person?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          pic?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          description: string
+          expense_date: string
+          id: string
+          pic: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description: string
+          expense_date?: string
+          id?: string
+          pic?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description?: string
+          expense_date?: string
+          id?: string
+          pic?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payables: {
+        Row: {
+          amount: number
+          created_at: string
+          due_date: string | null
+          id: string
+          invoice_date: string | null
+          invoice_no: string | null
+          notes: string | null
+          pic: string | null
+          status: string
+          updated_at: string
+          vendor: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_no?: string | null
+          notes?: string | null
+          pic?: string | null
+          status?: string
+          updated_at?: string
+          vendor: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_no?: string | null
+          notes?: string | null
+          pic?: string | null
+          status?: string
+          updated_at?: string
+          vendor?: string
+        }
+        Relationships: []
+      }
+      receivables: {
+        Row: {
+          amount: number
+          client_name: string
+          created_at: string
+          due_date: string | null
+          id: string
+          invoice_date: string | null
+          invoice_no: string | null
+          notes: string | null
+          pic: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          client_name: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_no?: string | null
+          notes?: string | null
+          pic?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_name?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_no?: string | null
+          notes?: string | null
+          pic?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          assignee: string | null
+          created_at: string
+          division: string
+          due_date: string | null
+          id: string
+          position: number
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee?: string | null
+          created_at?: string
+          division?: string
+          due_date?: string | null
+          id?: string
+          position?: number
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee?: string | null
+          created_at?: string
+          division?: string
+          due_date?: string | null
+          id?: string
+          position?: number
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          division: string
+          email: string
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          division: string
+          email: string
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          division?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
