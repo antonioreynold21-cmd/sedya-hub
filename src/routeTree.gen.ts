@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CrmRouteImport } from './routes/crm'
 import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as PricelistRouteImport } from './routes/pricelist'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as WorkflowRouteImport } from './routes/workflow'
@@ -33,6 +34,11 @@ const CrmRoute = CrmRouteImport.update({
 const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricelistRoute = PricelistRouteImport.update({
+  id: '/pricelist',
+  path: '/pricelist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShipmentsRoute = ShipmentsRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/pricelist': typeof PricelistRoute
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/pricelist': typeof PricelistRoute
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/pricelist': typeof PricelistRoute
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/crm'
     | '/finance'
+    | '/pricelist'
     | '/shipments'
     | '/team'
     | '/workflow'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/crm'
     | '/finance'
+    | '/pricelist'
     | '/shipments'
     | '/team'
     | '/workflow'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/crm'
     | '/finance'
+    | '/pricelist'
     | '/shipments'
     | '/team'
     | '/workflow'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CrmRoute: typeof CrmRoute
   FinanceRoute: typeof FinanceRoute
+  PricelistRoute: typeof PricelistRoute
   ShipmentsRoute: typeof ShipmentsRoute
   TeamRoute: typeof TeamRoute
   WorkflowRoute: typeof WorkflowRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/finance'
       fullPath: '/finance'
       preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricelist': {
+      id: '/pricelist'
+      path: '/pricelist'
+      fullPath: '/pricelist'
+      preLoaderRoute: typeof PricelistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shipments': {
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CrmRoute: CrmRoute,
   FinanceRoute: FinanceRoute,
+  PricelistRoute: PricelistRoute,
   ShipmentsRoute: ShipmentsRoute,
   TeamRoute: TeamRoute,
   WorkflowRoute: WorkflowRoute,
