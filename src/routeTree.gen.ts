@@ -12,10 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CrmRouteImport } from './routes/crm'
 import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as HargaRouteImport } from './routes/harga'
+import { Route as PricelistRouteImport } from './routes/pricelist'
+import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as TTokenRouteImport } from './routes/t.$token'
 import { Route as OrdersOrderIdInvoiceRouteImport } from './routes/orders.$orderId.invoice'
+import { Route as OrdersOrderIdSuratJalanRouteImport } from './routes/orders.$orderId.surat-jalan'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -30,6 +35,21 @@ const CrmRoute = CrmRouteImport.update({
 const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HargaRoute = HargaRouteImport.update({
+  id: '/harga',
+  path: '/harga',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricelistRoute = PricelistRouteImport.update({
+  id: '/pricelist',
+  path: '/pricelist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShipmentsRoute = ShipmentsRouteImport.update({
+  id: '/shipments',
+  path: '/shipments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeamRoute = TeamRouteImport.update({
@@ -47,9 +67,19 @@ const OrdersIndexRoute = OrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TTokenRoute = TTokenRouteImport.update({
+  id: '/t/$token',
+  path: '/t/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersOrderIdInvoiceRoute = OrdersOrderIdInvoiceRouteImport.update({
   id: '/orders/$orderId/invoice',
   path: '/orders/$orderId/invoice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersOrderIdSuratJalanRoute = OrdersOrderIdSuratJalanRouteImport.update({
+  id: '/orders/$orderId/surat-jalan',
+  path: '/orders/$orderId/surat-jalan',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -57,29 +87,44 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/harga': typeof HargaRoute
+  '/pricelist': typeof PricelistRoute
+  '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
+  '/t/$token': typeof TTokenRoute
   '/orders/': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/harga': typeof HargaRoute
+  '/pricelist': typeof PricelistRoute
+  '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
+  '/t/$token': typeof TTokenRoute
   '/orders': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/harga': typeof HargaRoute
+  '/pricelist': typeof PricelistRoute
+  '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
+  '/t/$token': typeof TTokenRoute
   '/orders/': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,38 +132,58 @@ export interface FileRouteTypes {
     | '/'
     | '/crm'
     | '/finance'
+    | '/harga'
+    | '/pricelist'
+    | '/shipments'
     | '/team'
     | '/workflow'
+    | '/t/$token'
     | '/orders/'
     | '/orders/$orderId/invoice'
+    | '/orders/$orderId/surat-jalan'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/crm'
     | '/finance'
+    | '/harga'
+    | '/pricelist'
+    | '/shipments'
     | '/team'
     | '/workflow'
+    | '/t/$token'
     | '/orders'
     | '/orders/$orderId/invoice'
+    | '/orders/$orderId/surat-jalan'
   id:
     | '__root__'
     | '/'
     | '/crm'
     | '/finance'
+    | '/harga'
+    | '/pricelist'
+    | '/shipments'
     | '/team'
     | '/workflow'
+    | '/t/$token'
     | '/orders/'
     | '/orders/$orderId/invoice'
+    | '/orders/$orderId/surat-jalan'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CrmRoute: typeof CrmRoute
   FinanceRoute: typeof FinanceRoute
+  HargaRoute: typeof HargaRoute
+  PricelistRoute: typeof PricelistRoute
+  ShipmentsRoute: typeof ShipmentsRoute
   TeamRoute: typeof TeamRoute
   WorkflowRoute: typeof WorkflowRoute
+  TTokenRoute: typeof TTokenRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
   OrdersOrderIdInvoiceRoute: typeof OrdersOrderIdInvoiceRoute
+  OrdersOrderIdSuratJalanRoute: typeof OrdersOrderIdSuratJalanRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,6 +209,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FinanceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/harga': {
+      id: '/harga'
+      path: '/harga'
+      fullPath: '/harga'
+      preLoaderRoute: typeof HargaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricelist': {
+      id: '/pricelist'
+      path: '/pricelist'
+      fullPath: '/pricelist'
+      preLoaderRoute: typeof PricelistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipments': {
+      id: '/shipments'
+      path: '/shipments'
+      fullPath: '/shipments'
+      preLoaderRoute: typeof ShipmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/team': {
       id: '/team'
       path: '/team'
@@ -165,11 +251,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/t/$token': {
+      id: '/t/$token'
+      path: '/t/$token'
+      fullPath: '/t/$token'
+      preLoaderRoute: typeof TTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/orders/$orderId/invoice': {
       id: '/orders/$orderId/invoice'
       path: '/orders/$orderId/invoice'
       fullPath: '/orders/$orderId/invoice'
       preLoaderRoute: typeof OrdersOrderIdInvoiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/$orderId/surat-jalan': {
+      id: '/orders/$orderId/surat-jalan'
+      path: '/orders/$orderId/surat-jalan'
+      fullPath: '/orders/$orderId/surat-jalan'
+      preLoaderRoute: typeof OrdersOrderIdSuratJalanRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -179,10 +279,15 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CrmRoute: CrmRoute,
   FinanceRoute: FinanceRoute,
+  HargaRoute: HargaRoute,
+  PricelistRoute: PricelistRoute,
+  ShipmentsRoute: ShipmentsRoute,
   TeamRoute: TeamRoute,
   WorkflowRoute: WorkflowRoute,
+  TTokenRoute: TTokenRoute,
   OrdersIndexRoute: OrdersIndexRoute,
   OrdersOrderIdInvoiceRoute: OrdersOrderIdInvoiceRoute,
+  OrdersOrderIdSuratJalanRoute: OrdersOrderIdSuratJalanRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
