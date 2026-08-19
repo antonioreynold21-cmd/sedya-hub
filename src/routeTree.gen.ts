@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CrmRouteImport } from './routes/crm'
 import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as HargaRouteImport } from './routes/harga'
 import { Route as PricelistRouteImport } from './routes/pricelist'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as TeamRouteImport } from './routes/team'
@@ -34,6 +35,11 @@ const CrmRoute = CrmRouteImport.update({
 const FinanceRoute = FinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HargaRoute = HargaRouteImport.update({
+  id: '/harga',
+  path: '/harga',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricelistRoute = PricelistRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/harga': typeof HargaRoute
   '/pricelist': typeof PricelistRoute
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/harga': typeof HargaRoute
   '/pricelist': typeof PricelistRoute
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/finance': typeof FinanceRoute
+  '/harga': typeof HargaRoute
   '/pricelist': typeof PricelistRoute
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/crm'
     | '/finance'
+    | '/harga'
     | '/pricelist'
     | '/shipments'
     | '/team'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/crm'
     | '/finance'
+    | '/harga'
     | '/pricelist'
     | '/shipments'
     | '/team'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/crm'
     | '/finance'
+    | '/harga'
     | '/pricelist'
     | '/shipments'
     | '/team'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CrmRoute: typeof CrmRoute
   FinanceRoute: typeof FinanceRoute
+  HargaRoute: typeof HargaRoute
   PricelistRoute: typeof PricelistRoute
   ShipmentsRoute: typeof ShipmentsRoute
   TeamRoute: typeof TeamRoute
@@ -194,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/finance'
       fullPath: '/finance'
       preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/harga': {
+      id: '/harga'
+      path: '/harga'
+      fullPath: '/harga'
+      preLoaderRoute: typeof HargaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricelist': {
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CrmRoute: CrmRoute,
   FinanceRoute: FinanceRoute,
+  HargaRoute: HargaRoute,
   PricelistRoute: PricelistRoute,
   ShipmentsRoute: ShipmentsRoute,
   TeamRoute: TeamRoute,
