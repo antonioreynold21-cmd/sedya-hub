@@ -122,6 +122,106 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          item_name: string
+          order_id: string
+          position: number
+          price: number
+          qty: number
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_name: string
+          order_id: string
+          position?: number
+          price?: number
+          qty?: number
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_name?: string
+          order_id?: string
+          position?: number
+          price?: number
+          qty?: number
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          client_address: string | null
+          client_id: string | null
+          client_name: string
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          invoice_date: string | null
+          invoice_number: string | null
+          notes: string | null
+          po_number: string | null
+          section: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_address?: string | null
+          client_id?: string | null
+          client_name: string
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_number?: string | null
+          notes?: string | null
+          po_number?: string | null
+          section?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_address?: string | null
+          client_id?: string | null
+          client_name?: string
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_date?: string | null
+          invoice_number?: string | null
+          notes?: string | null
+          po_number?: string | null
+          section?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payables: {
         Row: {
           amount: number
@@ -161,6 +261,39 @@ export type Database = {
           status?: string
           updated_at?: string
           vendor?: string
+        }
+        Relationships: []
+      }
+      pricelist_items: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          unit?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -205,6 +338,68 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      shipments: {
+        Row: {
+          created_at: string
+          delivery_by: string | null
+          delivery_date: string | null
+          do_number: string | null
+          id: string
+          notes: string | null
+          order_id: string
+          public_token: string
+          received_at: string | null
+          received_by: string | null
+          section: string | null
+          ship_to: string
+          status: string
+          stored_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          delivery_by?: string | null
+          delivery_date?: string | null
+          do_number?: string | null
+          id?: string
+          notes?: string | null
+          order_id: string
+          public_token?: string
+          received_at?: string | null
+          received_by?: string | null
+          section?: string | null
+          ship_to: string
+          status?: string
+          stored_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          delivery_by?: string | null
+          delivery_date?: string | null
+          do_number?: string | null
+          id?: string
+          notes?: string | null
+          order_id?: string
+          public_token?: string
+          received_at?: string | null
+          received_by?: string | null
+          section?: string | null
+          ship_to?: string
+          status?: string
+          stored_by?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tasks: {
         Row: {
