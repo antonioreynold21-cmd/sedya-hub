@@ -16,6 +16,7 @@ import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as TTokenRouteImport } from './routes/t.$token'
 import { Route as OrdersOrderIdInvoiceRouteImport } from './routes/orders.$orderId.invoice'
 import { Route as OrdersOrderIdSuratJalanRouteImport } from './routes/orders.$orderId.surat-jalan'
 
@@ -54,6 +55,11 @@ const OrdersIndexRoute = OrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TTokenRoute = TTokenRouteImport.update({
+  id: '/t/$token',
+  path: '/t/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersOrderIdInvoiceRoute = OrdersOrderIdInvoiceRouteImport.update({
   id: '/orders/$orderId/invoice',
   path: '/orders/$orderId/invoice',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
+  '/t/$token': typeof TTokenRoute
   '/orders/': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
   '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
+  '/t/$token': typeof TTokenRoute
   '/orders': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
   '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/shipments': typeof ShipmentsRoute
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
+  '/t/$token': typeof TTokenRoute
   '/orders/': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
   '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/team'
     | '/workflow'
+    | '/t/$token'
     | '/orders/'
     | '/orders/$orderId/invoice'
     | '/orders/$orderId/surat-jalan'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/team'
     | '/workflow'
+    | '/t/$token'
     | '/orders'
     | '/orders/$orderId/invoice'
     | '/orders/$orderId/surat-jalan'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/team'
     | '/workflow'
+    | '/t/$token'
     | '/orders/'
     | '/orders/$orderId/invoice'
     | '/orders/$orderId/surat-jalan'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   ShipmentsRoute: typeof ShipmentsRoute
   TeamRoute: typeof TeamRoute
   WorkflowRoute: typeof WorkflowRoute
+  TTokenRoute: typeof TTokenRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
   OrdersOrderIdInvoiceRoute: typeof OrdersOrderIdInvoiceRoute
   OrdersOrderIdSuratJalanRoute: typeof OrdersOrderIdSuratJalanRoute
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/t/$token': {
+      id: '/t/$token'
+      path: '/t/$token'
+      fullPath: '/t/$token'
+      preLoaderRoute: typeof TTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/orders/$orderId/invoice': {
       id: '/orders/$orderId/invoice'
       path: '/orders/$orderId/invoice'
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShipmentsRoute: ShipmentsRoute,
   TeamRoute: TeamRoute,
   WorkflowRoute: WorkflowRoute,
+  TTokenRoute: TTokenRoute,
   OrdersIndexRoute: OrdersIndexRoute,
   OrdersOrderIdInvoiceRoute: OrdersOrderIdInvoiceRoute,
   OrdersOrderIdSuratJalanRoute: OrdersOrderIdSuratJalanRoute,
