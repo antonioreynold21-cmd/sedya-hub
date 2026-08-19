@@ -16,6 +16,7 @@ import { Route as TeamRouteImport } from './routes/team'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 import { Route as OrdersOrderIdInvoiceRouteImport } from './routes/orders.$orderId.invoice'
+import { Route as OrdersOrderIdSuratJalanRouteImport } from './routes/orders.$orderId.surat-jalan'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const OrdersOrderIdInvoiceRoute = OrdersOrderIdInvoiceRouteImport.update({
   path: '/orders/$orderId/invoice',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrdersOrderIdSuratJalanRoute = OrdersOrderIdSuratJalanRouteImport.update({
+  id: '/orders/$orderId/surat-jalan',
+  path: '/orders/$orderId/surat-jalan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/workflow': typeof WorkflowRoute
   '/orders/': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/workflow': typeof WorkflowRoute
   '/orders': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/workflow': typeof WorkflowRoute
   '/orders/': typeof OrdersIndexRoute
   '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/workflow'
     | '/orders/'
     | '/orders/$orderId/invoice'
+    | '/orders/$orderId/surat-jalan'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/workflow'
     | '/orders'
     | '/orders/$orderId/invoice'
+    | '/orders/$orderId/surat-jalan'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/workflow'
     | '/orders/'
     | '/orders/$orderId/invoice'
+    | '/orders/$orderId/surat-jalan'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   WorkflowRoute: typeof WorkflowRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
   OrdersOrderIdInvoiceRoute: typeof OrdersOrderIdInvoiceRoute
+  OrdersOrderIdSuratJalanRoute: typeof OrdersOrderIdSuratJalanRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersOrderIdInvoiceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/orders/$orderId/surat-jalan': {
+      id: '/orders/$orderId/surat-jalan'
+      path: '/orders/$orderId/surat-jalan'
+      fullPath: '/orders/$orderId/surat-jalan'
+      preLoaderRoute: typeof OrdersOrderIdSuratJalanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorkflowRoute: WorkflowRoute,
   OrdersIndexRoute: OrdersIndexRoute,
   OrdersOrderIdInvoiceRoute: OrdersOrderIdInvoiceRoute,
+  OrdersOrderIdSuratJalanRoute: OrdersOrderIdSuratJalanRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

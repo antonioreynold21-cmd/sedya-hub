@@ -26,7 +26,7 @@ export const Route = createFileRoute("/orders/$orderId/surat-jalan")({
   component: SuratJalanPage,
 });
 
-function SignatureBox({ label, name }: { label: string; name?: string | null }) {
+function SignatureBox({ label, name }: { label: string; name: string | null | undefined }) {
   return (
     <div className="text-[11px]">
       <p className="font-bold">{label}</p>
