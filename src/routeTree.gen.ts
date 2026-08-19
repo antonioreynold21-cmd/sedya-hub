@@ -15,6 +15,7 @@ import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as OrdersOrderIdInvoiceRouteImport } from './routes/orders.$orderId.invoice'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const OrdersIndexRoute = OrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrdersOrderIdInvoiceRoute = OrdersOrderIdInvoiceRouteImport.update({
+  id: '/orders/$orderId/invoice',
+  path: '/orders/$orderId/invoice',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
   '/orders/': typeof OrdersIndexRoute
+  '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
   '/orders': typeof OrdersIndexRoute
+  '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,14 +79,36 @@ export interface FileRoutesById {
   '/team': typeof TeamRoute
   '/workflow': typeof WorkflowRoute
   '/orders/': typeof OrdersIndexRoute
+  '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/crm' | '/finance' | '/team' | '/workflow' | '/orders/'
+  fullPaths:
+    | '/'
+    | '/crm'
+    | '/finance'
+    | '/team'
+    | '/workflow'
+    | '/orders/'
+    | '/orders/$orderId/invoice'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/crm' | '/finance' | '/team' | '/workflow' | '/orders'
+  to:
+    | '/'
+    | '/crm'
+    | '/finance'
+    | '/team'
+    | '/workflow'
+    | '/orders'
+    | '/orders/$orderId/invoice'
   id:
-    '__root__' | '/' | '/crm' | '/finance' | '/team' | '/workflow' | '/orders/'
+    | '__root__'
+    | '/'
+    | '/crm'
+    | '/finance'
+    | '/team'
+    | '/workflow'
+    | '/orders/'
+    | '/orders/$orderId/invoice'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +118,7 @@ export interface RootRouteChildren {
   TeamRoute: typeof TeamRoute
   WorkflowRoute: typeof WorkflowRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
+  OrdersOrderIdInvoiceRoute: typeof OrdersOrderIdInvoiceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -134,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/orders/$orderId/invoice': {
+      id: '/orders/$orderId/invoice'
+      path: '/orders/$orderId/invoice'
+      fullPath: '/orders/$orderId/invoice'
+      preLoaderRoute: typeof OrdersOrderIdInvoiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -144,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   TeamRoute: TeamRoute,
   WorkflowRoute: WorkflowRoute,
   OrdersIndexRoute: OrdersIndexRoute,
+  OrdersOrderIdInvoiceRoute: OrdersOrderIdInvoiceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
