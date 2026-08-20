@@ -112,7 +112,7 @@ function PricelistPage() {
       <PageHeader
         title="Pricelist Harian"
         description="Perbarui harga setiap hari. Perubahan langsung tampil di link publik untuk client."
-        action={
+        actions={
           <Button asChild variant="outline" size="sm">
             <Link to="/harga" target="_blank">
               <ExternalLink className="size-4" /> Lihat Link Publik
