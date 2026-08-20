@@ -1,5 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, Wallet, KanbanSquare, UsersRound, Leaf } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Wallet,
+  KanbanSquare,
+  UsersRound,
+  Leaf,
+  FileText,
+  Truck,
+  Tags,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -18,9 +28,13 @@ const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "CRM", url: "/crm", icon: Users },
   { title: "Finance", url: "/finance", icon: Wallet },
+  { title: "Order & Dokumen", url: "/orders", icon: FileText },
+  { title: "Pengiriman", url: "/shipments", icon: Truck },
+  { title: "Pricelist", url: "/pricelist", icon: Tags },
   { title: "Workflow Tim", url: "/workflow", icon: KanbanSquare },
   { title: "Team", url: "/team", icon: UsersRound },
 ] as const;
+
 
 export function AppSidebar() {
   const { state } = useSidebar();
