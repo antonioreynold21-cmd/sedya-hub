@@ -121,8 +121,24 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const BARE_PREFIXES = ["/t/", "/harga"];
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const isBare =
+    BARE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p)) ||
+    pathname.endsWith("/invoice") ||
+    pathname.endsWith("/surat-jalan");
+
+  if (isBare) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+        <Toaster position="top-right" richColors />
+      </QueryClientProvider>
+    );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -148,3 +164,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
