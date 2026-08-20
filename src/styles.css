@@ -167,3 +167,25 @@
 @utility card-soft {
   box-shadow: var(--shadow-soft);
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .doc-sheet {
+    box-shadow: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
