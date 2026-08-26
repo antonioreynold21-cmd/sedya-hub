@@ -154,6 +154,17 @@ function RootComponent() {
               <span className="hidden text-xs text-muted-foreground sm:inline">
                 Supplier Bahan Baku HORECA
               </span>
+              <button
+                type="button"
+                className="ml-auto inline-flex items-center rounded-md border border-input px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-accent"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  queryClient.clear();
+                  window.location.href = "/auth";
+                }}
+              >
+                Keluar
+              </button>
             </header>
             <main className="min-w-0 flex-1 p-4 md:p-6">
               {/* Required: nested routes render here. */}
