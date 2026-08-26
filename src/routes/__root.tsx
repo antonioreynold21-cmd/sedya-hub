@@ -123,7 +123,7 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-const BARE_PREFIXES = ["/t/", "/harga"];
+const BARE_PREFIXES = ["/t/", "/harga", "/auth"];
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
