@@ -13,7 +13,7 @@ import {
 } from "@/components/doc-shell";
 import { docTotal, formatDocDate, formatDocMoney, itemAmount } from "@/lib/docs";
 
-export const Route = createFileRoute("/orders/$orderId/invoice")({
+export const Route = createFileRoute("/_authenticated/orders/$orderId/invoice")({
   head: () => ({
     meta: [
       { title: "Invoice — Sedyain Indonesia" },

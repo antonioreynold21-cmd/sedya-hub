@@ -9,32 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as CrmRouteImport } from './routes/crm'
-import { Route as FinanceRouteImport } from './routes/finance'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HargaRouteImport } from './routes/harga'
-import { Route as PricelistRouteImport } from './routes/pricelist'
-import { Route as ShipmentsRouteImport } from './routes/shipments'
-import { Route as TeamRouteImport } from './routes/team'
-import { Route as WorkflowRouteImport } from './routes/workflow'
-import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated/crm'
+import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
+import { Route as AuthenticatedPricelistRouteImport } from './routes/_authenticated/pricelist'
+import { Route as AuthenticatedShipmentsRouteImport } from './routes/_authenticated/shipments'
+import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
+import { Route as AuthenticatedWorkflowRouteImport } from './routes/_authenticated/workflow'
 import { Route as TTokenRouteImport } from './routes/t.$token'
-import { Route as OrdersOrderIdInvoiceRouteImport } from './routes/orders.$orderId.invoice'
-import { Route as OrdersOrderIdSuratJalanRouteImport } from './routes/orders.$orderId.surat-jalan'
+import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders.index'
+import { Route as AuthenticatedOrdersOrderIdInvoiceRouteImport } from './routes/_authenticated/orders.$orderId.invoice'
+import { Route as AuthenticatedOrdersOrderIdSuratJalanRouteImport } from './routes/_authenticated/orders.$orderId.surat-jalan'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CrmRoute = CrmRouteImport.update({
-  id: '/crm',
-  path: '/crm',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FinanceRoute = FinanceRouteImport.update({
-  id: '/finance',
-  path: '/finance',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HargaRoute = HargaRouteImport.update({
@@ -42,97 +38,120 @@ const HargaRoute = HargaRouteImport.update({
   path: '/harga',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PricelistRoute = PricelistRouteImport.update({
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFinanceRoute = AuthenticatedFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPricelistRoute = AuthenticatedPricelistRouteImport.update({
   id: '/pricelist',
   path: '/pricelist',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ShipmentsRoute = ShipmentsRouteImport.update({
+const AuthenticatedShipmentsRoute = AuthenticatedShipmentsRouteImport.update({
   id: '/shipments',
   path: '/shipments',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const TeamRoute = TeamRouteImport.update({
+const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
   id: '/team',
   path: '/team',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const WorkflowRoute = WorkflowRouteImport.update({
+const AuthenticatedWorkflowRoute = AuthenticatedWorkflowRouteImport.update({
   id: '/workflow',
   path: '/workflow',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OrdersIndexRoute = OrdersIndexRouteImport.update({
-  id: '/orders/',
-  path: '/orders/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const TTokenRoute = TTokenRouteImport.update({
   id: '/t/$token',
   path: '/t/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrdersOrderIdInvoiceRoute = OrdersOrderIdInvoiceRouteImport.update({
-  id: '/orders/$orderId/invoice',
-  path: '/orders/$orderId/invoice',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OrdersOrderIdSuratJalanRoute = OrdersOrderIdSuratJalanRouteImport.update({
-  id: '/orders/$orderId/surat-jalan',
-  path: '/orders/$orderId/surat-jalan',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedOrdersIndexRoute =
+  AuthenticatedOrdersIndexRouteImport.update({
+    id: '/orders/',
+    path: '/orders/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedOrdersOrderIdInvoiceRoute =
+  AuthenticatedOrdersOrderIdInvoiceRouteImport.update({
+    id: '/orders/$orderId/invoice',
+    path: '/orders/$orderId/invoice',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedOrdersOrderIdSuratJalanRoute =
+  AuthenticatedOrdersOrderIdSuratJalanRouteImport.update({
+    id: '/orders/$orderId/surat-jalan',
+    path: '/orders/$orderId/surat-jalan',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/crm': typeof CrmRoute
-  '/finance': typeof FinanceRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
-  '/pricelist': typeof PricelistRoute
-  '/shipments': typeof ShipmentsRoute
-  '/team': typeof TeamRoute
-  '/workflow': typeof WorkflowRoute
+  '/crm': typeof AuthenticatedCrmRoute
+  '/finance': typeof AuthenticatedFinanceRoute
+  '/pricelist': typeof AuthenticatedPricelistRoute
+  '/shipments': typeof AuthenticatedShipmentsRoute
+  '/team': typeof AuthenticatedTeamRoute
+  '/workflow': typeof AuthenticatedWorkflowRoute
   '/t/$token': typeof TTokenRoute
-  '/orders/': typeof OrdersIndexRoute
-  '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
-  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
+  '/orders/': typeof AuthenticatedOrdersIndexRoute
+  '/orders/$orderId/invoice': typeof AuthenticatedOrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof AuthenticatedOrdersOrderIdSuratJalanRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/crm': typeof CrmRoute
-  '/finance': typeof FinanceRoute
+  '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
-  '/pricelist': typeof PricelistRoute
-  '/shipments': typeof ShipmentsRoute
-  '/team': typeof TeamRoute
-  '/workflow': typeof WorkflowRoute
+  '/crm': typeof AuthenticatedCrmRoute
+  '/finance': typeof AuthenticatedFinanceRoute
+  '/pricelist': typeof AuthenticatedPricelistRoute
+  '/shipments': typeof AuthenticatedShipmentsRoute
+  '/team': typeof AuthenticatedTeamRoute
+  '/workflow': typeof AuthenticatedWorkflowRoute
   '/t/$token': typeof TTokenRoute
-  '/orders': typeof OrdersIndexRoute
-  '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
-  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/orders': typeof AuthenticatedOrdersIndexRoute
+  '/orders/$orderId/invoice': typeof AuthenticatedOrdersOrderIdInvoiceRoute
+  '/orders/$orderId/surat-jalan': typeof AuthenticatedOrdersOrderIdSuratJalanRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/crm': typeof CrmRoute
-  '/finance': typeof FinanceRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
-  '/pricelist': typeof PricelistRoute
-  '/shipments': typeof ShipmentsRoute
-  '/team': typeof TeamRoute
-  '/workflow': typeof WorkflowRoute
+  '/_authenticated/crm': typeof AuthenticatedCrmRoute
+  '/_authenticated/finance': typeof AuthenticatedFinanceRoute
+  '/_authenticated/pricelist': typeof AuthenticatedPricelistRoute
+  '/_authenticated/shipments': typeof AuthenticatedShipmentsRoute
+  '/_authenticated/team': typeof AuthenticatedTeamRoute
+  '/_authenticated/workflow': typeof AuthenticatedWorkflowRoute
   '/t/$token': typeof TTokenRoute
-  '/orders/': typeof OrdersIndexRoute
-  '/orders/$orderId/invoice': typeof OrdersOrderIdInvoiceRoute
-  '/orders/$orderId/surat-jalan': typeof OrdersOrderIdSuratJalanRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
+  '/_authenticated/orders/$orderId/invoice': typeof AuthenticatedOrdersOrderIdInvoiceRoute
+  '/_authenticated/orders/$orderId/surat-jalan': typeof AuthenticatedOrdersOrderIdSuratJalanRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
+    | '/harga'
     | '/crm'
     | '/finance'
-    | '/harga'
     | '/pricelist'
     | '/shipments'
     | '/team'
@@ -143,70 +162,58 @@ export interface FileRouteTypes {
     | '/orders/$orderId/surat-jalan'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
+    | '/auth'
+    | '/harga'
     | '/crm'
     | '/finance'
-    | '/harga'
     | '/pricelist'
     | '/shipments'
     | '/team'
     | '/workflow'
     | '/t/$token'
+    | '/'
     | '/orders'
     | '/orders/$orderId/invoice'
     | '/orders/$orderId/surat-jalan'
   id:
     | '__root__'
-    | '/'
-    | '/crm'
-    | '/finance'
+    | '/_authenticated'
+    | '/auth'
     | '/harga'
-    | '/pricelist'
-    | '/shipments'
-    | '/team'
-    | '/workflow'
+    | '/_authenticated/crm'
+    | '/_authenticated/finance'
+    | '/_authenticated/pricelist'
+    | '/_authenticated/shipments'
+    | '/_authenticated/team'
+    | '/_authenticated/workflow'
     | '/t/$token'
-    | '/orders/'
-    | '/orders/$orderId/invoice'
-    | '/orders/$orderId/surat-jalan'
+    | '/_authenticated/'
+    | '/_authenticated/orders/'
+    | '/_authenticated/orders/$orderId/invoice'
+    | '/_authenticated/orders/$orderId/surat-jalan'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  CrmRoute: typeof CrmRoute
-  FinanceRoute: typeof FinanceRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   HargaRoute: typeof HargaRoute
-  PricelistRoute: typeof PricelistRoute
-  ShipmentsRoute: typeof ShipmentsRoute
-  TeamRoute: typeof TeamRoute
-  WorkflowRoute: typeof WorkflowRoute
   TTokenRoute: typeof TTokenRoute
-  OrdersIndexRoute: typeof OrdersIndexRoute
-  OrdersOrderIdInvoiceRoute: typeof OrdersOrderIdInvoiceRoute
-  OrdersOrderIdSuratJalanRoute: typeof OrdersOrderIdSuratJalanRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/crm': {
-      id: '/crm'
-      path: '/crm'
-      fullPath: '/crm'
-      preLoaderRoute: typeof CrmRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/finance': {
-      id: '/finance'
-      path: '/finance'
-      fullPath: '/finance'
-      preLoaderRoute: typeof FinanceRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/harga': {
@@ -216,40 +223,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HargaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pricelist': {
-      id: '/pricelist'
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/crm': {
+      id: '/_authenticated/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof AuthenticatedCrmRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/finance': {
+      id: '/_authenticated/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof AuthenticatedFinanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pricelist': {
+      id: '/_authenticated/pricelist'
       path: '/pricelist'
       fullPath: '/pricelist'
-      preLoaderRoute: typeof PricelistRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedPricelistRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/shipments': {
-      id: '/shipments'
+    '/_authenticated/shipments': {
+      id: '/_authenticated/shipments'
       path: '/shipments'
       fullPath: '/shipments'
-      preLoaderRoute: typeof ShipmentsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedShipmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/team': {
-      id: '/team'
+    '/_authenticated/team': {
+      id: '/_authenticated/team'
       path: '/team'
       fullPath: '/team'
-      preLoaderRoute: typeof TeamRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedTeamRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/workflow': {
-      id: '/workflow'
+    '/_authenticated/workflow': {
+      id: '/_authenticated/workflow'
       path: '/workflow'
       fullPath: '/workflow'
-      preLoaderRoute: typeof WorkflowRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/orders/': {
-      id: '/orders/'
-      path: '/orders'
-      fullPath: '/orders/'
-      preLoaderRoute: typeof OrdersIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedWorkflowRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/t/$token': {
       id: '/t/$token'
@@ -258,36 +279,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/orders/$orderId/invoice': {
-      id: '/orders/$orderId/invoice'
+    '/_authenticated/orders/': {
+      id: '/_authenticated/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof AuthenticatedOrdersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/orders/$orderId/invoice': {
+      id: '/_authenticated/orders/$orderId/invoice'
       path: '/orders/$orderId/invoice'
       fullPath: '/orders/$orderId/invoice'
-      preLoaderRoute: typeof OrdersOrderIdInvoiceRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedOrdersOrderIdInvoiceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/orders/$orderId/surat-jalan': {
-      id: '/orders/$orderId/surat-jalan'
+    '/_authenticated/orders/$orderId/surat-jalan': {
+      id: '/_authenticated/orders/$orderId/surat-jalan'
       path: '/orders/$orderId/surat-jalan'
       fullPath: '/orders/$orderId/surat-jalan'
-      preLoaderRoute: typeof OrdersOrderIdSuratJalanRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedOrdersOrderIdSuratJalanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
+  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
+  AuthenticatedPricelistRoute: typeof AuthenticatedPricelistRoute
+  AuthenticatedShipmentsRoute: typeof AuthenticatedShipmentsRoute
+  AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
+  AuthenticatedWorkflowRoute: typeof AuthenticatedWorkflowRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
+  AuthenticatedOrdersOrderIdInvoiceRoute: typeof AuthenticatedOrdersOrderIdInvoiceRoute
+  AuthenticatedOrdersOrderIdSuratJalanRoute: typeof AuthenticatedOrdersOrderIdSuratJalanRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCrmRoute: AuthenticatedCrmRoute,
+  AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
+  AuthenticatedPricelistRoute: AuthenticatedPricelistRoute,
+  AuthenticatedShipmentsRoute: AuthenticatedShipmentsRoute,
+  AuthenticatedTeamRoute: AuthenticatedTeamRoute,
+  AuthenticatedWorkflowRoute: AuthenticatedWorkflowRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,
+  AuthenticatedOrdersOrderIdInvoiceRoute:
+    AuthenticatedOrdersOrderIdInvoiceRoute,
+  AuthenticatedOrdersOrderIdSuratJalanRoute:
+    AuthenticatedOrdersOrderIdSuratJalanRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  CrmRoute: CrmRoute,
-  FinanceRoute: FinanceRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   HargaRoute: HargaRoute,
-  PricelistRoute: PricelistRoute,
-  ShipmentsRoute: ShipmentsRoute,
-  TeamRoute: TeamRoute,
-  WorkflowRoute: WorkflowRoute,
   TTokenRoute: TTokenRoute,
-  OrdersIndexRoute: OrdersIndexRoute,
-  OrdersOrderIdInvoiceRoute: OrdersOrderIdInvoiceRoute,
-  OrdersOrderIdSuratJalanRoute: OrdersOrderIdSuratJalanRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

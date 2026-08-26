@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { DIVISIONS, PRIORITIES, TASK_STATUSES, formatDate, daysUntil } from "@/lib/sedyain";
 
-export const Route = createFileRoute("/workflow")({
+export const Route = createFileRoute("/_authenticated/workflow")({
   head: () => ({
     meta: [
       { title: "Workflow Tim — Papan Kanban Sedyain Indonesia" },

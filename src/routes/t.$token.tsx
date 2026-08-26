@@ -33,6 +33,17 @@ export const Route = createFileRoute("/t/$token")({
 
 const stepIcons = [Clock, Boxes, Truck, PackageCheck];
 
+type TrackingItem = { id: string; item_name: string; qty: number; unit: string };
+type Tracking = {
+  ship_to: string;
+  status: string;
+  delivery_date: string | null;
+  do_number: string | null;
+  received_by: string | null;
+  received_at: string | null;
+  items: TrackingItem[];
+};
+
 function TrackPage() {
   const { token } = Route.useParams();
   const qc = useQueryClient();
@@ -41,33 +52,21 @@ function TrackPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["track", token],
     queryFn: async () => {
-      const { data: shipment, error } = await supabase
-        .from("shipments")
-        .select("*")
-        .eq("public_token", token)
-        .maybeSingle();
+      const { data, error } = await supabase.rpc(
+        "get_shipment_tracking" as never,
+        { p_token: token } as never,
+      );
       if (error) throw error;
-      if (!shipment) return null;
-      const { data: items, error: itemsError } = await supabase
-        .from("order_items")
-        .select("id, item_name, qty, unit, position")
-        .eq("order_id", shipment.order_id)
-        .order("position");
-      if (itemsError) throw itemsError;
-      return { shipment, items: items ?? [] };
+      return (data as Tracking | null) ?? null;
     },
   });
 
   const confirm = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
-        .from("shipments")
-        .update({
-          received_by: name.trim(),
-          received_at: new Date().toISOString(),
-          status: "Terkirim",
-        })
-        .eq("public_token", token);
+      const { error } = await supabase.rpc(
+        "confirm_shipment_receipt" as never,
+        { p_token: token, p_received_by: name.trim() } as never,
+      );
       if (error) throw error;
     },
     onSuccess: () => {
@@ -77,7 +76,7 @@ function TrackPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const shipment = data?.shipment;
+  const shipment = data;
   const items = data?.items ?? [];
   const activeIndex = shipment ? SHIPMENT_STATUSES.indexOf(shipment.status as never) : -1;
 

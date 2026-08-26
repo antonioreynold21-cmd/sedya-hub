@@ -47,7 +47,7 @@ import {
   urgencyRowClass,
 } from "@/lib/sedyain";
 
-export const Route = createFileRoute("/finance")({
+export const Route = createFileRoute("/_authenticated/finance")({
   head: () => ({
     meta: [
       { title: "Finance — Utang, Piutang & Kas Sedyain Indonesia" },

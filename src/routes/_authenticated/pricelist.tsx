@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table";
 import { formatRupiah } from "@/lib/sedyain";
 
-export const Route = createFileRoute("/pricelist")({
+export const Route = createFileRoute("/_authenticated/pricelist")({
   head: () => ({
     meta: [
       { title: "Pricelist Harian — Sedyain Indonesia" },

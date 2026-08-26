@@ -25,7 +25,7 @@ import {
 import { SHIPMENT_STATUSES } from "@/lib/docs";
 import { formatDate } from "@/lib/sedyain";
 
-export const Route = createFileRoute("/shipments")({
+export const Route = createFileRoute("/_authenticated/shipments")({
   head: () => ({
     meta: [
       { title: "Pengiriman — Sedyain Indonesia" },
