@@ -475,7 +475,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      confirm_shipment_receipt: {
+        Args: { p_received_by: string; p_token: string }
+        Returns: Json
+      }
+      get_shipment_tracking: { Args: { p_token: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
