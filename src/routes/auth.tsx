@@ -4,7 +4,6 @@ import { toast } from "sonner";
 
 import logoAsset from "@/assets/sedyain_logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -72,14 +71,6 @@ function AuthPage() {
     }
   }
 
-  async function google() {
-    try {
-      await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Gagal masuk dengan Google");
-    }
-  }
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#FAF7F0] px-4 py-10">
       <div className="w-full max-w-sm space-y-6 rounded-xl bg-white p-6 shadow-sm">
@@ -123,10 +114,6 @@ function AuthPage() {
             {mode === "signin" ? "Masuk" : "Daftar Akun Tim"}
           </Button>
         </form>
-
-        <Button type="button" variant="outline" className="w-full" onClick={google}>
-          Masuk dengan Google
-        </Button>
 
         <button
           type="button"
