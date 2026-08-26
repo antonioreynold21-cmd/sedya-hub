@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/table";
 import { DIVISIONS } from "@/lib/sedyain";
 
-export const Route = createFileRoute("/team")({
+export const Route = createFileRoute("/_authenticated/team")({
   head: () => ({
     meta: [
       { title: "Team Internal — Sedyain Indonesia" },

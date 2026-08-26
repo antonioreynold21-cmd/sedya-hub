@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { BrandRibbon, ContactBlock, DocHeader, DocSheet } from "@/components/doc-shell";
 import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
 
-export const Route = createFileRoute("/orders/$orderId/surat-jalan")({
+export const Route = createFileRoute("/_authenticated/orders/$orderId/surat-jalan")({
   head: () => ({
     meta: [
       { title: "Surat Jalan — Sedyain Indonesia" },

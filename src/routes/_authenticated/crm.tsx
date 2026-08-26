@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/table";
 import { CLIENT_STATUSES } from "@/lib/sedyain";
 
-export const Route = createFileRoute("/crm")({
+export const Route = createFileRoute("/_authenticated/crm")({
   head: () => ({
     meta: [
       { title: "CRM Client & Lead — Sedyain Indonesia" },

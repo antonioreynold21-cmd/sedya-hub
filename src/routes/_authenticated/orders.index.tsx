@@ -28,7 +28,7 @@ import {
 import { formatRupiah, formatDate } from "@/lib/sedyain";
 import { docTotal } from "@/lib/docs";
 
-export const Route = createFileRoute("/orders/")({
+export const Route = createFileRoute("/_authenticated/orders/")({
   head: () => ({
     meta: [
       { title: "Order & Dokumen — Sedyain Indonesia" },
