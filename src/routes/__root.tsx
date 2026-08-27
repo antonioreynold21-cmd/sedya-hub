@@ -14,6 +14,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ModuleGate } from "@/components/module-gate";
+
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
@@ -169,8 +171,11 @@ function RootComponent() {
             </header>
             <main className="min-w-0 flex-1 p-4 md:p-6">
               {/* Required: nested routes render here. */}
-              <Outlet />
+              <ModuleGate pathname={pathname}>
+                <Outlet />
+              </ModuleGate>
             </main>
+
           </div>
         </div>
       </SidebarProvider>
