@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileText, Plus, Trash2, Truck, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatRupiah, formatDate } from "@/lib/sedyain";
-import { docTotal } from "@/lib/docs";
+import { buildInvoiceNumber, docTotal, nextInvoiceSeq } from "@/lib/docs";
 
 export const Route = createFileRoute("/_authenticated/orders/")({
   head: () => ({
@@ -121,6 +121,20 @@ function OrdersPage() {
         .map((i) => ({ qty: Number(i.qty), price: Number(i.price) })),
     );
 
+  // Auto-suggest nomor invoice untuk order baru (tetap bisa diedit manual)
+  const [invoiceTouched, setInvoiceTouched] = useState(false);
+  const nextSeq = nextInvoiceSeq(orders.map((o) => o.invoice_number));
+
+  useEffect(() => {
+    if (!open || editId || invoiceTouched) return;
+    if (!form.client_name.trim() || !form.invoice_date) return;
+    const suggested = buildInvoiceNumber(nextSeq, form.client_name, form.invoice_date);
+    if (suggested !== form.invoice_number) {
+      setForm((f) => ({ ...f, invoice_number: suggested }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, editId, invoiceTouched, form.client_name, form.invoice_date, nextSeq]);
+
   const save = useMutation({
     mutationFn: async () => {
       const payload = {
@@ -211,6 +225,7 @@ function OrdersPage() {
 
   async function openEdit(order: Order) {
     setEditId(order.id);
+    setInvoiceTouched(true);
     setForm({
       client_name: order.client_name,
       client_address: order.client_address ?? "",
@@ -247,6 +262,7 @@ function OrdersPage() {
           <Button
             onClick={() => {
               setEditId(null);
+              setInvoiceTouched(false);
               setForm(emptyForm);
               setItems([{ ...emptyItem }]);
               setOpen(true);
@@ -257,7 +273,7 @@ function OrdersPage() {
         }
       />
 
-      <div className="rounded-lg border border-border bg-card card-soft">
+      <div className="overflow-x-auto rounded-lg border border-border bg-card card-soft">
         <Table>
           <TableHeader>
             <TableRow>
@@ -375,7 +391,10 @@ function OrdersPage() {
               <Label>Invoice Number</Label>
               <Input
                 value={form.invoice_number}
-                onChange={(e) => setForm({ ...form, invoice_number: e.target.value })}
+                onChange={(e) => {
+                  setInvoiceTouched(true);
+                  setForm({ ...form, invoice_number: e.target.value });
+                }}
                 placeholder="164/SDY/INV/RUMARASA/1482026"
               />
             </div>
