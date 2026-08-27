@@ -169,8 +169,11 @@ function RootComponent() {
             </header>
             <main className="min-w-0 flex-1 p-4 md:p-6">
               {/* Required: nested routes render here. */}
-              <Outlet />
+              <ModuleGate pathname={pathname}>
+                <Outlet />
+              </ModuleGate>
             </main>
+
           </div>
         </div>
       </SidebarProvider>
