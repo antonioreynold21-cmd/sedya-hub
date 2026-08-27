@@ -10,6 +10,7 @@ import {
   Truck,
   Tags,
   ShieldCheck,
+  Building2,
 } from "lucide-react";
 
 import {
