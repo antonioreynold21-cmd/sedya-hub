@@ -18,6 +18,7 @@ export const ALWAYS_ALLOWED: ModuleKey[] = ["dashboard"];
 export function moduleForPath(pathname: string): ModuleKey | null {
   if (pathname === "/" ) return "dashboard";
   if (pathname.startsWith("/crm")) return "crm";
+  if (pathname.startsWith("/client")) return "crm";
   if (pathname.startsWith("/finance")) return "finance";
   if (pathname.startsWith("/orders")) return "orders";
   if (pathname.startsWith("/shipments")) return "shipments";
