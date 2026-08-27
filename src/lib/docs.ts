@@ -51,3 +51,31 @@ export function itemAmount(item: { qty: number; price: number }): number {
 export function docTotal(items: { qty: number; price: number }[]): number {
   return items.reduce((sum, i) => sum + itemAmount(i), 0);
 }
+
+/** Angka urut tertinggi dari daftar invoice_number (leading number sebelum "/"), +1. */
+export function nextInvoiceSeq(existing: (string | null | undefined)[]): number {
+  let max = 0;
+  for (const raw of existing) {
+    if (!raw) continue;
+    const lead = String(raw).trim().split("/")[0];
+    const n = Number.parseInt(lead ?? "", 10);
+    if (Number.isFinite(n) && n > max) max = n;
+  }
+  return max + 1;
+}
+
+/** "165/SDY/INV/WARKOPTJINTA/082026" */
+export function buildInvoiceNumber(
+  seq: number,
+  clientName: string,
+  invoiceDate: string | null | undefined,
+): string {
+  const slug = (clientName || "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+  const d = invoiceDate ? new Date(`${invoiceDate}T00:00:00`) : new Date();
+  const valid = !Number.isNaN(d.getTime()) ? d : new Date();
+  const mm = String(valid.getMonth() + 1).padStart(2, "0");
+  const yyyy = String(valid.getFullYear());
+  return `${seq}/SDY/INV/${slug}/${mm}${yyyy}`;
+}
