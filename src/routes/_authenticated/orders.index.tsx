@@ -434,9 +434,9 @@ function OrdersPage() {
                 <Plus className="size-4" /> Tambah Item
               </Button>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 overflow-x-auto">
               {items.map((it, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2">
+                <div key={idx} className="grid min-w-[620px] grid-cols-12 gap-2">
                   <Input
                     className="col-span-5"
                     placeholder="Nama & deskripsi item"
