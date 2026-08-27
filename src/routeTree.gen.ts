@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HargaRouteImport } from './routes/harga'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAksesRouteImport } from './routes/_authenticated/akses'
+import { Route as AuthenticatedClientRouteImport } from './routes/_authenticated/client'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated/crm'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedPricelistRouteImport } from './routes/_authenticated/pricelist'
@@ -47,6 +48,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const AuthenticatedAksesRoute = AuthenticatedAksesRouteImport.update({
   id: '/akses',
   path: '/akses',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClientRoute = AuthenticatedClientRouteImport.update({
+  id: '/client',
+  path: '/client',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
   '/akses': typeof AuthenticatedAksesRoute
+  '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
   '/akses': typeof AuthenticatedAksesRoute
+  '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
   '/_authenticated/akses': typeof AuthenticatedAksesRoute
+  '/_authenticated/client': typeof AuthenticatedClientRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/pricelist': typeof AuthenticatedPricelistRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/harga'
     | '/akses'
+    | '/client'
     | '/crm'
     | '/finance'
     | '/pricelist'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/harga'
     | '/akses'
+    | '/client'
     | '/crm'
     | '/finance'
     | '/pricelist'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/harga'
     | '/_authenticated/akses'
+    | '/_authenticated/client'
     | '/_authenticated/crm'
     | '/_authenticated/finance'
     | '/_authenticated/pricelist'
@@ -247,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/akses'
       fullPath: '/akses'
       preLoaderRoute: typeof AuthenticatedAksesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/client': {
+      id: '/_authenticated/client'
+      path: '/client'
+      fullPath: '/client'
+      preLoaderRoute: typeof AuthenticatedClientRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/crm': {
@@ -324,6 +343,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAksesRoute: typeof AuthenticatedAksesRoute
+  AuthenticatedClientRoute: typeof AuthenticatedClientRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedPricelistRoute: typeof AuthenticatedPricelistRoute
@@ -338,6 +358,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAksesRoute: AuthenticatedAksesRoute,
+  AuthenticatedClientRoute: AuthenticatedClientRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedPricelistRoute: AuthenticatedPricelistRoute,
