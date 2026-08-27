@@ -30,6 +30,7 @@ import type { ModuleKey } from "@/lib/access";
 const items: { title: string; url: string; icon: typeof Users; module: ModuleKey }[] = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, module: "dashboard" },
   { title: "CRM", url: "/crm", icon: Users, module: "crm" },
+  { title: "Client", url: "/client", icon: Building2, module: "crm" },
   { title: "Finance", url: "/finance", icon: Wallet, module: "finance" },
   { title: "Order & Dokumen", url: "/orders", icon: FileText, module: "orders" },
   { title: "Pengiriman", url: "/shipments", icon: Truck, module: "shipments" },
