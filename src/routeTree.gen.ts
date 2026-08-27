@@ -13,6 +13,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HargaRouteImport } from './routes/harga'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedAksesRouteImport } from './routes/_authenticated/akses'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated/crm'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedPricelistRouteImport } from './routes/_authenticated/pricelist'
@@ -41,6 +42,11 @@ const HargaRoute = HargaRouteImport.update({
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAksesRoute = AuthenticatedAksesRouteImport.update({
+  id: '/akses',
+  path: '/akses',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCrmRoute = AuthenticatedCrmRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
+  '/akses': typeof AuthenticatedAksesRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
+  '/akses': typeof AuthenticatedAksesRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
+  '/_authenticated/akses': typeof AuthenticatedAksesRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/pricelist': typeof AuthenticatedPricelistRoute
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/harga'
+    | '/akses'
     | '/crm'
     | '/finance'
     | '/pricelist'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
   to:
     | '/auth'
     | '/harga'
+    | '/akses'
     | '/crm'
     | '/finance'
     | '/pricelist'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/harga'
+    | '/_authenticated/akses'
     | '/_authenticated/crm'
     | '/_authenticated/finance'
     | '/_authenticated/pricelist'
@@ -228,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/akses': {
+      id: '/_authenticated/akses'
+      path: '/akses'
+      fullPath: '/akses'
+      preLoaderRoute: typeof AuthenticatedAksesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/crm': {
@@ -304,6 +323,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAksesRoute: typeof AuthenticatedAksesRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedPricelistRoute: typeof AuthenticatedPricelistRoute
@@ -317,6 +337,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAksesRoute: AuthenticatedAksesRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedPricelistRoute: AuthenticatedPricelistRoute,
