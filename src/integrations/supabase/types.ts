@@ -122,6 +122,27 @@ export type Database = {
         }
         Relationships: []
       }
+      module_access: {
+        Row: {
+          created_at: string
+          id: string
+          module: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          module: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          module?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -293,6 +314,30 @@ export type Database = {
           name?: string
           price?: number
           unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
           updated_at?: string
         }
         Relationships: []
@@ -470,19 +515,71 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      admin_list_users: {
+        Args: never
+        Returns: {
+          email: string
+          modules: string[]
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }[]
+      }
+      admin_set_modules: {
+        Args: { p_modules: string[]; p_user_id: string }
+        Returns: undefined
+      }
+      admin_set_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
+      bootstrap_current_user: { Args: never; Returns: Json }
+      can_access: { Args: { _module: string }; Returns: boolean }
+      can_access_any: { Args: { _modules: string[] }; Returns: boolean }
       confirm_shipment_receipt: {
         Args: { p_received_by: string; p_token: string }
         Returns: Json
       }
       get_shipment_tracking: { Args: { p_token: string }; Returns: Json }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_master: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "master" | "staff"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -609,6 +706,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["master", "staff"],
+    },
   },
 } as const
