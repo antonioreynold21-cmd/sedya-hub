@@ -85,6 +85,13 @@
       "when": 1791375499403,
       "tag": "0011_phase2_trigger_privilege_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791375610421,
+      "tag": "0012_phase2_numbering_configuration_compatibility",
+      "breakpoints": true
     }
   ]
 }
