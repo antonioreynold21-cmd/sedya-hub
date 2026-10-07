@@ -6,7 +6,7 @@ import { ArrowLeft, Printer } from "lucide-react";
 
 import { tenantClient as supabase } from "@/lib/tenant-client";
 import { Button } from "@/components/ui/button";
-import { BrandRibbon, ContactBlock, DocHeader, DocSheet } from "@/components/doc-shell";
+import { DocumentBrand, BrandRibbon, ContactBlock, DocHeader, DocSheet } from "@/components/doc-shell";
 import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
 
 export const Route = createFileRoute("/_authenticated/orders/$orderId/surat-jalan")({
@@ -44,7 +44,8 @@ function SuratJalanPage() {
   const { orderId } = Route.useParams();
   const {can}=useAccess();
 
-  const { data, isPending } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
+    throwOnError:false,
     queryKey: ["surat-jalan", orderId],
     queryFn: async () => {
       const [order, items, shipment] = await Promise.all([
@@ -70,6 +71,8 @@ function SuratJalanPage() {
   const items = data?.items ?? [];
   const shipment = data?.shipment;
 
+  if(isError)return <div role="alert" className="no-print p-6">Dokumen gagal dimuat. <Button onClick={()=>refetch()}>Coba lagi</Button></div>;
+  if(!isPending && (!order || !items.length || !shipment || order.invoice_state!=='issued' || !order.brand_snapshot)) return <p role="alert" className="no-print p-6">Surat jalan belum tersedia: invoice harus terbit, pengiriman dan item wajib ada.</p>;
   if(isPending)return <p className="p-6 text-sm text-muted-foreground">Memuat dokumen…</p>;
   return (
     <div className="min-h-screen bg-neutral-100 py-6 print:bg-white print:py-0">
@@ -84,7 +87,7 @@ function SuratJalanPage() {
         </Button>
       </div>
 
-      <DocSheet>
+      <DocumentBrand settings={order?.brand_snapshot as import("@/components/tenant-provider").TenantSettings | null}><DocSheet>
         <DocHeader title="Surat Jalan" />
 
         <div className="mt-8 grid grid-cols-3 gap-6 text-[11px] leading-snug">
@@ -94,7 +97,7 @@ function SuratJalanPage() {
           </div>
           <div>
             <p className="font-bold">PO Number:</p>
-            <p>{order?.po_number ?? "-"}</p>
+            <p>{order?.order_number ?? order?.po_number ?? "-"}</p>
           </div>
           <div>
             <p className="font-bold">Delivery Date:</p>
@@ -168,7 +171,7 @@ function SuratJalanPage() {
         </div>
 
         <BrandRibbon />
-      </DocSheet>
+      </DocSheet></DocumentBrand>
     </div>
   );
 }

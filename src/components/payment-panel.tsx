@@ -1,0 +1,26 @@
+import { useState } from 'react';
+import { useMutation,useQueryClient } from '@tanstack/react-query';
+import { useTenantQuery } from '@/hooks/use-tenant-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useTenant } from '@/components/tenant-provider';
+import { useAccess } from '@/hooks/use-access';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select,SelectTrigger,SelectValue,SelectContent,SelectItem } from '@/components/ui/select';
+import { Table,TableHeader,TableHead,TableRow,TableBody,TableCell } from '@/components/ui/table';
+import { formatDate,formatRupiah } from '@/lib/sedyain';
+import { jakartaDate } from '@/lib/sales';
+import { toast } from 'sonner';
+export function PaymentPanel({orderId,balance,issued}:{orderId:string;balance:number;issued:boolean}) {
+ const {tenantId}=useTenant();const {can,isMaster}=useAccess();const qc=useQueryClient();
+ const [form,setForm]=useState({amount:'',date:jakartaDate(),method:'transfer',reference:'',notes:''});
+ const [voiding,setVoiding]=useState<string|null>(null);const [reason,setReason]=useState('');
+ const payments=useTenantQuery({throwOnError:false,queryKey:['payments',orderId],enabled:can('finance'),queryFn:async()=>{const {data,error}=await supabase.from('payments').select('*').eq('tenant_id',tenantId??'').eq('order_id',orderId).order('created_at',{ascending:false});if(error)throw error;return data;}});
+ const save=useMutation({mutationFn:async()=>{const amount=Number(form.amount);if(!Number.isFinite(amount)||amount<=0||amount>balance)throw new Error('Nominal harus positif dan tidak melebihi sisa');const {error}=await supabase.rpc('record_payment',{p_order_id:orderId,p_amount:amount,p_date:form.date,p_method:form.method,p_reference:form.reference,p_notes:form.notes});if(error)throw error;},onSuccess:async()=>{await qc.invalidateQueries();setForm({...form,amount:'',reference:'',notes:''});toast.success('Pembayaran dicatat');},onError:(e:Error)=>toast.error(e.message)});
+ const cancel=useMutation({mutationFn:async()=>{if(!voiding||!reason.trim())throw new Error('Alasan wajib');const {error}=await supabase.rpc('void_payment',{p_payment_id:voiding,p_reason:reason.trim()});if(error)throw error;},onSuccess:async()=>{await qc.invalidateQueries();setVoiding(null);setReason('');toast.success('Pembayaran di-void; saldo diperbarui');},onError:(e:Error)=>toast.error(e.message)});
+ if(!can('finance'))return <p className="no-print text-sm text-muted-foreground">Riwayat pembayaran tidak berizin (Finance).</p>;
+ return <section className="no-print mx-auto my-6 max-w-[820px] space-y-4 px-4"><h2 className="text-lg font-semibold">Pembayaran & riwayat</h2>{issued&&balance>0&&<div className="grid gap-3 sm:grid-cols-3"><div><Label htmlFor="payment-amount">Jumlah pembayaran</Label><Input id="payment-amount" type="number" min="0.01" max={balance} step="any" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})}/></div><div><Label htmlFor="payment-date">Tanggal</Label><Input id="payment-date" type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})}/></div><div><Label>Metode</Label><Select value={form.method} onValueChange={v=>setForm({...form,method:v})}><SelectTrigger aria-label="Metode pembayaran"><SelectValue/></SelectTrigger><SelectContent>{['transfer','tunai','kartu','lainnya'].map(v=><SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent></Select></div><Input aria-label="Referensi pembayaran" placeholder="Referensi" value={form.reference} onChange={e=>setForm({...form,reference:e.target.value})}/><Input aria-label="Catatan pembayaran" placeholder="Catatan" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/><Button disabled={save.isPending||!form.amount} onClick={()=>save.mutate()}>{save.isPending?'Mencatat…':'Catat pembayaran'}</Button></div>}
+ {payments.isError?<div role="alert">Riwayat gagal dimuat. <Button variant="outline" onClick={()=>payments.refetch()}>Coba lagi</Button></div>:<Table><TableHeader><TableRow><TableHead>Tanggal</TableHead><TableHead>Nominal</TableHead><TableHead>Metode / Referensi</TableHead><TableHead>Status</TableHead><TableHead>Aksi</TableHead></TableRow></TableHeader><TableBody>{payments.data?.map(p=><TableRow key={p.id}><TableCell>{formatDate(p.payment_date)}</TableCell><TableCell>{formatRupiah(p.amount)}</TableCell><TableCell>{p.method} · {p.reference||'—'}</TableCell><TableCell>{p.voided_at?`Void: ${p.void_reason}`:'Dicatat'}</TableCell><TableCell>{isMaster&&!p.voided_at&&issued&&<Button size="sm" variant="outline" onClick={()=>{setVoiding(p.id);setReason('');}}>Void</Button>}</TableCell></TableRow>)}{!payments.data?.length&&<TableRow><TableCell colSpan={5}>{payments.isPending?'Memuat…':'Belum ada pembayaran.'}</TableCell></TableRow>}</TableBody></Table>}
+ {voiding&&<div className="flex flex-wrap gap-2"><Input aria-label="Alasan void" placeholder="Alasan void wajib" value={reason} onChange={e=>setReason(e.target.value)}/><Button variant="destructive" disabled={!reason.trim()||cancel.isPending} onClick={()=>cancel.mutate()}>Konfirmasi void</Button><Button variant="outline" onClick={()=>setVoiding(null)}>Batal</Button></div>}</section>;
+}

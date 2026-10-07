@@ -60,7 +60,7 @@ function Dashboard() {
         can("finance") ? supabase.from("payables").select("id, vendor, amount, due_date, status, pic") : Promise.resolve({data:[],error:null}),
         can("finance") ? supabase.from("receivables").select("id, client_name, amount, due_date, status, pic") : Promise.resolve({data:[],error:null}),
         can("crm") ? supabase.from("clients").select("id, status") : Promise.resolve({data:[],error:null}),
-        can("workflow") ? supabase.from("tasks").select("id, status, updated_at, due_date") : Promise.resolve({data:[],error:null}),
+        can("workflow") ? supabase.from("tasks").select("id, status, completed_at, due_date") : Promise.resolve({data:[],error:null}),
       ]);
       if (payables.error) throw payables.error;
       if (receivables.error) throw receivables.error;
@@ -90,7 +90,7 @@ function Dashboard() {
 
   const weekAgo = Date.now() - 7 * 86_400_000;
   const doneThisWeek = tasks.filter(
-    (t) => t.status === "Done" && new Date(t.updated_at as string).getTime() >= weekAgo,
+    (t) => t.status === "Done" && new Date(t.completed_at as string).getTime() >= weekAgo,
   ).length;
   const pendingTasks = tasks.filter((t) => t.status !== "Done").length;
 

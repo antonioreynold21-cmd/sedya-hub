@@ -138,7 +138,7 @@ function RootComponent() {
   const isBare =
     BARE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p)) ||
     pathname.endsWith("/invoice") ||
-    pathname.endsWith("/surat-jalan");
+    pathname.endsWith("/surat-jalan") || /^\/penawaran\/[^/]+$/.test(pathname);
 
   if (isBare) {
     return (

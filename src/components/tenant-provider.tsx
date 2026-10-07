@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { setTenantContext } from '@/lib/tenant-client';
 import { Button } from '@/components/ui/button';
 import type { ModuleKey } from '@/lib/access';
-export type TenantSettings = { logo_url?: string | null; primary_color?: string; address?: string; contact?: {wa?: string;ig?: string;email?: string}; bank?: {name?: string;account?: string;holder?: string} };
+export type TenantSettings = { ppn_rate?: number; discount_approval_threshold_pct?: number; doc_numbering?: Record<string,string>; name?: string; logo_url?: string | null; primary_color?: string; address?: string; contact?: {wa?: string;ig?: string;email?: string}; bank?: {name?: string;account?: string;holder?: string} };
 export type Tenant = { id: string; name: string; slug: string; is_demo: boolean; settings: TenantSettings };
 type Access = { user_id: string; tenant_id: string | null; role: 'master'|'staff'; modules: ModuleKey[]; tenants: Tenant[] };
 type Value = { tenantId: string|null; tenant: Tenant | undefined; access?: Access; switching: boolean; switchTenant: (id: string) => Promise<void> };

@@ -36,6 +36,48 @@
       "when": 1791373827964,
       "tag": "0004_tenant_document_sequence_backfill",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791374631915,
+      "tag": "0005_phase2_sales_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791374691573,
+      "tag": "0006_phase2_sales_atomic_rpc",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791374837623,
+      "tag": "0007_phase2_document_protection",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791374903476,
+      "tag": "0008_phase2_legacy_backfill_and_guards",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791375105689,
+      "tag": "0009_phase2_numbering_configuration_and_audit",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791375209472,
+      "tag": "0010_phase2_finance_balance_query_fix",
+      "breakpoints": true
     }
   ]
 }
