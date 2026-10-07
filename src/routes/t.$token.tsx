@@ -14,6 +14,8 @@ import { BRAND_GREEN, COMPANY, SHIPMENT_STATUSES, formatDocDate } from "@/lib/do
 export const Route = createFileRoute("/t/$token")({
   head: () => ({
     meta: [
+      {property:"og:type",content:"website"},
+      {name:"twitter:card",content:"summary_large_image"},
       { title: "Lacak Pengiriman — Sedyain Indonesia" },
       {
         name: "description",
@@ -35,6 +37,8 @@ const stepIcons = [Clock, Boxes, Truck, PackageCheck];
 
 type TrackingItem = { id: string; item_name: string; qty: number; unit: string };
 type Tracking = {
+  tenant_name?: string;
+  brand?: {logo_url?:string;primary_color?:string;contact?:{wa?:string;ig?:string;email?:string}};
   ship_to: string;
   status: string;
   delivery_date: string | null;
@@ -49,7 +53,7 @@ function TrackPage() {
   const qc = useQueryClient();
   const [name, setName] = useState("");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["track", token],
     queryFn: async () => {
       const { data, error } = await supabase.rpc(
@@ -85,15 +89,15 @@ function TrackPage() {
       <div className="mx-auto w-full max-w-md space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-bold" style={{ color: BRAND_GREEN }}>
+            <h1 className="text-lg font-bold" style={{ color: shipment?.brand?.primary_color||BRAND_GREEN }}>
               Lacak Pengiriman
             </h1>
-            <p className="text-xs text-neutral-600">Sedyain Indonesia</p>
+            <p className="text-xs text-neutral-600">{shipment?.tenant_name||"Sedyain Indonesia"}</p>
           </div>
-          <img src={logoAsset.url} alt="Logo Sedyain" className="h-10 w-auto object-contain" />
+          <img src={shipment?.brand?.logo_url||logoAsset.url} alt="Logo Sedyain" className="h-10 w-auto object-contain" />
         </div>
 
-        {isLoading ? (
+        {isError ? <div role="alert"><p>Pengiriman gagal dimuat.</p><Button variant="outline" onClick={()=>refetch()}>Coba lagi</Button></div> : isLoading ? (
           <p className="text-sm text-neutral-600">Memuat data pengiriman…</p>
         ) : !shipment ? (
           <div className="rounded-xl bg-white p-6 text-center shadow-sm">
@@ -106,7 +110,7 @@ function TrackPage() {
           <>
             <div className="rounded-xl bg-white p-5 shadow-sm">
               <p className="text-xs text-neutral-500">Status terkini</p>
-              <p className="text-xl font-bold" style={{ color: BRAND_GREEN }}>
+              <p className="text-xl font-bold" style={{ color: shipment?.brand?.primary_color||BRAND_GREEN }}>
                 {shipment.status}
               </p>
 

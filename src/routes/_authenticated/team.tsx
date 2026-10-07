@@ -1,10 +1,12 @@
+import { useArchive } from "@/components/archive-dialog";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +40,8 @@ import { DIVISIONS } from "@/lib/sedyain";
 export const Route = createFileRoute("/_authenticated/team")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Team Internal — Sedyain Indonesia" },
       {
         name: "description",
@@ -100,22 +104,21 @@ function TeamPage() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["team_members"] });
-      qc.invalidateQueries({ queryKey: ["team-names"] });
+      qc.invalidateQueries();
+      qc.invalidateQueries();
       toast.success("Data tim disimpan");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("team_members").delete().eq("id", id);
-      if (error) throw error;
+      return archive("team_members", id);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["team_members"] });
-      toast.success("Anggota tim dihapus");
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -206,7 +209,7 @@ function TeamPage() {
                         size="icon"
                         variant="ghost"
                         onClick={() => {
-                          if (confirm(`Hapus ${m.name} dari daftar tim?`)) remove.mutate(m.id);
+                          remove.mutate(m.id);
                         }}
                       >
                         <Trash2 className="size-4 text-destructive" />

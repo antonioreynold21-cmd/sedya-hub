@@ -1,0 +1,21 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useMutation,useQueryClient } from '@tanstack/react-query';
+import { useTenantQuery } from '@/hooks/use-tenant-query';
+import { useAccess } from '@/hooks/use-access';
+import { useTenant } from '@/components/tenant-provider';
+import { supabase } from '@/integrations/supabase/client';
+import { PageHeader } from '@/components/page-header';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table,TableHeader,TableHead,TableRow,TableBody,TableCell } from '@/components/ui/table';
+import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogFooter } from '@/components/ui/dialog';
+import { toast } from 'sonner';
+import type { Tables } from '@/integrations/supabase/types';
+export const Route=createFileRoute('/_authenticated/persetujuan')({head:()=>({meta:[{title:'Persetujuan — Sedyain Hub'},{name:'description',content:'Permintaan pengarsipan dan persetujuan Master bisnis.'},{property:'og:title',content:'Persetujuan — Sedyain Hub'},{property:'og:description',content:'Keputusan Master atas permintaan anggota tenant.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:'noindex'}]}),component:ApprovalPage});
+function ApprovalPage(){const {isMaster}=useAccess();const {tenantId}=useTenant();const qc=useQueryClient();const [selected,setSelected]=useState<{row:Tables<'approval_requests'>;approve:boolean}|null>(null);const [reason,setReason]=useState('');
+ const {data:rows=[],isPending}=useTenantQuery({queryKey:['approvals'],enabled:isMaster,queryFn:async()=>{const {data,error}=await supabase.from('approval_requests').select('*').eq('tenant_id',tenantId??'').eq('status','pending').order('created_at');if(error)throw error;return data;}});
+ const decide=useMutation({mutationFn:async()=>{if(!selected)return;const {error}=await supabase.rpc('decide_approval',{p_request_id:selected.row.id,p_approve:selected.approve,p_reason:reason.trim()});if(error)throw error;},onSuccess:()=>{qc.invalidateQueries();toast.success('Keputusan disimpan');setSelected(null);setReason('');},onError:(e:Error)=>toast.error(e.message)});
+ if(!isMaster)return <p>Khusus akun Master.</p>;
+ return <div><PageHeader title="Persetujuan"/><Table><TableHeader><TableRow><TableHead>Jenis</TableHead><TableHead>Data</TableHead><TableHead>Alasan</TableHead><TableHead>Aksi</TableHead></TableRow></TableHeader><TableBody>{rows.map(r=><TableRow key={r.id}><TableCell>{r.type==='delete'?'Arsip':r.type==='discount'?'Diskon':'Pembatalan'}</TableCell><TableCell>{r.entity_type} · {r.entity_id.slice(0,8)}</TableCell><TableCell>{r.reason}</TableCell><TableCell><div className="flex gap-2"><Button onClick={()=>{setSelected({row:r,approve:true});setReason('');}}>Setujui</Button><Button variant="outline" onClick={()=>{setSelected({row:r,approve:false});setReason('');}}>Tolak</Button></div></TableCell></TableRow>)}{!rows.length&&<TableRow><TableCell colSpan={4}>{isPending?'Memuat…':'Tidak ada permintaan pending.'}</TableCell></TableRow>}</TableBody></Table><Dialog open={Boolean(selected)} onOpenChange={v=>{if(!v&&!decide.isPending)setSelected(null);}}><DialogContent><DialogHeader><DialogTitle>{selected?.approve?'Setujui':'Tolak'} permintaan</DialogTitle></DialogHeader><Input aria-label="Alasan keputusan" placeholder="Alasan keputusan wajib" value={reason} onChange={e=>setReason(e.target.value)}/><DialogFooter><Button variant="outline" onClick={()=>setSelected(null)}>Batal</Button><Button disabled={!reason.trim()||decide.isPending} onClick={()=>decide.mutate()}>Simpan keputusan</Button></DialogFooter></DialogContent></Dialog></div>;
+}

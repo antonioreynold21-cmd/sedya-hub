@@ -14,9 +14,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HargaRouteImport } from './routes/harga'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAksesRouteImport } from './routes/_authenticated/akses'
+import { Route as AuthenticatedArsipRouteImport } from './routes/_authenticated/arsip'
 import { Route as AuthenticatedClientRouteImport } from './routes/_authenticated/client'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated/crm'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
+import { Route as AuthenticatedPersetujuanRouteImport } from './routes/_authenticated/persetujuan'
 import { Route as AuthenticatedPricelistRouteImport } from './routes/_authenticated/pricelist'
 import { Route as AuthenticatedShipmentsRouteImport } from './routes/_authenticated/shipments'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
@@ -50,6 +52,11 @@ const AuthenticatedAksesRoute = AuthenticatedAksesRouteImport.update({
   path: '/akses',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedArsipRoute = AuthenticatedArsipRouteImport.update({
+  id: '/arsip',
+  path: '/arsip',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedClientRoute = AuthenticatedClientRouteImport.update({
   id: '/client',
   path: '/client',
@@ -65,6 +72,12 @@ const AuthenticatedFinanceRoute = AuthenticatedFinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPersetujuanRoute =
+  AuthenticatedPersetujuanRouteImport.update({
+    id: '/persetujuan',
+    path: '/persetujuan',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPricelistRoute = AuthenticatedPricelistRouteImport.update({
   id: '/pricelist',
   path: '/pricelist',
@@ -114,9 +127,11 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
   '/akses': typeof AuthenticatedAksesRoute
+  '/arsip': typeof AuthenticatedArsipRoute
   '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
+  '/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
   '/shipments': typeof AuthenticatedShipmentsRoute
   '/team': typeof AuthenticatedTeamRoute
@@ -130,9 +145,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
   '/akses': typeof AuthenticatedAksesRoute
+  '/arsip': typeof AuthenticatedArsipRoute
   '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
+  '/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
   '/shipments': typeof AuthenticatedShipmentsRoute
   '/team': typeof AuthenticatedTeamRoute
@@ -149,9 +166,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/harga': typeof HargaRoute
   '/_authenticated/akses': typeof AuthenticatedAksesRoute
+  '/_authenticated/arsip': typeof AuthenticatedArsipRoute
   '/_authenticated/client': typeof AuthenticatedClientRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
+  '/_authenticated/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/_authenticated/pricelist': typeof AuthenticatedPricelistRoute
   '/_authenticated/shipments': typeof AuthenticatedShipmentsRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
@@ -169,9 +188,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/harga'
     | '/akses'
+    | '/arsip'
     | '/client'
     | '/crm'
     | '/finance'
+    | '/persetujuan'
     | '/pricelist'
     | '/shipments'
     | '/team'
@@ -185,9 +206,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/harga'
     | '/akses'
+    | '/arsip'
     | '/client'
     | '/crm'
     | '/finance'
+    | '/persetujuan'
     | '/pricelist'
     | '/shipments'
     | '/team'
@@ -203,9 +226,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/harga'
     | '/_authenticated/akses'
+    | '/_authenticated/arsip'
     | '/_authenticated/client'
     | '/_authenticated/crm'
     | '/_authenticated/finance'
+    | '/_authenticated/persetujuan'
     | '/_authenticated/pricelist'
     | '/_authenticated/shipments'
     | '/_authenticated/team'
@@ -261,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAksesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/arsip': {
+      id: '/_authenticated/arsip'
+      path: '/arsip'
+      fullPath: '/arsip'
+      preLoaderRoute: typeof AuthenticatedArsipRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/client': {
       id: '/_authenticated/client'
       path: '/client'
@@ -280,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/finance'
       fullPath: '/finance'
       preLoaderRoute: typeof AuthenticatedFinanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/persetujuan': {
+      id: '/_authenticated/persetujuan'
+      path: '/persetujuan'
+      fullPath: '/persetujuan'
+      preLoaderRoute: typeof AuthenticatedPersetujuanRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/pricelist': {
@@ -343,9 +382,11 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAksesRoute: typeof AuthenticatedAksesRoute
+  AuthenticatedArsipRoute: typeof AuthenticatedArsipRoute
   AuthenticatedClientRoute: typeof AuthenticatedClientRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
+  AuthenticatedPersetujuanRoute: typeof AuthenticatedPersetujuanRoute
   AuthenticatedPricelistRoute: typeof AuthenticatedPricelistRoute
   AuthenticatedShipmentsRoute: typeof AuthenticatedShipmentsRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
@@ -358,9 +399,11 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAksesRoute: AuthenticatedAksesRoute,
+  AuthenticatedArsipRoute: AuthenticatedArsipRoute,
   AuthenticatedClientRoute: AuthenticatedClientRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
+  AuthenticatedPersetujuanRoute: AuthenticatedPersetujuanRoute,
   AuthenticatedPricelistRoute: AuthenticatedPricelistRoute,
   AuthenticatedShipmentsRoute: AuthenticatedShipmentsRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,

@@ -14,6 +14,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "@/components/app-sidebar";
+import { TenantProvider, useTenant } from "@/components/tenant-provider";
+import { ArchiveProvider } from "@/components/archive-dialog";
 import { ModuleGate } from "@/components/module-gate";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -61,6 +63,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
+              router.options.context.queryClient.resetQueries();
               router.invalidate();
               reset();
             }}
@@ -131,6 +134,7 @@ const BARE_PREFIXES = ["/t/", "/harga", "/auth"];
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const isPublic = BARE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p));
   const isBare =
     BARE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p)) ||
     pathname.endsWith("/invoice") ||
@@ -139,7 +143,7 @@ function RootComponent() {
   if (isBare) {
     return (
       <QueryClientProvider client={queryClient}>
-        <Outlet />
+        {isPublic ? <Outlet /> : <TenantProvider><ArchiveProvider><ModuleGate pathname={pathname}><Outlet /></ModuleGate></ArchiveProvider></TenantProvider>}
         <Toaster position="top-right" richColors />
       </QueryClientProvider>
     );
@@ -147,13 +151,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider>
+      <TenantProvider><ArchiveProvider><SidebarProvider>
         <div className="flex min-h-screen w-full bg-background">
           <AppSidebar />
           <div className="flex min-w-0 flex-1 flex-col">
             <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-card/90 px-4 backdrop-blur">
               <SidebarTrigger />
-              <span className="text-sm font-semibold text-primary">Sedyain Indonesia</span>
+              <TenantName />
               <span className="hidden text-xs text-muted-foreground sm:inline">
                 Supplier Bahan Baku HORECA
               </span>
@@ -178,9 +182,11 @@ function RootComponent() {
 
           </div>
         </div>
-      </SidebarProvider>
+      </SidebarProvider></ArchiveProvider></TenantProvider>
       <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );
 }
 
+
+function TenantName() {const {tenant}=useTenant();return <span className="text-sm font-semibold text-primary">{tenant?.name}</span>;}

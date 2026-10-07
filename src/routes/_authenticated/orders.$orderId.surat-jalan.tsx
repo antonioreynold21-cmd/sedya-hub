@@ -1,8 +1,9 @@
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+
 import { ArrowLeft, Printer } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { Button } from "@/components/ui/button";
 import { BrandRibbon, ContactBlock, DocHeader, DocSheet } from "@/components/doc-shell";
 import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
@@ -10,6 +11,8 @@ import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
 export const Route = createFileRoute("/_authenticated/orders/$orderId/surat-jalan")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Surat Jalan — Sedyain Indonesia" },
       {
         name: "description",
@@ -39,7 +42,7 @@ function SignatureBox({ label, name }: { label: string; name: string | null | un
 function SuratJalanPage() {
   const { orderId } = Route.useParams();
 
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["surat-jalan", orderId],
     queryFn: async () => {
       const [order, items, shipment] = await Promise.all([
@@ -64,6 +67,7 @@ function SuratJalanPage() {
   const items = data?.items ?? [];
   const shipment = data?.shipment;
 
+  if(isPending)return <p className="p-6 text-sm text-muted-foreground">Memuat dokumen…</p>;
   return (
     <div className="min-h-screen bg-neutral-100 py-6 print:bg-white print:py-0">
       <div className="no-print mx-auto mb-4 flex max-w-[820px] items-center justify-between px-4">

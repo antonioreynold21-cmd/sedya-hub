@@ -1,5 +1,7 @@
+import { useAccess } from "@/hooks/use-access";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -8,7 +10,7 @@ import {
   UserPlus,
 } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,6 +25,8 @@ import {
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Dashboard Internal — Sedyain Indonesia" },
       {
         name: "description",
@@ -48,14 +52,15 @@ type DueRow = {
 };
 
 function Dashboard() {
-  const { data } = useQuery({
+  const { can } = useAccess();
+  const { data, isPending } = useQuery({
     queryKey: ["dashboard"],
     queryFn: async () => {
       const [payables, receivables, clients, tasks] = await Promise.all([
-        supabase.from("payables").select("id, vendor, amount, due_date, status, pic"),
-        supabase.from("receivables").select("id, client_name, amount, due_date, status, pic"),
-        supabase.from("clients").select("id, status"),
-        supabase.from("tasks").select("id, status, updated_at, due_date"),
+        can("finance") ? supabase.from("payables").select("id, vendor, amount, due_date, status, pic") : Promise.resolve({data:[],error:null}),
+        can("finance") ? supabase.from("receivables").select("id, client_name, amount, due_date, status, pic") : Promise.resolve({data:[],error:null}),
+        can("crm") ? supabase.from("clients").select("id, status") : Promise.resolve({data:[],error:null}),
+        can("workflow") ? supabase.from("tasks").select("id, status, updated_at, due_date") : Promise.resolve({data:[],error:null}),
       ]);
       if (payables.error) throw payables.error;
       if (receivables.error) throw receivables.error;
@@ -113,31 +118,31 @@ function Dashboard() {
 
   const kpis = [
     {
-      label: "Utang Belum Bayar",
+      label: "Utang Belum Bayar", allowed:can("finance"),
       value: formatCompactRupiah(totalUnpaid),
       sub: `${unpaid.length} invoice vendor`,
       icon: ArrowUpRight,
     },
     {
-      label: "Piutang Belum Tertagih",
+      label: "Piutang Belum Tertagih", allowed:can("finance"),
       value: formatCompactRupiah(totalUncollected),
       sub: `${uncollected.length} invoice client`,
       icon: ArrowDownRight,
     },
     {
-      label: "Lead Aktif",
+      label: "Lead Aktif", allowed:can("crm"),
       value: String(activeLeads),
       sub: "Lead Baru / Follow Up / Negosiasi",
       icon: UserPlus,
     },
     {
-      label: "Task Selesai (7 hari)",
+      label: "Task Selesai (7 hari)", allowed:can("workflow"),
       value: String(doneThisWeek),
       sub: "Kolom Done minggu ini",
       icon: CheckCircle2,
     },
     {
-      label: "Task Tertunda",
+      label: "Task Tertunda", allowed:can("workflow"),
       value: String(pendingTasks),
       sub: "Belum masuk kolom Done",
       icon: Clock,
@@ -162,13 +167,13 @@ function Dashboard() {
                 <k.icon className="size-4" />
               </span>
             </div>
-            <p className="mt-3 text-2xl font-bold text-primary">{k.value}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{k.sub}</p>
+            <p className="mt-3 text-2xl font-bold text-primary">{!k.allowed ? "Tidak berizin" : isPending ? "Memuat…" : k.value}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{k.allowed ? k.sub : "Akses modul diperlukan"}</p>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      {can('finance') ? <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <DueList
           title="Top 5 Utang Segera Jatuh Tempo"
           rows={topPayables}
@@ -181,7 +186,7 @@ function Dashboard() {
           partyLabel="Client"
           to="/finance"
         />
-      </div>
+      </div> : <p className="mt-6 text-sm text-muted-foreground">Ringkasan jatuh tempo: tidak berizin.</p>}
     </div>
   );
 }

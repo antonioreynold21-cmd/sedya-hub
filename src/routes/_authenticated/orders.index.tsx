@@ -1,10 +1,12 @@
+import { useArchive } from "@/components/archive-dialog";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FileText, Plus, Trash2, Truck, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,11 +28,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatRupiah, formatDate } from "@/lib/sedyain";
-import { buildInvoiceNumber, docTotal, nextInvoiceSeq } from "@/lib/docs";
+import { docTotal } from "@/lib/docs";
 
 export const Route = createFileRoute("/_authenticated/orders/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Order & Dokumen — Sedyain Indonesia" },
       {
         name: "description",
@@ -60,7 +64,8 @@ type Order = {
   created_by: string | null;
 };
 
-type ItemRow = { item_name: string; qty: string; unit: string; price: string };
+type ItemRow = {
+  id?: string; item_name: string; qty: string; unit: string; price: string };
 
 const emptyItem: ItemRow = { item_name: "", qty: "1", unit: "kg", price: "0" };
 const emptyForm = {
@@ -123,17 +128,14 @@ function OrdersPage() {
 
   // Auto-suggest nomor invoice untuk order baru (tetap bisa diedit manual)
   const [invoiceTouched, setInvoiceTouched] = useState(false);
-  const nextSeq = nextInvoiceSeq(orders.map((o) => o.invoice_number));
-
   useEffect(() => {
-    if (!open || editId || invoiceTouched) return;
-    if (!form.client_name.trim() || !form.invoice_date) return;
-    const suggested = buildInvoiceNumber(nextSeq, form.client_name, form.invoice_date);
-    if (suggested !== form.invoice_number) {
-      setForm((f) => ({ ...f, invoice_number: suggested }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, editId, invoiceTouched, form.client_name, form.invoice_date, nextSeq]);
+    if (!open || editId || invoiceTouched || !form.client_name.trim() || !form.invoice_date) return;
+    let cancelled=false;
+    supabase.rpc('suggest_invoice_number',{p_client_name:form.client_name,p_invoice_date:form.invoice_date}).then(({data,error})=>{
+      if(!cancelled&&!error&&data) setForm(f=>({...f,invoice_number:data}));
+    });
+    return ()=>{cancelled=true;};
+  }, [open, editId, invoiceTouched, form.client_name, form.invoice_date]);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -148,77 +150,41 @@ function OrdersPage() {
         notes: form.notes || null,
         created_by: form.created_by || null,
       };
-      let orderId = editId;
-      if (editId) {
-        const { error } = await supabase.from("orders").update(payload).eq("id", editId);
-        if (error) throw error;
-        const { error: delErr } = await supabase.from("order_items").delete().eq("order_id", editId);
-        if (delErr) throw delErr;
-      } else {
-        const { data, error } = await supabase.from("orders").insert(payload).select("id").single();
-        if (error) throw error;
-        orderId = data.id;
-      }
-      const rows = items
-        .filter((i) => i.item_name.trim())
-        .map((i, idx) => ({
-          order_id: orderId!,
-          position: idx + 1,
-          item_name: i.item_name.trim(),
-          qty: Number(i.qty) || 0,
-          unit: i.unit || "pcs",
-          price: Number(i.price) || 0,
-        }));
-      if (rows.length) {
-        const { error } = await supabase.from("order_items").insert(rows);
-        if (error) throw error;
-      }
+      const rows = items.map(i=>({id:i.id,item_name:i.item_name.trim(),qty:Number(i.qty),unit:i.unit||'pcs',price:Number(i.price)}));
+      if(rows.some(i=>!i.item_name||!Number.isFinite(i.qty)||i.qty<=0||!Number.isFinite(i.price)||i.price<0)) throw new Error('Nama item, qty positif dan harga valid wajib');
+      const {error}=await supabase.rpc('save_order_atomic',{p_order_id:editId as string,p_order:{...payload,invoice_number:invoiceTouched?payload.invoice_number:null},p_items:rows});
+      if(error)throw error;
     },
     onSuccess: () => {
       toast.success(editId ? "Order diperbarui" : "Order dibuat");
       setOpen(false);
-      qc.invalidateQueries({ queryKey: ["orders"] });
-      qc.invalidateQueries({ queryKey: ["order-items-all"] });
+      qc.invalidateQueries();
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("orders").delete().eq("id", id);
-      if (error) throw error;
+      return archive("orders", id);
     },
     onSuccess: () => {
-      toast.success("Order dihapus");
-      qc.invalidateQueries({ queryKey: ["orders"] });
-      qc.invalidateQueries({ queryKey: ["order-items-all"] });
+      qc.invalidateQueries();
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   const createShipment = useMutation({
     mutationFn: async (order: Order) => {
-      const { data, error } = await supabase
-        .from("shipments")
-        .insert({
-          order_id: order.id,
-          ship_to: order.client_name,
-          section: order.section,
-          do_number: order.invoice_number
-            ? order.invoice_number.replace("/INV/", "/DO/")
-            : null,
-          delivery_date: new Date().toISOString().slice(0, 10),
-          stored_by: order.created_by,
-          delivery_by: order.created_by,
-        })
-        .select("id")
-        .single();
-      if (error) throw error;
+      const {data,error}=await supabase.rpc('create_shipment_atomic',{p_order_id:order.id});
+      if(error)throw error;
       return data;
     },
     onSuccess: () => {
       toast.success("Pengiriman dibuat — atur status di menu Pengiriman");
-      qc.invalidateQueries({ queryKey: ["shipments"] });
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -237,13 +203,15 @@ function OrdersPage() {
       notes: order.notes ?? "",
       created_by: order.created_by ?? "",
     });
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("order_items")
       .select("*")
       .eq("order_id", order.id)
       .order("position");
+    if(error){toast.error("Gagal memuat item order");return;}
     setItems(
       (data ?? []).map((i) => ({
+        id: i.id,
         item_name: i.item_name,
         qty: String(i.qty),
         unit: i.unit,
@@ -483,7 +451,10 @@ function OrdersPage() {
                     className="col-span-1"
                     size="icon"
                     variant="ghost"
-                    onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                    onClick={async () => {
+                       if(it.id){const result=await archive('order_items',it.id);if(result!=='archived')return;}
+                       setItems(items.filter((_,i)=>i!==idx));
+                     }}
                   >
                     <Trash2 className="size-4 text-destructive" />
                   </Button>

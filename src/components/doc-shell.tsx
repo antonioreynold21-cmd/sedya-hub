@@ -1,3 +1,4 @@
+import { useTenant } from "@/components/tenant-provider";
 import type { ReactNode } from "react";
 
 import logoAsset from "@/assets/sedyain_logo.png.asset.json";
@@ -25,22 +26,21 @@ export function BrandRibbon() {
 }
 
 export function DocHeader({ title }: { title: string }) {
+  const {tenant}=useTenant();
   return (
     <div className="flex items-start justify-between gap-6">
       <div className="min-w-0">
         <h1
           className="text-3xl font-extrabold uppercase tracking-wide"
-          style={{ color: BRAND_GREEN }}
+          style={{ color: "var(--primary)" }}
         >
           {title}
         </h1>
         <p className="mt-2 max-w-md text-[11px] leading-snug text-neutral-700">
-          {COMPANY.addressLine1}
-          <br />
-          {COMPANY.addressLine2}
+          {tenant?.settings.address||`${COMPANY.addressLine1} ${COMPANY.addressLine2}`}
         </p>
       </div>
-      <img src={logoAsset.url} alt="Logo Sedyain" className="h-16 w-auto shrink-0 object-contain" />
+      <img src={tenant?.settings.logo_url||logoAsset.url} alt="Logo Sedyain" className="h-16 w-auto shrink-0 object-contain" />
     </div>
   );
 }
@@ -63,27 +63,29 @@ export function DocField({
 }
 
 export function ContactBlock() {
+  const {tenant}=useTenant();
   return (
     <div className="text-[11px] leading-relaxed">
-      <p className="font-bold" style={{ color: BRAND_GREEN }}>
+      <p className="font-bold" style={{ color: "var(--primary)" }}>
         Contact Us:
       </p>
-      <p>WA : {COMPANY.contact.wa}</p>
-      <p>IG : {COMPANY.contact.ig}</p>
-      <p>Email : {COMPANY.contact.email}</p>
+      <p>WA : {tenant?.settings.contact?.wa||COMPANY.contact.wa}</p>
+      <p>IG : {tenant?.settings.contact?.ig||COMPANY.contact.ig}</p>
+      <p>Email : {tenant?.settings.contact?.email||COMPANY.contact.email}</p>
     </div>
   );
 }
 
 export function BankBlock() {
+  const {tenant}=useTenant();
   return (
     <div className="text-[11px] leading-relaxed">
-      <p className="font-bold" style={{ color: BRAND_GREEN }}>
+      <p className="font-bold" style={{ color: "var(--primary)" }}>
         Pembayaran transfer ke:
       </p>
-      <p className="font-bold">{COMPANY.bank.name}</p>
-      <p>{COMPANY.bank.account}</p>
-      <p>{COMPANY.bank.holder}</p>
+      <p className="font-bold">{tenant?.settings.bank?.name||COMPANY.bank.name}</p>
+      <p>{tenant?.settings.bank?.account||COMPANY.bank.account}</p>
+      <p>{tenant?.settings.bank?.holder||COMPANY.bank.holder}</p>
     </div>
   );
 }

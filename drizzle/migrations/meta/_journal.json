@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791373278735,
+      "tag": "0000_tenant_foundation_expand_backfill",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791373340019,
+      "tag": "0001_tenant_security_workflows",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791373445204,
+      "tag": "0002_atomic_orders_and_tenant_enforce",
+      "breakpoints": true
+    }
+  ]
+}
