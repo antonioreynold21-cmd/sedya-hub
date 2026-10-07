@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
@@ -8,6 +9,8 @@ import { BRAND_GREEN, COMPANY, formatDocMoney } from "@/lib/docs";
 export const Route = createFileRoute("/harga")({
   head: () => ({
     meta: [
+      {property:"og:type",content:"website"},
+      {name:"twitter:card",content:"summary_large_image"},
       { title: "Pricelist Harian Sedyain Indonesia" },
       {
         name: "description",
@@ -25,21 +28,16 @@ export const Route = createFileRoute("/harga")({
 });
 
 function PublicPricelist() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["public-pricelist"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("pricelist_items")
-        .select("id, name, category, unit, price, updated_at")
-        .eq("is_active", true)
-        .order("category")
-        .order("name");
-      if (error) throw error;
-      return data;
+      const {data,error}=await supabase.rpc('get_public_pricelist');
+      if(error)throw error;
+      return data as unknown as { name:string; settings:{logo_url?:string;primary_color?:string;contact?:{wa?:string;ig?:string;email?:string}}; items:{id:string;name:string;category:string;unit:string;price:number;updated_at:string}[] } | null;
     },
   });
 
-  const items = data ?? [];
+  const items = data?.items ?? [];
   const lastUpdate = items.reduce<string | null>(
     (max, i) => (!max || i.updated_at > max ? i.updated_at : max),
     null,
@@ -51,12 +49,12 @@ function PublicPricelist() {
       <div className="mx-auto w-full max-w-lg space-y-6">
         <header className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-bold" style={{ color: BRAND_GREEN }}>
+            <h1 className="text-lg font-bold" style={{ color: data?.settings.primary_color||BRAND_GREEN }}>
               Pricelist Harian
             </h1>
-            <p className="text-xs text-neutral-600">Sedyain Indonesia · Supplier HORECA</p>
+            <p className="text-xs text-neutral-600">{data?.name||"Sedyain Indonesia"} · Supplier HORECA</p>
           </div>
-          <img src={logoAsset.url} alt="Logo Sedyain" className="h-10 w-auto object-contain" />
+          <img src={data?.settings.logo_url||logoAsset.url} alt="Logo Sedyain" className="h-10 w-auto object-contain" />
         </header>
 
         <p className="text-xs text-neutral-500">
@@ -74,14 +72,14 @@ function PublicPricelist() {
           </span>
         </p>
 
-        {isLoading ? (
+        {isError ? <div role="alert"><p>Harga gagal dimuat.</p><Button variant="outline" onClick={()=>refetch()}>Coba lagi</Button></div> : isLoading ? (
           <p className="text-sm text-neutral-600">Memuat harga…</p>
         ) : items.length === 0 ? (
           <p className="text-sm text-neutral-600">Belum ada harga yang dipublikasikan.</p>
         ) : (
           groups.map((cat) => (
             <section key={cat} className="rounded-xl bg-white p-4 shadow-sm">
-              <h2 className="text-sm font-bold" style={{ color: BRAND_GREEN }}>
+              <h2 className="text-sm font-bold" style={{ color: data?.settings.primary_color||BRAND_GREEN }}>
                 {cat}
               </h2>
               <ul className="mt-2 divide-y divide-neutral-200">
@@ -102,7 +100,7 @@ function PublicPricelist() {
         )}
 
         <p className="pb-4 text-center text-xs text-neutral-500">
-          Pesan sekarang: WA {COMPANY.contact.wa} · {COMPANY.contact.ig} · {COMPANY.contact.email}
+          Pesan sekarang: WA {data?.settings.contact?.wa||COMPANY.contact.wa} · {data?.settings.contact?.ig||COMPANY.contact.ig} · {data?.settings.contact?.email||COMPANY.contact.email}
         </p>
       </div>
     </div>

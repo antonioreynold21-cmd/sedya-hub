@@ -1,8 +1,10 @@
+import { useAccess } from "@/hooks/use-access";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+
 import { ArrowLeft, Printer } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { Button } from "@/components/ui/button";
 import { BrandRibbon, ContactBlock, DocHeader, DocSheet } from "@/components/doc-shell";
 import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
@@ -10,6 +12,8 @@ import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
 export const Route = createFileRoute("/_authenticated/orders/$orderId/surat-jalan")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Surat Jalan — Sedyain Indonesia" },
       {
         name: "description",
@@ -38,20 +42,21 @@ function SignatureBox({ label, name }: { label: string; name: string | null | un
 
 function SuratJalanPage() {
   const { orderId } = Route.useParams();
+  const {can}=useAccess();
 
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["surat-jalan", orderId],
     queryFn: async () => {
       const [order, items, shipment] = await Promise.all([
         supabase.from("orders").select("*").eq("id", orderId).single(),
         supabase.from("order_items").select("*").eq("order_id", orderId).order("position"),
-        supabase
+        can('shipments') ? supabase
           .from("shipments")
           .select("*")
           .eq("order_id", orderId)
           .order("created_at", { ascending: false })
           .limit(1)
-          .maybeSingle(),
+          .maybeSingle() : Promise.resolve({data:null,error:null}),
       ]);
       if (order.error) throw order.error;
       if (items.error) throw items.error;
@@ -60,10 +65,12 @@ function SuratJalanPage() {
     },
   });
 
+  if (!can('shipments')) return <p role="alert" className="p-6">Data Surat Jalan tidak berizin: akses modul Pengiriman diperlukan.</p>;
   const order = data?.order;
   const items = data?.items ?? [];
   const shipment = data?.shipment;
 
+  if(isPending)return <p className="p-6 text-sm text-muted-foreground">Memuat dokumen…</p>;
   return (
     <div className="min-h-screen bg-neutral-100 py-6 print:bg-white print:py-0">
       <div className="no-print mx-auto mb-4 flex max-w-[820px] items-center justify-between px-4">

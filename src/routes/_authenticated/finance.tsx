@@ -1,10 +1,13 @@
+import { useAccess } from "@/hooks/use-access";
+import { useArchive } from "@/components/archive-dialog";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +53,8 @@ import {
 export const Route = createFileRoute("/_authenticated/finance")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Finance — Utang, Piutang & Kas Sedyain Indonesia" },
       {
         name: "description",
@@ -115,7 +120,7 @@ const statusBadge: Record<string, string> = {
 
 function useTeamNames() {
   return useQuery({
-    queryKey: ["team-names"],
+    queryKey: ["team-names"], enabled:useAccess().can("team"),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_members")
@@ -239,21 +244,20 @@ function PayablesTab() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["payables"] });
+      qc.invalidateQueries();
       toast.success("Data utang disimpan");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("payables").delete().eq("id", id);
-      if (error) throw error;
+      return archive("payables", id);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["payables"] });
-      toast.success("Data utang dihapus");
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -350,7 +354,7 @@ function PayablesTab() {
                           size="icon"
                           variant="ghost"
                           onClick={() => {
-                            if (confirm(`Hapus utang ${r.vendor}?`)) remove.mutate(r.id);
+                            remove.mutate(r.id);
                           }}
                         >
                           <Trash2 className="size-4 text-destructive" />
@@ -427,21 +431,20 @@ function ReceivablesTab() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["receivables"] });
+      qc.invalidateQueries();
       toast.success("Data piutang disimpan");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("receivables").delete().eq("id", id);
-      if (error) throw error;
+      return archive("receivables", id);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["receivables"] });
-      toast.success("Data piutang dihapus");
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -538,7 +541,7 @@ function ReceivablesTab() {
                           size="icon"
                           variant="ghost"
                           onClick={() => {
-                            if (confirm(`Hapus piutang ${r.client_name}?`)) remove.mutate(r.id);
+                            remove.mutate(r.id);
                           }}
                         >
                           <Trash2 className="size-4 text-destructive" />
@@ -748,21 +751,20 @@ function CashRequestsTab() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["cash_requests"] });
+      qc.invalidateQueries();
       toast.success("Request kas disimpan");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("cash_requests").delete().eq("id", id);
-      if (error) throw error;
+      return archive("cash_requests", id);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["cash_requests"] });
-      toast.success("Request kas dihapus");
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -849,7 +851,7 @@ function CashRequestsTab() {
                         size="icon"
                         variant="ghost"
                         onClick={() => {
-                          if (confirm("Hapus request ini?")) remove.mutate(r.id);
+                          remove.mutate(r.id);
                         }}
                       >
                         <Trash2 className="size-4 text-destructive" />
@@ -1004,21 +1006,20 @@ function ExpensesTab() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["expenses"] });
+      qc.invalidateQueries();
       toast.success("Pengeluaran disimpan");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("expenses").delete().eq("id", id);
-      if (error) throw error;
+      return archive("expenses", id);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Pengeluaran dihapus");
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -1119,7 +1120,7 @@ function ExpensesTab() {
                         size="icon"
                         variant="ghost"
                         onClick={() => {
-                          if (confirm("Hapus pengeluaran ini?")) remove.mutate(r.id);
+                          remove.mutate(r.id);
                         }}
                       >
                         <Trash2 className="size-4 text-destructive" />

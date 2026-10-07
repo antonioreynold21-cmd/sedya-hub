@@ -12,7 +12,7 @@ export const MODULES = [
 export type ModuleKey = (typeof MODULES)[number]["key"];
 
 /** Modul yang selalu boleh dibuka semua akun terdaftar. */
-export const ALWAYS_ALLOWED: ModuleKey[] = ["dashboard"];
+export const ALWAYS_ALLOWED: ModuleKey[] = [];
 
 /** Petakan pathname internal ke modul yang mengaturnya. */
 export function moduleForPath(pathname: string): ModuleKey | null {

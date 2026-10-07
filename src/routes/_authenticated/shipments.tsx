@@ -1,9 +1,10 @@
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Copy, ExternalLink, FileText } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,8 @@ import { formatDate } from "@/lib/sedyain";
 export const Route = createFileRoute("/_authenticated/shipments")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Pengiriman — Sedyain Indonesia" },
       {
         name: "description",
@@ -79,7 +82,7 @@ function ShipmentsPage() {
     },
     onSuccess: () => {
       toast.success("Status pengiriman diperbarui");
-      qc.invalidateQueries({ queryKey: ["shipments-full"] });
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });

@@ -1,10 +1,12 @@
+import { useArchive } from "@/components/archive-dialog";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ExternalLink, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +24,8 @@ import { formatRupiah } from "@/lib/sedyain";
 export const Route = createFileRoute("/_authenticated/pricelist")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Pricelist Harian — Sedyain Indonesia" },
       {
         name: "description",
@@ -66,7 +70,7 @@ function PricelistPage() {
     },
   });
 
-  const invalidate = () => qc.invalidateQueries({ queryKey: ["pricelist"] });
+  const invalidate = () => qc.invalidateQueries();
 
   const addItem = useMutation({
     mutationFn: async () => {
@@ -95,13 +99,12 @@ function PricelistPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const removeItem = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("pricelist_items").delete().eq("id", id);
-      if (error) throw error;
+      return archive("pricelist_items", id);
     },
     onSuccess: () => {
-      toast.success("Item dihapus");
       invalidate();
     },
     onError: (e: Error) => toast.error(e.message),

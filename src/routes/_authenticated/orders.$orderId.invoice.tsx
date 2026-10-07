@@ -1,8 +1,9 @@
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+
 import { Printer, ArrowLeft } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { Button } from "@/components/ui/button";
 import {
   BankBlock,
@@ -16,6 +17,8 @@ import { docTotal, formatDocDate, formatDocMoney, itemAmount } from "@/lib/docs"
 export const Route = createFileRoute("/_authenticated/orders/$orderId/invoice")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Invoice — Sedyain Indonesia" },
       {
         name: "description",
@@ -31,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/orders/$orderId/invoice")(
 function InvoicePage() {
   const { orderId } = Route.useParams();
 
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["order-doc", orderId],
     queryFn: async () => {
       const [order, items] = await Promise.all([
@@ -48,6 +51,7 @@ function InvoicePage() {
   const items = data?.items ?? [];
   const total = docTotal(items.map((i) => ({ qty: Number(i.qty), price: Number(i.price) })));
 
+  if(isPending)return <p className="p-6 text-sm text-muted-foreground">Memuat dokumen…</p>;
   return (
     <div className="min-h-screen bg-neutral-100 py-6 print:bg-white print:py-0">
       <div className="no-print mx-auto mb-4 flex max-w-[820px] items-center justify-between px-4">

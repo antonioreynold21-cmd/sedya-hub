@@ -1,10 +1,13 @@
+import { useAccess } from "@/hooks/use-access";
+import { useArchive } from "@/components/archive-dialog";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +41,8 @@ import { CLIENT_STATUSES } from "@/lib/sedyain";
 export const Route = createFileRoute("/_authenticated/crm")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "CRM Client & Lead — Sedyain Indonesia" },
       {
         name: "description",
@@ -101,7 +106,7 @@ function CrmPage() {
   });
 
   const { data: team = [] } = useQuery({
-    queryKey: ["team-names"],
+    queryKey: ["team-names"], enabled:useAccess().can("team"),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_members")
@@ -132,21 +137,20 @@ function CrmPage() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["clients"] });
+      qc.invalidateQueries();
       toast.success(editId ? "Data client diperbarui" : "Client baru ditambahkan");
       setOpen(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("clients").delete().eq("id", id);
-      if (error) throw error;
+      return archive("clients", id);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["clients"] });
-      toast.success("Client dihapus");
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -248,7 +252,7 @@ function CrmPage() {
                         size="icon"
                         variant="ghost"
                         onClick={() => {
-                          if (confirm(`Hapus client ${c.name}?`)) remove.mutate(c.id);
+                          remove.mutate(c.id);
                         }}
                       >
                         <Trash2 className="size-4 text-destructive" />

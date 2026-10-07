@@ -1,10 +1,13 @@
+import { useAccess } from "@/hooks/use-access";
+import { useArchive } from "@/components/archive-dialog";
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +32,8 @@ import { DIVISIONS, PRIORITIES, TASK_STATUSES, formatDate, daysUntil } from "@/l
 export const Route = createFileRoute("/_authenticated/workflow")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Workflow Tim — Papan Kanban Sedyain Indonesia" },
       {
         name: "description",
@@ -92,7 +97,7 @@ function WorkflowPage() {
   });
 
   const { data: team = [] } = useQuery({
-    queryKey: ["team-names"],
+    queryKey: ["team-names"], enabled:useAccess().can("team"),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_members")
@@ -123,7 +128,7 @@ function WorkflowPage() {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["tasks"] });
+      qc.invalidateQueries();
       toast.success("Task disimpan");
       setOpen(false);
     },
@@ -135,18 +140,17 @@ function WorkflowPage() {
       const { error } = await supabase.from("tasks").update({ status }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
+    onSuccess: () => qc.invalidateQueries(),
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const archive = useArchive();
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("tasks").delete().eq("id", id);
-      if (error) throw error;
+      return archive("tasks", id);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["tasks"] });
-      toast.success("Task dihapus");
+      qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -280,7 +284,7 @@ function WorkflowPage() {
                             variant="ghost"
                             className="size-7"
                             onClick={() => {
-                              if (confirm("Hapus task ini?")) remove.mutate(t.id);
+                              remove.mutate(t.id);
                             }}
                           >
                             <Trash2 className="size-3.5 text-destructive" />

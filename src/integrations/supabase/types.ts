@@ -14,166 +14,375 @@ export type Database = {
   }
   public: {
     Tables: {
+      approval_requests: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_reason: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          payload: Json
+          reason: string
+          requested_by: string
+          status: string
+          tenant_id: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_reason?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          payload?: Json
+          reason: string
+          requested_by: string
+          status?: string
+          tenant_id: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_reason?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          payload?: Json
+          reason?: string
+          requested_by?: string
+          status?: string
+          tenant_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_requests_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          diff: Json
+          entity_id: string
+          entity_type: string
+          id: string
+          tenant_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          diff: Json
+          entity_id: string
+          entity_type: string
+          id?: string
+          tenant_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          diff?: Json
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cash_requests: {
         Row: {
           amount: number
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           notes: string | null
           pic: string | null
           purpose: string
           request_date: string
           status: string
+          tenant_id: string
           updated_at: string
         }
         Insert: {
           amount?: number
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           notes?: string | null
           pic?: string | null
           purpose: string
           request_date?: string
           status?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
           amount?: number
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           notes?: string | null
           pic?: string | null
           purpose?: string
           request_date?: string
           status?: string
+          tenant_id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cash_requests_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       clients: {
         Row: {
           contact_person: string | null
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           name: string
           notes: string | null
           phone: string | null
           pic: string | null
           status: string
+          tenant_id: string
           updated_at: string
         }
         Insert: {
           contact_person?: string | null
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           name: string
           notes?: string | null
           phone?: string | null
           pic?: string | null
           status?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
           contact_person?: string | null
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           name?: string
           notes?: string | null
           phone?: string | null
           pic?: string | null
           status?: string
+          tenant_id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "clients_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_counters: {
+        Row: {
+          client_code: string
+          document_type: string
+          sequence: number
+          tenant_id: string
+        }
+        Insert: {
+          client_code: string
+          document_type: string
+          sequence?: number
+          tenant_id: string
+        }
+        Update: {
+          client_code?: string
+          document_type?: string
+          sequence?: number
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_counters_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       expenses: {
         Row: {
           amount: number
           category: string
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           description: string
           expense_date: string
           id: string
           pic: string | null
           status: string
+          tenant_id: string
           updated_at: string
         }
         Insert: {
           amount?: number
           category?: string
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           description: string
           expense_date?: string
           id?: string
           pic?: string | null
           status?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
           amount?: number
           category?: string
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           description?: string
           expense_date?: string
           id?: string
           pic?: string | null
           status?: string
+          tenant_id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "expenses_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       module_access: {
         Row: {
           created_at: string
           id: string
           module: string
+          tenant_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           module: string
+          tenant_id: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
           module?: string
+          tenant_id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "module_access_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_items: {
         Row: {
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           item_name: string
           order_id: string
           position: number
           price: number
           qty: number
+          tenant_id: string
           unit: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           item_name: string
           order_id: string
           position?: number
           price?: number
           qty?: number
+          tenant_id: string
           unit?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           item_name?: string
           order_id?: string
           position?: number
           price?: number
           qty?: number
+          tenant_id?: string
           unit?: string
           updated_at?: string
         }
@@ -185,6 +394,20 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "order_items_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_tenant_order_fk"
+            columns: ["tenant_id", "order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["tenant_id", "id"]
+          },
         ]
       }
       orders: {
@@ -194,6 +417,11 @@ export type Database = {
           client_name: string
           created_at: string
           created_by: string | null
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          discount_pct: number
+          document_status: string
           due_date: string | null
           id: string
           invoice_date: string | null
@@ -201,6 +429,7 @@ export type Database = {
           notes: string | null
           po_number: string | null
           section: string | null
+          tenant_id: string
           updated_at: string
         }
         Insert: {
@@ -209,6 +438,11 @@ export type Database = {
           client_name: string
           created_at?: string
           created_by?: string | null
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          discount_pct?: number
+          document_status?: string
           due_date?: string | null
           id?: string
           invoice_date?: string | null
@@ -216,6 +450,7 @@ export type Database = {
           notes?: string | null
           po_number?: string | null
           section?: string | null
+          tenant_id: string
           updated_at?: string
         }
         Update: {
@@ -224,6 +459,11 @@ export type Database = {
           client_name?: string
           created_at?: string
           created_by?: string | null
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          discount_pct?: number
+          document_status?: string
           due_date?: string | null
           id?: string
           invoice_date?: string | null
@@ -231,6 +471,7 @@ export type Database = {
           notes?: string | null
           po_number?: string | null
           section?: string | null
+          tenant_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -241,12 +482,29 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "orders_tenant_client_fk"
+            columns: ["tenant_id", "client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "orders_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
         ]
       }
       payables: {
         Row: {
           amount: number
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           due_date: string | null
           id: string
           invoice_date: string | null
@@ -254,12 +512,16 @@ export type Database = {
           notes: string | null
           pic: string | null
           status: string
+          tenant_id: string
           updated_at: string
           vendor: string
         }
         Insert: {
           amount?: number
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           due_date?: string | null
           id?: string
           invoice_date?: string | null
@@ -267,12 +529,16 @@ export type Database = {
           notes?: string | null
           pic?: string | null
           status?: string
+          tenant_id: string
           updated_at?: string
           vendor: string
         }
         Update: {
           amount?: number
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           due_date?: string | null
           id?: string
           invoice_date?: string | null
@@ -280,8 +546,32 @@ export type Database = {
           notes?: string | null
           pic?: string | null
           status?: string
+          tenant_id?: string
           updated_at?: string
           vendor?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payables_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -289,37 +579,58 @@ export type Database = {
         Row: {
           category: string
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
           is_active: boolean
           name: string
           price: number
+          tenant_id: string
           unit: string
           updated_at: string
         }
         Insert: {
           category?: string
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           is_active?: boolean
           name: string
           price?: number
+          tenant_id: string
           unit?: string
           updated_at?: string
         }
         Update: {
           category?: string
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
           is_active?: boolean
           name?: string
           price?: number
+          tenant_id?: string
           unit?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pricelist_items_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
+          active_tenant_id: string | null
           created_at: string
           email: string
           full_name: string | null
@@ -327,6 +638,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          active_tenant_id?: string | null
           created_at?: string
           email: string
           full_name?: string | null
@@ -334,19 +646,31 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          active_tenant_id?: string | null
           created_at?: string
           email?: string
           full_name?: string | null
           id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_active_tenant_id_fkey"
+            columns: ["active_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       receivables: {
         Row: {
           amount: number
           client_name: string
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           due_date: string | null
           id: string
           invoice_date: string | null
@@ -354,12 +678,16 @@ export type Database = {
           notes: string | null
           pic: string | null
           status: string
+          tenant_id: string
           updated_at: string
         }
         Insert: {
           amount?: number
           client_name: string
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           due_date?: string | null
           id?: string
           invoice_date?: string | null
@@ -367,12 +695,16 @@ export type Database = {
           notes?: string | null
           pic?: string | null
           status?: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
           amount?: number
           client_name?: string
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           due_date?: string | null
           id?: string
           invoice_date?: string | null
@@ -380,13 +712,25 @@ export type Database = {
           notes?: string | null
           pic?: string | null
           status?: string
+          tenant_id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "receivables_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shipments: {
         Row: {
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           delivery_by: string | null
           delivery_date: string | null
           do_number: string | null
@@ -400,10 +744,14 @@ export type Database = {
           ship_to: string
           status: string
           stored_by: string | null
+          tenant_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           delivery_by?: string | null
           delivery_date?: string | null
           do_number?: string | null
@@ -417,10 +765,14 @@ export type Database = {
           ship_to: string
           status?: string
           stored_by?: string | null
+          tenant_id: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           delivery_by?: string | null
           delivery_date?: string | null
           do_number?: string | null
@@ -434,6 +786,7 @@ export type Database = {
           ship_to?: string
           status?: string
           stored_by?: string | null
+          tenant_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -444,74 +797,234 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "shipments_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shipments_tenant_order_fk"
+            columns: ["tenant_id", "order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["tenant_id", "id"]
+          },
         ]
       }
       tasks: {
         Row: {
           assignee: string | null
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           division: string
           due_date: string | null
           id: string
           position: number
           priority: string
           status: string
+          tenant_id: string
           title: string
           updated_at: string
         }
         Insert: {
           assignee?: string | null
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           division?: string
           due_date?: string | null
           id?: string
           position?: number
           priority?: string
           status?: string
+          tenant_id: string
           title: string
           updated_at?: string
         }
         Update: {
           assignee?: string | null
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           division?: string
           due_date?: string | null
           id?: string
           position?: number
           priority?: string
           status?: string
+          tenant_id?: string
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tasks_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       team_members: {
         Row: {
           created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           division: string
           email: string
           id: string
           is_active: boolean
           name: string
+          tenant_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           division: string
           email: string
           id?: string
           is_active?: boolean
           name: string
+          tenant_id: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           division?: string
           email?: string
           id?: string
           is_active?: boolean
           name?: string
+          tenant_id?: string
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_memberships: {
+        Row: {
+          created_at: string
+          id: string
+          status: string
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status?: string
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: string
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_memberships_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_settings: {
+        Row: {
+          address: string
+          bank: Json
+          contact: Json
+          currency: string
+          discount_approval_threshold_pct: number
+          doc_numbering: Json
+          logo_url: string | null
+          ppn_rate: number
+          primary_color: string
+          tenant_id: string
+        }
+        Insert: {
+          address?: string
+          bank?: Json
+          contact?: Json
+          currency?: string
+          discount_approval_threshold_pct?: number
+          doc_numbering?: Json
+          logo_url?: string | null
+          ppn_rate?: number
+          primary_color?: string
+          tenant_id: string
+        }
+        Update: {
+          address?: string
+          bank?: Json
+          contact?: Json
+          currency?: string
+          discount_approval_threshold_pct?: number
+          doc_numbering?: Json
+          logo_url?: string | null
+          ppn_rate?: number
+          primary_color?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_settings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          created_at: string
+          id: string
+          is_demo: boolean
+          name: string
+          slug: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          name: string
+          slug: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          name?: string
+          slug?: string
+          status?: string
         }
         Relationships: []
       }
@@ -520,27 +1033,39 @@ export type Database = {
           created_at: string
           id: string
           role: Database["public"]["Enums"]["app_role"]
+          tenant_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          tenant_id: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          tenant_id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      active_tenant_id: { Args: never; Returns: string }
       admin_list_users: {
         Args: never
         Returns: {
@@ -561,13 +1086,37 @@ export type Database = {
         }
         Returns: undefined
       }
+      archive_entity: {
+        Args: { p_entity_id: string; p_entity_type: string; p_reason: string }
+        Returns: string
+      }
       bootstrap_current_user: { Args: never; Returns: Json }
       can_access: { Args: { _module: string }; Returns: boolean }
       can_access_any: { Args: { _modules: string[] }; Returns: boolean }
+      can_access_tenant_module: {
+        Args: { p_module: string; p_tenant_id: string }
+        Returns: boolean
+      }
       confirm_shipment_receipt: {
         Args: { p_received_by: string; p_token: string }
         Returns: Json
       }
+      create_shipment_atomic: { Args: { p_order_id: string }; Returns: string }
+      create_tenant_with_master: {
+        Args: {
+          p_is_demo?: boolean
+          p_master_id: string
+          p_name: string
+          p_slug: string
+        }
+        Returns: string
+      }
+      decide_approval: {
+        Args: { p_approve: boolean; p_reason: string; p_request_id: string }
+        Returns: undefined
+      }
+      entity_module: { Args: { p_table: string }; Returns: string }
+      get_public_pricelist: { Args: never; Returns: Json }
       get_shipment_tracking: { Args: { p_token: string }; Returns: Json }
       has_role: {
         Args: {
@@ -576,7 +1125,29 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_tenant_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_tenant_id: string
+        }
+        Returns: boolean
+      }
       is_master: { Args: never; Returns: boolean }
+      is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
+      list_archive: { Args: never; Returns: Json }
+      restore_entity: {
+        Args: { p_entity_id: string; p_entity_type: string; p_reason: string }
+        Returns: undefined
+      }
+      save_order_atomic: {
+        Args: { p_items: Json; p_order: Json; p_order_id: string }
+        Returns: string
+      }
+      select_active_tenant: { Args: { p_tenant_id: string }; Returns: Json }
+      suggest_invoice_number: {
+        Args: { p_client_name: string; p_invoice_date: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "master" | "staff"

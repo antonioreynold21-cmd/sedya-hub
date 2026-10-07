@@ -1,9 +1,10 @@
+import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
+import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,8 @@ import { MODULES, type ModuleKey } from "@/lib/access";
 export const Route = createFileRoute("/_authenticated/akses")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Kelola Akses Tim — Sedyain Hub" },
       {
         name: "description",
@@ -62,8 +65,8 @@ function AccessPage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin_users"] });
-      qc.invalidateQueries({ queryKey: ["access"] });
+      qc.invalidateQueries();
+      qc.invalidateQueries();
       toast.success("Akses modul diperbarui");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -75,8 +78,8 @@ function AccessPage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin_users"] });
-      qc.invalidateQueries({ queryKey: ["access"] });
+      qc.invalidateQueries();
+      qc.invalidateQueries();
       toast.success("Peran akun diperbarui");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -162,7 +165,7 @@ function AccessPage() {
                 ) : (
                   <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                     {MODULES.map((m) => {
-                      const forced = m.key === "dashboard";
+                      const forced = false;
                       const checked = forced || row.modules.includes(m.key);
                       return (
                         <div key={m.key} className="flex items-center gap-2">

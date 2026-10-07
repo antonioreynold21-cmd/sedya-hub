@@ -1,3 +1,8 @@
+import { useTenant } from "@/components/tenant-provider";
+import { useTenantQuery } from "@/hooks/use-tenant-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { toast } from "sonner";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -11,6 +16,8 @@ import {
   Tags,
   ShieldCheck,
   Building2,
+  Archive,
+  ClipboardCheck,
 } from "lucide-react";
 
 import {
@@ -46,6 +53,8 @@ export function AppSidebar() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const { can, isMaster } = useAccess();
 
+  const {tenant,tenantId,access,switchTenant}=useTenant();
+  const {data:pending=0}=useTenantQuery({queryKey:['approval-count'],enabled:isMaster,queryFn:async()=>{const {count,error}=await supabase.from('approval_requests').select('id',{count:'exact',head:true}).eq('tenant_id',tenantId??'').eq('status','pending');if(error)throw error;return count??0;}});
   const visible = items.filter((i) => can(i.module));
 
   return (
@@ -53,17 +62,18 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="flex items-center gap-2 px-1 py-2">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-            <Leaf className="size-5" />
+            {tenant?.settings.logo_url ? <img src={tenant.settings.logo_url} alt={tenant.name} className="size-8 object-contain"/> : <Leaf className="size-5" />}
           </span>
           {!collapsed && (
             <div className="leading-tight">
-              <p className="text-sm font-semibold text-sidebar-foreground">Sedyain Indonesia</p>
+              <p className="text-sm font-semibold text-sidebar-foreground">{tenant?.name}</p>
               <p className="text-xs text-sidebar-foreground/70">
                 {isMaster ? "Akun Master" : "Internal Operations"}
               </p>
             </div>
           )}
         </div>
+        {!collapsed && (access?.tenants.length ?? 0)>1 && <Select value={tenantId??''} onValueChange={id=>{switchTenant(id).catch(e=>toast.error(e.message));}}><SelectTrigger aria-label="Pilih bisnis"><SelectValue/></SelectTrigger><SelectContent>{access?.tenants.map(t=><SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}</SelectContent></Select>}
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -89,6 +99,8 @@ export function AppSidebar() {
             <SidebarGroupLabel>Administrasi</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
+                <SidebarMenuItem><SidebarMenuButton asChild isActive={currentPath==='/arsip'} tooltip="Arsip"><Link to="/arsip"><Archive className="size-4"/><span>Arsip</span></Link></SidebarMenuButton></SidebarMenuItem>
+                <SidebarMenuItem><SidebarMenuButton asChild isActive={currentPath==='/persetujuan'} tooltip="Persetujuan"><Link to="/persetujuan"><ClipboardCheck className="size-4"/><span>Persetujuan</span>{pending>0&&<span className="ml-auto rounded bg-sidebar-primary px-1.5 text-xs text-sidebar-primary-foreground">{pending}</span>}</Link></SidebarMenuButton></SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild
