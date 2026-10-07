@@ -27,7 +27,7 @@ import { Route as AuthenticatedWorkflowRouteImport } from './routes/_authenticat
 import { Route as TTokenRouteImport } from './routes/t.$token'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders.index'
 import { Route as AuthenticatedPenawaranQuotationIdRouteImport } from './routes/_authenticated/penawaran.$quotationId'
-import { Route as AuthenticatedFinanceInvoiceOrderIdRouteImport } from './routes/_authenticated/finance.invoice.$orderId'
+import { Route as AuthenticatedFinanceInvoiceOrderIdRouteImport } from './routes/_authenticated/finance_.invoice.$orderId'
 import { Route as AuthenticatedOrdersOrderIdInvoiceRouteImport } from './routes/_authenticated/orders.$orderId.invoice'
 import { Route as AuthenticatedOrdersOrderIdSuratJalanRouteImport } from './routes/_authenticated/orders.$orderId.surat-jalan'
 
@@ -125,9 +125,9 @@ const AuthenticatedPenawaranQuotationIdRoute =
   } as any)
 const AuthenticatedFinanceInvoiceOrderIdRoute =
   AuthenticatedFinanceInvoiceOrderIdRouteImport.update({
-    id: '/invoice/$orderId',
-    path: '/invoice/$orderId',
-    getParentRoute: () => AuthenticatedFinanceRoute,
+    id: '/finance_/invoice/$orderId',
+    path: '/finance/invoice/$orderId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedOrdersOrderIdInvoiceRoute =
   AuthenticatedOrdersOrderIdInvoiceRouteImport.update({
@@ -150,7 +150,7 @@ export interface FileRoutesByFullPath {
   '/arsip': typeof AuthenticatedArsipRoute
   '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
-  '/finance': typeof AuthenticatedFinanceRouteWithChildren
+  '/finance': typeof AuthenticatedFinanceRoute
   '/penawaran': typeof AuthenticatedPenawaranRouteWithChildren
   '/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -171,7 +171,7 @@ export interface FileRoutesByTo {
   '/arsip': typeof AuthenticatedArsipRoute
   '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
-  '/finance': typeof AuthenticatedFinanceRouteWithChildren
+  '/finance': typeof AuthenticatedFinanceRoute
   '/penawaran': typeof AuthenticatedPenawaranRouteWithChildren
   '/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -195,7 +195,7 @@ export interface FileRoutesById {
   '/_authenticated/arsip': typeof AuthenticatedArsipRoute
   '/_authenticated/client': typeof AuthenticatedClientRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
-  '/_authenticated/finance': typeof AuthenticatedFinanceRouteWithChildren
+  '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/penawaran': typeof AuthenticatedPenawaranRouteWithChildren
   '/_authenticated/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/_authenticated/pricelist': typeof AuthenticatedPricelistRoute
@@ -206,7 +206,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/penawaran/$quotationId': typeof AuthenticatedPenawaranQuotationIdRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
-  '/_authenticated/finance/invoice/$orderId': typeof AuthenticatedFinanceInvoiceOrderIdRoute
+  '/_authenticated/finance_/invoice/$orderId': typeof AuthenticatedFinanceInvoiceOrderIdRoute
   '/_authenticated/orders/$orderId/invoice': typeof AuthenticatedOrdersOrderIdInvoiceRoute
   '/_authenticated/orders/$orderId/surat-jalan': typeof AuthenticatedOrdersOrderIdSuratJalanRoute
 }
@@ -275,7 +275,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/penawaran/$quotationId'
     | '/_authenticated/orders/'
-    | '/_authenticated/finance/invoice/$orderId'
+    | '/_authenticated/finance_/invoice/$orderId'
     | '/_authenticated/orders/$orderId/invoice'
     | '/_authenticated/orders/$orderId/surat-jalan'
   fileRoutesById: FileRoutesById
@@ -415,12 +415,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPenawaranQuotationIdRouteImport
       parentRoute: typeof AuthenticatedPenawaranRoute
     }
-    '/_authenticated/finance/invoice/$orderId': {
-      id: '/_authenticated/finance/invoice/$orderId'
-      path: '/invoice/$orderId'
+    '/_authenticated/finance_/invoice/$orderId': {
+      id: '/_authenticated/finance_/invoice/$orderId'
+      path: '/finance/invoice/$orderId'
       fullPath: '/finance/invoice/$orderId'
       preLoaderRoute: typeof AuthenticatedFinanceInvoiceOrderIdRouteImport
-      parentRoute: typeof AuthenticatedFinanceRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/orders/$orderId/invoice': {
       id: '/_authenticated/orders/$orderId/invoice'
@@ -438,18 +438,6 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-
-interface AuthenticatedFinanceRouteChildren {
-  AuthenticatedFinanceInvoiceOrderIdRoute: typeof AuthenticatedFinanceInvoiceOrderIdRoute
-}
-
-const AuthenticatedFinanceRouteChildren: AuthenticatedFinanceRouteChildren = {
-  AuthenticatedFinanceInvoiceOrderIdRoute:
-    AuthenticatedFinanceInvoiceOrderIdRoute,
-}
-
-const AuthenticatedFinanceRouteWithChildren =
-  AuthenticatedFinanceRoute._addFileChildren(AuthenticatedFinanceRouteChildren)
 
 interface AuthenticatedPenawaranRouteChildren {
   AuthenticatedPenawaranQuotationIdRoute: typeof AuthenticatedPenawaranQuotationIdRoute
@@ -471,7 +459,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedArsipRoute: typeof AuthenticatedArsipRoute
   AuthenticatedClientRoute: typeof AuthenticatedClientRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
-  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRouteWithChildren
+  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedPenawaranRoute: typeof AuthenticatedPenawaranRouteWithChildren
   AuthenticatedPersetujuanRoute: typeof AuthenticatedPersetujuanRoute
   AuthenticatedPricelistRoute: typeof AuthenticatedPricelistRoute
@@ -480,6 +468,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedWorkflowRoute: typeof AuthenticatedWorkflowRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
+  AuthenticatedFinanceInvoiceOrderIdRoute: typeof AuthenticatedFinanceInvoiceOrderIdRoute
   AuthenticatedOrdersOrderIdInvoiceRoute: typeof AuthenticatedOrdersOrderIdInvoiceRoute
   AuthenticatedOrdersOrderIdSuratJalanRoute: typeof AuthenticatedOrdersOrderIdSuratJalanRoute
 }
@@ -489,7 +478,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedArsipRoute: AuthenticatedArsipRoute,
   AuthenticatedClientRoute: AuthenticatedClientRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
-  AuthenticatedFinanceRoute: AuthenticatedFinanceRouteWithChildren,
+  AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedPenawaranRoute: AuthenticatedPenawaranRouteWithChildren,
   AuthenticatedPersetujuanRoute: AuthenticatedPersetujuanRoute,
   AuthenticatedPricelistRoute: AuthenticatedPricelistRoute,
@@ -498,6 +487,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedWorkflowRoute: AuthenticatedWorkflowRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,
+  AuthenticatedFinanceInvoiceOrderIdRoute:
+    AuthenticatedFinanceInvoiceOrderIdRoute,
   AuthenticatedOrdersOrderIdInvoiceRoute:
     AuthenticatedOrdersOrderIdInvoiceRoute,
   AuthenticatedOrdersOrderIdSuratJalanRoute:
