@@ -6,10 +6,11 @@ import { BRAND_GREEN, BRAND_LIME, COMPANY } from "@/lib/docs";
 
 /** Repeating comma/swoosh ribbon inspired by the "S" mark in the Sedyain logo. */
 export function BrandRibbon() {
+  const {tenant}=useTenant();
   const comma = (color: string, x: number) =>
     `<path transform="translate(${x} 0)" fill="${color}" d="M6 26c0-12 9-21 21-21 9 0 15 5 15 12 0 6-4 10-10 10-3 0-5-1-6-3 3 0 5-2 5-5s-3-5-7-5c-7 0-12 6-12 15 0 3 1 6 3 8l-5 4c-3-4-4-9-4-15z"/>`;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="40" viewBox="0 0 96 40">${comma(
-    BRAND_GREEN,
+    tenant?.settings.primary_color||BRAND_GREEN,
     0,
   )}${comma(BRAND_LIME, 48)}</svg>`;
   return (

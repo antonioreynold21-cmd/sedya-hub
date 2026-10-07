@@ -1,3 +1,4 @@
+import { useAccess } from "@/hooks/use-access";
 import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -41,6 +42,7 @@ function SignatureBox({ label, name }: { label: string; name: string | null | un
 
 function SuratJalanPage() {
   const { orderId } = Route.useParams();
+  const {can}=useAccess();
 
   const { data, isPending } = useQuery({
     queryKey: ["surat-jalan", orderId],
@@ -48,13 +50,13 @@ function SuratJalanPage() {
       const [order, items, shipment] = await Promise.all([
         supabase.from("orders").select("*").eq("id", orderId).single(),
         supabase.from("order_items").select("*").eq("order_id", orderId).order("position"),
-        supabase
+        can('shipments') ? supabase
           .from("shipments")
           .select("*")
           .eq("order_id", orderId)
           .order("created_at", { ascending: false })
           .limit(1)
-          .maybeSingle(),
+          .maybeSingle() : Promise.resolve({data:null,error:null}),
       ]);
       if (order.error) throw order.error;
       if (items.error) throw items.error;
@@ -63,6 +65,7 @@ function SuratJalanPage() {
     },
   });
 
+  if (!can('shipments')) return <p role="alert" className="p-6">Data Surat Jalan tidak berizin: akses modul Pengiriman diperlukan.</p>;
   const order = data?.order;
   const items = data?.items ?? [];
   const shipment = data?.shipment;
