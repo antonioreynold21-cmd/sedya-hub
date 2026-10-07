@@ -97,7 +97,7 @@ function WorkflowPage() {
   });
 
   const { data: team = [] } = useQuery({
-    queryKey: ["team-names"],
+    queryKey: ["team-names"], enabled:useAccess().can("team"),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_members")
