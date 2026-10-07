@@ -29,6 +29,13 @@
       "when": 1791373617604,
       "tag": "0003_strict_module_read_and_shipment_permissions",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791373827964,
+      "tag": "0004_tenant_document_sequence_backfill",
+      "breakpoints": true
     }
   ]
 }
