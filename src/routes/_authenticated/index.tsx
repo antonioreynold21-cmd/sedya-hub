@@ -10,6 +10,8 @@ import {
   UserPlus,
 } from "lucide-react";
 
+import { supabase as rpcClient } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 import { tenantClient as supabase } from "@/lib/tenant-client";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -53,7 +55,8 @@ type DueRow = {
 
 function Dashboard() {
   const { can } = useAccess();
-  const { data, isPending } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
+    throwOnError: false,
     queryKey: ["dashboard"],
     queryFn: async () => {
       const [payables, receivables, clients, tasks] = await Promise.all([
@@ -66,15 +69,20 @@ function Dashboard() {
       if (receivables.error) throw receivables.error;
       if (clients.error) throw clients.error;
       if (tasks.error) throw tasks.error;
+      const invoiceResult=can('finance')?await rpcClient.rpc('finance_invoice_balances'):{data:[],error:null};if(invoiceResult.error)throw invoiceResult.error;
+      const invoices=(invoiceResult.data??[]).filter(i=>i.invoice_state!=='cancelled').map(i=>({id:i.order_id,client_name:i.client_name,amount:Number(i.balance),due_date:i.due_date,status:i.balance<=0?'Lunas':'Belum Tertagih',pic:null,invoice_no:i.invoice_number}));
+      const originalReceivables=can('finance')?await supabase.from('receivables').select('id,order_id,invoice_no'): {data:[],error:null};if(originalReceivables.error)throw originalReceivables.error;
+      const legacyIds=new Set((originalReceivables.data??[]).filter(r=>!r.order_id&&!invoices.some(i=>i.invoice_no===r.invoice_no)).map(r=>r.id));
       return {
         payables: payables.data ?? [],
-        receivables: receivables.data ?? [],
+        receivables: [...(receivables.data??[]).filter(r=>legacyIds.has(r.id)),...invoices],
         clients: clients.data ?? [],
         tasks: tasks.data ?? [],
       };
     },
   });
 
+  if(isError)return <div role="alert">Ringkasan gagal dimuat. <Button onClick={()=>refetch()}>Coba lagi</Button></div>;
   const payables = data?.payables ?? [];
   const receivables = data?.receivables ?? [];
   const clients = data?.clients ?? [];
