@@ -1,3 +1,4 @@
+import { useAccess } from "@/hooks/use-access";
 import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -42,19 +43,20 @@ type Row = {
 };
 
 function ClientPage() {
+  const {can}=useAccess();
   const { data: rows = [], isLoading } = useQuery({
     queryKey: ["client-summary"],
     queryFn: async (): Promise<Row[]> => {
       const [clientsRes, ordersRes, shipmentsRes] = await Promise.all([
         supabase.from("clients").select("name, pic"),
-        supabase
+        can('orders') ? supabase
           .from("orders")
           .select("id, client_name, invoice_number, invoice_date, created_by, created_at")
-          .order("invoice_date", { ascending: false }),
-        supabase
+          .order("invoice_date", { ascending: false }) : Promise.resolve({data:[],error:null}),
+        can('shipments') ? supabase
           .from("shipments")
           .select("order_id, do_number, delivery_date, created_at")
-          .order("delivery_date", { ascending: false }),
+          .order("delivery_date", { ascending: false }) : Promise.resolve({data:[],error:null}),
       ]);
       if (clientsRes.error) throw clientsRes.error;
       if (ordersRes.error) throw ordersRes.error;
@@ -142,8 +144,8 @@ function ClientPage() {
                 <TableRow key={r.name}>
                   <TableCell className="font-medium">{r.name}</TableCell>
                   <TableCell className="text-sm">{r.pic || "-"}</TableCell>
-                  <TableCell className="text-xs">{r.lastInvoice || "-"}</TableCell>
-                  <TableCell className="text-xs">{r.lastDo || "-"}</TableCell>
+                  <TableCell className="text-xs">{can("orders") ? r.lastInvoice || "-" : "Tidak berizin"}</TableCell>
+                  <TableCell className="text-xs">{can("shipments") ? r.lastDo || "-" : "Tidak berizin"}</TableCell>
                 </TableRow>
               ))
             )}

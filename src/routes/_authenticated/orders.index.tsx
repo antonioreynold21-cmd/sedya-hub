@@ -1,3 +1,4 @@
+import { useAccess } from "@/hooks/use-access";
 import { useArchive } from "@/components/archive-dialog";
 import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -82,6 +83,7 @@ const emptyForm = {
 
 function OrdersPage() {
   const qc = useQueryClient();
+  const {can}=useAccess();
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -111,7 +113,7 @@ function OrdersPage() {
   });
 
   const { data: shipments = [] } = useQuery({
-    queryKey: ["shipments"],
+    queryKey: ["shipments"], enabled:can("shipments"),
     queryFn: async () => {
       const { data, error } = await supabase.from("shipments").select("id, order_id");
       if (error) throw error;

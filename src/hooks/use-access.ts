@@ -5,6 +5,6 @@ export function useAccess() {
  const tenant=useTenant(); const raw=tenant.access;
  const access: AccessInfo|undefined=raw?{userId:raw.user_id,role:raw.role,modules:raw.modules}:undefined;
  const isMaster=access?.role==='master';
- function can(module:ModuleKey) {return Boolean(tenant.tenantId&&access&&(isMaster||ALWAYS_ALLOWED.includes(module)||access.modules.includes(module)));}
+ function can(module:ModuleKey) {return Boolean(tenant.tenantId&&access&&(isMaster||access.modules.includes(module)));}
  return {access,isMaster,can,isLoading:tenant.switching,isError:false};
 }
