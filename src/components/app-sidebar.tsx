@@ -80,7 +80,7 @@ export function AppSidebar() {
         {!collapsed && (access?.tenants.length ?? 0)>1 && <Select value={tenantId??''} onValueChange={id=>{switchTenant(id).catch(e=>toast.error(e.message));}}><SelectTrigger aria-label="Pilih bisnis"><SelectValue/></SelectTrigger><SelectContent>{access?.tenants.map(t=><SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}</SelectContent></Select>}
       </SidebarHeader>
       <SidebarContent>
-        {!collapsed&&notifications.length>0&&<SidebarGroup><SidebarGroupLabel>Notifikasi</SidebarGroupLabel>{notifications.map(n=><div key={n.id} className="px-2 py-2 text-xs text-sidebar-foreground"><p>{n.message}</p><SidebarMenuButton onClick={async()=>{const {error}=await supabase.from('notifications').update({read_at:new Date().toISOString()}).eq('id',n.id);if(error)toast.error(error.message);else await qc.invalidateQueries({queryKey:['tenant',tenantId,'notifications']});}}>Tandai dibaca</SidebarMenuButton></div>)}</SidebarGroup>}
+        {!collapsed&&notifications.length>0&&<SidebarGroup><SidebarGroupLabel>Notifikasi</SidebarGroupLabel>{notifications.map(n=><div key={n.id} className="px-2 py-2 text-xs text-sidebar-foreground"><p>{n.message}</p><SidebarMenuButton onClick={async()=>{const {error}=await supabase.from('notifications').update({read_at:new Date().toISOString()}).eq('id',n.id);if(error)toast.error(error.message);else await qc.invalidateQueries();}}>Tandai dibaca</SidebarMenuButton></div>)}</SidebarGroup>}
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
