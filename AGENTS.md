@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Sales documents share a transaction editor and database RPC workflow; all multi-row changes, numbering, approvals and payment balances are authoritative in PostgreSQL to prevent partial writes and races.
+- Issued documents retain an immutable legal/brand snapshot; printed documents must use that snapshot rather than current tenant settings.
+- Transaction mutations invalidate all tenant query surfaces together so Finance, Client, shipments and document balances cannot retain stale state.

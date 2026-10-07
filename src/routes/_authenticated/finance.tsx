@@ -1,7 +1,7 @@
 import { useAccess } from "@/hooks/use-access";
 import { useArchive } from "@/components/archive-dialog";
 import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
@@ -83,7 +83,7 @@ type Payable = {
   notes: string | null;
 };
 
-type Receivable = Omit<Payable, "vendor"> & { client_name: string };
+type Receivable = Omit<Payable, "vendor"> & { client_name: string; order_id: string | null; invoice_total: number };
 
 type CashRequest = {
   id: string;
@@ -398,15 +398,18 @@ function ReceivablesTab() {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...emptyInvoice, status: "Belum Tertagih" });
 
-  const { data: rows = [] } = useQuery({
+  const { data: rows = [], isPending, isError, refetch } = useQuery({
     queryKey: ["receivables"],
+    throwOnError: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("receivables")
         .select("*")
         .order("due_date", { ascending: true, nullsFirst: false });
       if (error) throw error;
-      return data as Receivable[];
+      const linked=await supabase.rpc('finance_invoice_balances');if(linked.error)throw linked.error;
+      const invoices=(linked.data??[]).filter(i=>i.invoice_state!=='cancelled').map(i=>({id:i.order_id,order_id:i.order_id,client_name:i.client_name,invoice_no:i.invoice_number,amount:Number(i.balance),invoice_total:Number(i.total),invoice_date:null,due_date:i.due_date,status:i.status==='lunas'?'Lunas':'Belum Tertagih',pic:null,notes:i.status}));
+      return [...(data as Receivable[]).filter(r=>!r.order_id&&!invoices.some(i=>i.invoice_no===r.invoice_no)),...invoices];
     },
   });
 
@@ -453,6 +456,8 @@ function ReceivablesTab() {
     .filter((r) => r.status === "Belum Tertagih")
     .reduce((s, r) => s + Number(r.amount), 0);
 
+  if(isError)return <div role="alert">Piutang gagal dimuat. <Button onClick={()=>refetch()}>Coba lagi</Button></div>;
+  if(isPending)return <p role="status">Memuat piutang…</p>;
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -499,7 +504,7 @@ function ReceivablesTab() {
                     <TableCell className="font-medium">{r.client_name}</TableCell>
                     <TableCell>{r.invoice_no ?? "-"}</TableCell>
                     <TableCell className="text-right font-medium">
-                      {formatRupiah(r.amount)}
+                      {formatRupiah(r.amount)}{r.order_id&&<p className="text-xs font-normal">Total invoice {formatRupiah(r.invoice_total)}</p>}
                     </TableCell>
                     <TableCell>{formatDate(r.invoice_date)}</TableCell>
                     <TableCell>
@@ -509,7 +514,7 @@ function ReceivablesTab() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={statusBadge[r.status] ?? "bg-muted"}>{r.status}</Badge>
+                      <Badge className={statusBadge[r.status] ?? "bg-muted"}>{r.order_id ? (r.status==='Lunas'?'Lunas':r.due_date&&new Date(r.due_date)<new Date()?'Jatuh tempo':r.amount<r.invoice_total?'Sebagian dibayar':'Terbit'):r.status}</Badge>
                     </TableCell>
                     <TableCell>{r.pic ?? "-"}</TableCell>
                     <TableCell className="max-w-[200px] truncate text-muted-foreground">
@@ -517,8 +522,10 @@ function ReceivablesTab() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
+                        {r.order_id&&<Button asChild size="sm" variant="outline"><Link to="/finance/invoice/$orderId" params={{orderId:r.order_id}}>Pembayaran</Link></Button>}
                         <Button
                           size="icon"
+                          disabled={Boolean(r.order_id)}
                           variant="ghost"
                           onClick={() => {
                             setEditId(r.id);
@@ -539,6 +546,7 @@ function ReceivablesTab() {
                         </Button>
                         <Button
                           size="icon"
+                          disabled={Boolean(r.order_id)}
                           variant="ghost"
                           onClick={() => {
                             remove.mutate(r.id);

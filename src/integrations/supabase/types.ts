@@ -252,6 +252,35 @@ export type Database = {
           },
         ]
       }
+      document_sequences: {
+        Row: {
+          client_code: string
+          document_type: string
+          sequence: number
+          tenant_id: string
+        }
+        Insert: {
+          client_code: string
+          document_type: string
+          sequence?: number
+          tenant_id: string
+        }
+        Update: {
+          client_code?: string
+          document_type?: string
+          sequence?: number
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_sequences_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expenses: {
         Row: {
           amount: number
@@ -340,12 +369,59 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read_at: string | null
+          request_id: string | null
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read_at?: string | null
+          request_id?: string | null
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read_at?: string | null
+          request_id?: string | null
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "approval_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
           delete_reason: string | null
           deleted_at: string | null
           deleted_by: string | null
+          discount_type: string
+          discount_value: number
           id: string
           item_name: string
           order_id: string
@@ -361,6 +437,8 @@ export type Database = {
           delete_reason?: string | null
           deleted_at?: string | null
           deleted_by?: string | null
+          discount_type?: string
+          discount_value?: number
           id?: string
           item_name: string
           order_id: string
@@ -376,6 +454,8 @@ export type Database = {
           delete_reason?: string | null
           deleted_at?: string | null
           deleted_by?: string | null
+          discount_type?: string
+          discount_value?: number
           id?: string
           item_name?: string
           order_id?: string
@@ -412,6 +492,8 @@ export type Database = {
       }
       orders: {
         Row: {
+          approved_fingerprint: string | null
+          brand_snapshot: Json | null
           client_address: string | null
           client_id: string | null
           client_name: string
@@ -421,18 +503,28 @@ export type Database = {
           deleted_at: string | null
           deleted_by: string | null
           discount_pct: number
+          discount_type: string
+          discount_value: number
           document_status: string
           due_date: string | null
           id: string
           invoice_date: string | null
           invoice_number: string | null
+          invoice_state: string
+          issued_at: string | null
           notes: string | null
+          order_date: string
+          order_number: string | null
           po_number: string | null
           section: string | null
+          tax_enabled: boolean
+          tax_rate: number
           tenant_id: string
           updated_at: string
         }
         Insert: {
+          approved_fingerprint?: string | null
+          brand_snapshot?: Json | null
           client_address?: string | null
           client_id?: string | null
           client_name: string
@@ -442,18 +534,28 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           discount_pct?: number
+          discount_type?: string
+          discount_value?: number
           document_status?: string
           due_date?: string | null
           id?: string
           invoice_date?: string | null
           invoice_number?: string | null
+          invoice_state?: string
+          issued_at?: string | null
           notes?: string | null
+          order_date?: string
+          order_number?: string | null
           po_number?: string | null
           section?: string | null
+          tax_enabled?: boolean
+          tax_rate?: number
           tenant_id: string
           updated_at?: string
         }
         Update: {
+          approved_fingerprint?: string | null
+          brand_snapshot?: Json | null
           client_address?: string | null
           client_id?: string | null
           client_name?: string
@@ -463,14 +565,22 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           discount_pct?: number
+          discount_type?: string
+          discount_value?: number
           document_status?: string
           due_date?: string | null
           id?: string
           invoice_date?: string | null
           invoice_number?: string | null
+          invoice_state?: string
+          issued_at?: string | null
           notes?: string | null
+          order_date?: string
+          order_number?: string | null
           po_number?: string | null
           section?: string | null
+          tax_enabled?: boolean
+          tax_rate?: number
           tenant_id?: string
           updated_at?: string
         }
@@ -557,6 +667,69 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string
+          id: string
+          method: string
+          notes: string | null
+          order_id: string
+          payment_date: string
+          reference: string | null
+          tenant_id: string
+          void_reason: string | null
+          voided_at: string | null
+          voided_by: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          method: string
+          notes?: string | null
+          order_id: string
+          payment_date?: string
+          reference?: string | null
+          tenant_id: string
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          method?: string
+          notes?: string | null
+          order_id?: string
+          payment_date?: string
+          reference?: string | null
+          tenant_id?: string
+          void_reason?: string | null
+          voided_at?: string | null
+          voided_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_tenant_id_order_id_fkey"
+            columns: ["tenant_id", "order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["tenant_id", "id"]
           },
         ]
       }
@@ -663,6 +836,178 @@ export type Database = {
           },
         ]
       }
+      quotation_items: {
+        Row: {
+          created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          discount_type: string
+          discount_value: number
+          id: string
+          item_name: string
+          position: number
+          price: number
+          qty: number
+          quotation_id: string
+          tenant_id: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          item_name: string
+          position?: number
+          price: number
+          qty: number
+          quotation_id: string
+          tenant_id: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          item_name?: string
+          position?: number
+          price?: number
+          qty?: number
+          quotation_id?: string
+          tenant_id?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotation_items_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotation_items_tenant_id_quotation_id_fkey"
+            columns: ["tenant_id", "quotation_id"]
+            isOneToOne: false
+            referencedRelation: "quotations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+        ]
+      }
+      quotations: {
+        Row: {
+          approved_fingerprint: string | null
+          brand_snapshot: Json | null
+          client_address: string | null
+          client_id: string | null
+          client_name: string
+          converted_order_id: string | null
+          created_at: string
+          created_by: string | null
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          discount_type: string
+          discount_value: number
+          document_date: string
+          due_date: string | null
+          id: string
+          notes: string | null
+          quotation_number: string
+          status: string
+          tax_enabled: boolean
+          tax_rate: number
+          tenant_id: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          approved_fingerprint?: string | null
+          brand_snapshot?: Json | null
+          client_address?: string | null
+          client_id?: string | null
+          client_name: string
+          converted_order_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          discount_type?: string
+          discount_value?: number
+          document_date?: string
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          quotation_number: string
+          status?: string
+          tax_enabled?: boolean
+          tax_rate?: number
+          tenant_id: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          approved_fingerprint?: string | null
+          brand_snapshot?: Json | null
+          client_address?: string | null
+          client_id?: string | null
+          client_name?: string
+          converted_order_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          discount_type?: string
+          discount_value?: number
+          document_date?: string
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          quotation_number?: string
+          status?: string
+          tax_enabled?: boolean
+          tax_rate?: number
+          tenant_id?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotations_tenant_id_client_id_fkey"
+            columns: ["tenant_id", "client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "quotations_tenant_id_converted_order_id_fkey"
+            columns: ["tenant_id", "converted_order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "quotations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       receivables: {
         Row: {
           amount: number
@@ -675,7 +1020,9 @@ export type Database = {
           id: string
           invoice_date: string | null
           invoice_no: string | null
+          invoice_total: number
           notes: string | null
+          order_id: string | null
           pic: string | null
           status: string
           tenant_id: string
@@ -692,7 +1039,9 @@ export type Database = {
           id?: string
           invoice_date?: string | null
           invoice_no?: string | null
+          invoice_total?: number
           notes?: string | null
+          order_id?: string | null
           pic?: string | null
           status?: string
           tenant_id: string
@@ -709,13 +1058,22 @@ export type Database = {
           id?: string
           invoice_date?: string | null
           invoice_no?: string | null
+          invoice_total?: number
           notes?: string | null
+          order_id?: string | null
           pic?: string | null
           status?: string
           tenant_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "receivables_order_fk"
+            columns: ["tenant_id", "order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["tenant_id", "id"]
+          },
           {
             foreignKeyName: "receivables_tenant_fk"
             columns: ["tenant_id"]
@@ -816,6 +1174,7 @@ export type Database = {
       tasks: {
         Row: {
           assignee: string | null
+          completed_at: string | null
           created_at: string
           delete_reason: string | null
           deleted_at: string | null
@@ -832,6 +1191,7 @@ export type Database = {
         }
         Insert: {
           assignee?: string | null
+          completed_at?: string | null
           created_at?: string
           delete_reason?: string | null
           deleted_at?: string | null
@@ -848,6 +1208,7 @@ export type Database = {
         }
         Update: {
           assignee?: string | null
+          completed_at?: string | null
           created_at?: string
           delete_reason?: string | null
           deleted_at?: string | null
@@ -965,6 +1326,7 @@ export type Database = {
           logo_url: string | null
           ppn_rate: number
           primary_color: string
+          sales_numbering: Json
           tenant_id: string
         }
         Insert: {
@@ -977,6 +1339,7 @@ export type Database = {
           logo_url?: string | null
           ppn_rate?: number
           primary_color?: string
+          sales_numbering?: Json
           tenant_id: string
         }
         Update: {
@@ -989,6 +1352,7 @@ export type Database = {
           logo_url?: string | null
           ppn_rate?: number
           primary_color?: string
+          sales_numbering?: Json
           tenant_id?: string
         }
         Relationships: [
@@ -1097,10 +1461,15 @@ export type Database = {
         Args: { p_module: string; p_tenant_id: string }
         Returns: boolean
       }
+      change_invoice_number: {
+        Args: { p_number: string; p_order_id: string; p_reason: string }
+        Returns: undefined
+      }
       confirm_shipment_receipt: {
         Args: { p_received_by: string; p_token: string }
         Returns: Json
       }
+      convert_quotation: { Args: { p_id: string }; Returns: string }
       create_shipment_atomic: { Args: { p_order_id: string }; Returns: string }
       create_tenant_with_master: {
         Args: {
@@ -1116,6 +1485,20 @@ export type Database = {
         Returns: undefined
       }
       entity_module: { Args: { p_table: string }; Returns: string }
+      finance_invoice_balances: {
+        Args: never
+        Returns: {
+          balance: number
+          client_name: string
+          due_date: string
+          invoice_number: string
+          invoice_state: string
+          order_id: string
+          paid: number
+          status: string
+          total: number
+        }[]
+      }
       get_public_pricelist: { Args: never; Returns: Json }
       get_shipment_tracking: { Args: { p_token: string }; Returns: Json }
       has_role: {
@@ -1134,19 +1517,62 @@ export type Database = {
       }
       is_master: { Args: never; Returns: boolean }
       is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
+      issue_invoice: { Args: { p_order_id: string }; Returns: string }
       list_archive: { Args: never; Returns: Json }
+      next_sales_number: {
+        Args: { p_client: string; p_date: string; p_type: string }
+        Returns: string
+      }
+      record_payment: {
+        Args: {
+          p_amount: number
+          p_date: string
+          p_method: string
+          p_notes?: string
+          p_order_id: string
+          p_reference?: string
+        }
+        Returns: string
+      }
+      request_invoice_cancel: {
+        Args: { p_order_id: string; p_reason: string }
+        Returns: string
+      }
       restore_entity: {
         Args: { p_entity_id: string; p_entity_type: string; p_reason: string }
         Returns: undefined
       }
+      sales_pricelist: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          price: number
+          unit: string
+        }[]
+      }
+      sales_totals: { Args: { p_entity: string; p_id: string }; Returns: Json }
       save_order_atomic: {
         Args: { p_items: Json; p_order: Json; p_order_id: string }
         Returns: string
       }
+      save_sales_document: {
+        Args: { p_doc: Json; p_entity: string; p_id: string; p_items: Json }
+        Returns: string
+      }
       select_active_tenant: { Args: { p_tenant_id: string }; Returns: Json }
+      set_quotation_status: {
+        Args: { p_id: string; p_status: string }
+        Returns: undefined
+      }
       suggest_invoice_number: {
         Args: { p_client_name: string; p_invoice_date: string }
         Returns: string
+      }
+      sync_invoice_receivable: { Args: { p_id: string }; Returns: undefined }
+      void_payment: {
+        Args: { p_payment_id: string; p_reason: string }
+        Returns: undefined
       }
     }
     Enums: {

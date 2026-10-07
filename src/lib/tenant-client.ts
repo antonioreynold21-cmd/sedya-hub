@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
 
-export type BusinessTable = 'clients' | 'orders' | 'order_items' | 'shipments' | 'pricelist_items' | 'payables' | 'receivables' | 'cash_requests' | 'expenses' | 'tasks' | 'team_members';
+export type BusinessTable = 'clients' | 'orders' | 'order_items' | 'shipments' | 'pricelist_items' | 'payables' | 'receivables' | 'cash_requests' | 'expenses' | 'tasks' | 'team_members' | 'quotations' | 'quotation_items';
 const business = new Set<string>(['clients','orders','order_items','shipments','pricelist_items','payables','receivables','cash_requests','expenses','tasks','team_members']);
 // Context is used only for filters; the database validates the active membership independently.
 let activeTenant: string | null = null;

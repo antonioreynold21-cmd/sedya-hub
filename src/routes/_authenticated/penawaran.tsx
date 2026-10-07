@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { SalesList } from '@/components/sales-list';
+export const Route=createFileRoute('/_authenticated/penawaran')({head:()=>({meta:[{title:'Penawaran — Sedyain Hub'},{name:'description',content:'Penawaran harga client, persetujuan dan konversi menjadi order.'},{property:'og:title',content:'Penawaran — Sedyain Hub'},{property:'og:description',content:'Kelola penawaran bisnis dan konversi order.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:()=> <SalesList entity="quotations"/>});

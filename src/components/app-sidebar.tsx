@@ -40,6 +40,7 @@ const items: { title: string; url: string; icon: typeof Users; module: ModuleKey
   { title: "CRM", url: "/crm", icon: Users, module: "crm" },
   { title: "Client", url: "/client", icon: Building2, module: "crm" },
   { title: "Finance", url: "/finance", icon: Wallet, module: "finance" },
+  { title: "Penawaran", url: "/penawaran", icon: FileText, module: "quotations" },
   { title: "Order & Dokumen", url: "/orders", icon: FileText, module: "orders" },
   { title: "Pengiriman", url: "/shipments", icon: Truck, module: "shipments" },
   { title: "Pricelist", url: "/pricelist", icon: Tags, module: "pricelist" },
@@ -55,6 +56,7 @@ export function AppSidebar() {
 
   const {tenant,tenantId,access,switchTenant}=useTenant();
   const {data:pending=0}=useTenantQuery({queryKey:['approval-count'],enabled:isMaster,queryFn:async()=>{const {count,error}=await supabase.from('approval_requests').select('id',{count:'exact',head:true}).eq('tenant_id',tenantId??'').eq('status','pending');if(error)throw error;return count??0;}});
+  const {data:notifications=[]}=useTenantQuery({queryKey:['notifications'],queryFn:async()=>{const {data,error}=await supabase.from('notifications').select('*').eq('tenant_id',tenantId??'').is('read_at',null).order('created_at',{ascending:false});if(error)throw error;return data;}});
   const visible = items.filter((i) => can(i.module));
 
   return (
@@ -76,6 +78,7 @@ export function AppSidebar() {
         {!collapsed && (access?.tenants.length ?? 0)>1 && <Select value={tenantId??''} onValueChange={id=>{switchTenant(id).catch(e=>toast.error(e.message));}}><SelectTrigger aria-label="Pilih bisnis"><SelectValue/></SelectTrigger><SelectContent>{access?.tenants.map(t=><SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}</SelectContent></Select>}
       </SidebarHeader>
       <SidebarContent>
+        {!collapsed&&notifications.length>0&&<SidebarGroup><SidebarGroupLabel>Notifikasi</SidebarGroupLabel>{notifications.map(n=><div key={n.id} className="px-2 py-2 text-xs text-sidebar-foreground"><p>{n.message}</p><SidebarMenuButton onClick={async()=>{const {error}=await supabase.from('notifications').update({read_at:new Date().toISOString()}).eq('id',n.id);if(error)toast.error(error.message);else window.location.reload();}}>Tandai dibaca</SidebarMenuButton></div>)}</SidebarGroup>}
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
