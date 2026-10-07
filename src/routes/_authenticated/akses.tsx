@@ -165,7 +165,7 @@ function AccessPage() {
                 ) : (
                   <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                     {MODULES.map((m) => {
-                      const forced = m.key === "dashboard";
+                      const forced = false;
                       const checked = forced || row.modules.includes(m.key);
                       return (
                         <div key={m.key} className="flex items-center gap-2">

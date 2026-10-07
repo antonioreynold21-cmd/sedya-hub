@@ -1,3 +1,4 @@
+import { useAccess } from "@/hooks/use-access";
 import { useArchive } from "@/components/archive-dialog";
 import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
