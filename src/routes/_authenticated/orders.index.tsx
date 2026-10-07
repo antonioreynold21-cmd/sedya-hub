@@ -296,7 +296,7 @@ function OrdersPage() {
                       <Button
                         size="sm"
                         variant="secondary"
-                        disabled={shipments.some((s) => s.order_id === o.id)}
+                        disabled={!can("shipments") || shipments.some((s) => s.order_id === o.id)}
                         onClick={() => createShipment.mutate(o)}
                       >
                         <Truck className="size-4" />
