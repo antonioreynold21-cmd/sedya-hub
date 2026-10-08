@@ -18,11 +18,11 @@ import { Plus,Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatRupiah } from '@/lib/sedyain';
 import type { Json } from '@/integrations/supabase/types';
-export type EditorDoc = {id?:string;client_name:string;client_address?:string|null;document_date?:string;invoice_date?:string|null;order_date?:string;valid_until?:string|null;due_date?:string|null;notes?:string|null;section?:string|null;order_number?:string|null;quotation_number?:string;discount_type?:string;discount_value?:number;tax_enabled?:boolean};
+export type EditorDoc = {id?:string;client_id?:string|null;client_name:string;client_address?:string|null;document_date?:string;invoice_date?:string|null;order_date?:string;valid_until?:string|null;due_date?:string|null;notes?:string|null;section?:string|null;order_number?:string|null;quotation_number?:string;discount_type?:string;discount_value?:number;tax_enabled?:boolean};
 const blank:SalesItem={item_name:'',qty:1,price:0,unit:'kg',discount_type:'percent',discount_value:0};
 export function SalesEditor({entity,doc,initialItems,onClose}:{entity:SalesEntity;doc?:EditorDoc | undefined;initialItems?:SalesItem[] | undefined;onClose:()=>void}) {
  const archive=useArchive();const {tenant}=useTenant();const {isMaster}=useAccess();const qc=useQueryClient();
- const [form,setForm]=useState({client_name:doc?.client_name??'',client_address:doc?.client_address??'',document_date:doc?.document_date??doc?.order_date??doc?.invoice_date??jakartaDate(),valid_until:doc?.valid_until??'',due_date:doc?.due_date??'',notes:doc?.notes??'',section:doc?.section??'KITCHEN',discount_type:doc?.discount_type??'percent',discount_value:doc?.discount_value??0,tax_enabled:doc?.tax_enabled??false,number:'',number_reason:'',removal_reason:''});
+ const [form,setForm]=useState({client_id:doc?.client_id??null,client_name:doc?.client_name??'',client_address:doc?.client_address??'',document_date:doc?.document_date??doc?.order_date??doc?.invoice_date??jakartaDate(),valid_until:doc?.valid_until??'',due_date:doc?.due_date??'',notes:doc?.notes??'',section:doc?.section??'KITCHEN',discount_type:doc?.discount_type??'percent',discount_value:doc?.discount_value??0,tax_enabled:doc?.tax_enabled??false,number:'',number_reason:'',removal_reason:''});
  const [items,setItems]=useState<SalesItem[]>(initialItems?.length?initialItems:[{...blank}]);
  const prices=useTenantQuery({throwOnError:false,queryKey:['sales-pricelist'],queryFn:async()=>{const {data,error}=await supabase.rpc('sales_pricelist');if(error)throw error;return data;}});
  const totals=calculateSales(items,form.discount_type,form.discount_value,form.tax_enabled,tenant?.settings.ppn_rate??0);
