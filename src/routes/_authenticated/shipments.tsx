@@ -104,7 +104,7 @@ function ShipmentsPage() {
       />
 
       <div className="rounded-lg border border-border bg-card">
-        <Table>
+        <Table className="min-w-[1200px]">
           <TableHeader>
             <TableRow>
               <TableHead>Ship To</TableHead>
