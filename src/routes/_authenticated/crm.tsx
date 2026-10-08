@@ -37,6 +37,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CLIENT_STATUSES } from "@/lib/sedyain";
+import { suggestClientCode, validClientCode } from "@/lib/client-code";
 
 export const Route = createFileRoute("/_authenticated/crm")({
   head: () => ({
@@ -61,6 +62,7 @@ export const Route = createFileRoute("/_authenticated/crm")({
 
 type Client = {
   id: string;
+  code: string | null;
   name: string;
   contact_person: string | null;
   phone: string | null;
@@ -71,6 +73,7 @@ type Client = {
 
 const emptyForm = {
   name: "",
+  code: "",
   contact_person: "",
   phone: "",
   status: "Lead Baru",
@@ -122,6 +125,7 @@ function CrmPage() {
     mutationFn: async () => {
       const payload = {
         name: form.name.trim(),
+        code: form.code || null,
         contact_person: form.contact_person || null,
         phone: form.phone || null,
         status: form.status,
@@ -167,6 +171,7 @@ function CrmPage() {
     setEditId(c.id);
     setForm({
       name: c.name,
+      code: c.code ?? suggestClientCode(c.name),
       contact_person: c.contact_person ?? "",
       phone: c.phone ?? "",
       status: c.status,
@@ -276,9 +281,13 @@ function CrmPage() {
               <Label>Nama Client</Label>
               <Input
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onChange={(e) => setForm({ ...form, name: e.target.value, code: !form.code || form.code === suggestClientCode(form.name) ? suggestClientCode(e.target.value) : form.code })}
                 placeholder="Hotel / Resto / Kafe"
               />
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="client-code">Kode Client</Label>
+              <Input id="client-code" maxLength={8} value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="grid gap-1.5">
@@ -345,6 +354,10 @@ function CrmPage() {
               onClick={() => {
                 if (!form.name.trim()) {
                   toast.error("Nama client wajib diisi");
+                  return;
+                }
+                if (form.code && !validClientCode(form.code)) {
+                  toast.error("Kode client harus 1–8 huruf kapital atau angka");
                   return;
                 }
                 save.mutate();

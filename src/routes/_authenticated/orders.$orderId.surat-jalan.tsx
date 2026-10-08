@@ -8,6 +8,9 @@ import { tenantClient as supabase } from "@/lib/tenant-client";
 import { Button } from "@/components/ui/button";
 import { DocumentBrand, BrandRibbon, ContactBlock, DocHeader, DocSheet } from "@/components/doc-shell";
 import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
+import { useState } from "react";
+import { ShipmentTeamDialog } from "@/components/shipment-team-dialog";
+import { shipmentName } from "@/lib/client-code";
 
 export const Route = createFileRoute("/_authenticated/orders/$orderId/surat-jalan")({
   head: () => ({
@@ -35,7 +38,7 @@ function SignatureBox({ label, name }: { label: string; name: string | null | un
     <div className="text-[11px]">
       <p className="font-bold">{label}</p>
       <div className="mt-12 border-b border-neutral-500" />
-      <p className="mt-1 text-center">{name || "\u00A0"}</p>
+      <p className="mt-1 break-all text-center">{shipmentName(name)}</p>
     </div>
   );
 }
@@ -43,6 +46,7 @@ function SignatureBox({ label, name }: { label: string; name: string | null | un
 function SuratJalanPage() {
   const { orderId } = Route.useParams();
   const {can}=useAccess();
+  const [assignOpen, setAssignOpen] = useState(false);
 
   const { data, isPending, isError, refetch } = useQuery({
     throwOnError:false,
@@ -82,9 +86,9 @@ function SuratJalanPage() {
             <ArrowLeft className="size-4" /> Kembali
           </Link>
         </Button>
-        <Button size="sm" onClick={() => window.print()}>
+        <div className="flex gap-2"><Button size="sm" variant="outline" onClick={() => setAssignOpen(true)}>Assign tim</Button><Button size="sm" onClick={() => window.print()}>
           <Printer className="size-4" /> Download PDF / Print
-        </Button>
+        </Button></div>
       </div>
 
       <DocumentBrand settings={order?.brand_snapshot as import("@/components/tenant-provider").TenantSettings | null}><DocSheet>
@@ -107,9 +111,9 @@ function SuratJalanPage() {
             <p>{shipment?.section ?? order?.section ?? "-"}</p>
             <p className="whitespace-pre-line text-neutral-700">{order?.client_address ?? ""}</p>
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="font-bold">DO Number:</p>
-            <p>{shipment?.do_number ?? "-"}</p>
+            <p className="break-all">{shipment?.do_number ?? "—"}</p>
           </div>
           <div />
         </div>
@@ -172,6 +176,7 @@ function SuratJalanPage() {
 
         <BrandRibbon />
       </DocSheet></DocumentBrand>
+      {assignOpen && shipment && <div className="no-print"><ShipmentTeamDialog shipment={shipment} onClose={() => setAssignOpen(false)} /></div>}
     </div>
   );
 }
