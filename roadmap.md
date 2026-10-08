@@ -1,4 +1,8 @@
 # Tahap 2 — Alur transaksi lengkap
+# Tahap 2c — Perbaikan terbatas (CRM Tahap 2b ditunda)
+- [ ] Penomoran global/client, kode client, tanggal terbit invoice, backfill aman.
+- [ ] Penugasan tim pengiriman, snapshot nama dan nomor panjang.
+- [ ] Uji rollback, pemeriksaan tampilan dan dokumentasi singkat.
 # Tahap 2b — CRM
 - [ ] Skema, akses baca/penuh, RPC atomik, arsip, audit, opsi dan pengingat.
 - [ ] Ringkasan, customer/impor/detail, lead, pipeline, aktivitas, follow-up, pengaturan, tim.
