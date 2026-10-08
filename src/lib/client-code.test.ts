@@ -1,0 +1,10 @@
+import { strict as assert } from 'node:assert';
+import { suggestClientCode, validClientCode, shipmentName } from './client-code';
+assert.equal(suggestClientCode('Kuilo Dining And Venue'), 'KUILO');
+assert.equal(suggestClientCode('Rumarasa Indonesia'), 'RUMARA');
+assert.equal(validClientCode('RUMARASA'), true);
+assert.equal(validClientCode('ABCDEFGHI'), false);
+assert.equal(validClientCode('KUIL-O'), false);
+assert.equal(shipmentName('a1bd9a05-f70a-4a07-929b-c4c4dba914be'), '—');
+assert.equal(shipmentName('Antonio'), 'Antonio');
+console.log('PASS: kode singkat, batas 8, karakter kode, nama tanpa UUID');

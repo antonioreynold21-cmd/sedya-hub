@@ -169,6 +169,7 @@ export type Database = {
       }
       clients: {
         Row: {
+          code: string | null
           contact_person: string | null
           created_at: string
           delete_reason: string | null
@@ -184,6 +185,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          code?: string | null
           contact_person?: string | null
           created_at?: string
           delete_reason?: string | null
@@ -199,6 +201,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          code?: string | null
           contact_person?: string | null
           created_at?: string
           delete_reason?: string | null
@@ -1090,6 +1093,7 @@ export type Database = {
           deleted_at: string | null
           deleted_by: string | null
           delivery_by: string | null
+          delivery_by_member_id: string | null
           delivery_date: string | null
           do_number: string | null
           id: string
@@ -1102,6 +1106,7 @@ export type Database = {
           ship_to: string
           status: string
           stored_by: string | null
+          stored_by_member_id: string | null
           tenant_id: string
           updated_at: string
         }
@@ -1111,6 +1116,7 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           delivery_by?: string | null
+          delivery_by_member_id?: string | null
           delivery_date?: string | null
           do_number?: string | null
           id?: string
@@ -1123,6 +1129,7 @@ export type Database = {
           ship_to: string
           status?: string
           stored_by?: string | null
+          stored_by_member_id?: string | null
           tenant_id: string
           updated_at?: string
         }
@@ -1132,6 +1139,7 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           delivery_by?: string | null
+          delivery_by_member_id?: string | null
           delivery_date?: string | null
           do_number?: string | null
           id?: string
@@ -1144,16 +1152,31 @@ export type Database = {
           ship_to?: string
           status?: string
           stored_by?: string | null
+          stored_by_member_id?: string | null
           tenant_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "shipments_delivery_member_fk"
+            columns: ["tenant_id", "delivery_by_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["tenant_id", "id"]
+          },
           {
             foreignKeyName: "shipments_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shipments_stored_member_fk"
+            columns: ["tenant_id", "stored_by_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["tenant_id", "id"]
           },
           {
             foreignKeyName: "shipments_tenant_fk"
@@ -1324,6 +1347,7 @@ export type Database = {
           discount_approval_threshold_pct: number
           doc_numbering: Json
           logo_url: string | null
+          numbering_scope: string
           ppn_rate: number
           primary_color: string
           sales_numbering: Json
@@ -1337,6 +1361,7 @@ export type Database = {
           discount_approval_threshold_pct?: number
           doc_numbering?: Json
           logo_url?: string | null
+          numbering_scope?: string
           ppn_rate?: number
           primary_color?: string
           sales_numbering?: Json
@@ -1350,6 +1375,7 @@ export type Database = {
           discount_approval_threshold_pct?: number
           doc_numbering?: Json
           logo_url?: string | null
+          numbering_scope?: string
           ppn_rate?: number
           primary_color?: string
           sales_numbering?: Json
@@ -1454,6 +1480,14 @@ export type Database = {
         Args: { p_entity_id: string; p_entity_type: string; p_reason: string }
         Returns: string
       }
+      assign_shipment_team: {
+        Args: {
+          p_delivery_by: string
+          p_shipment_id: string
+          p_stored_by: string
+        }
+        Returns: undefined
+      }
       bootstrap_current_user: { Args: never; Returns: Json }
       can_access: { Args: { _module: string }; Returns: boolean }
       can_access_any: { Args: { _modules: string[] }; Returns: boolean }
@@ -1519,10 +1553,20 @@ export type Database = {
       is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
       issue_invoice: { Args: { p_order_id: string }; Returns: string }
       list_archive: { Args: never; Returns: Json }
-      next_sales_number: {
-        Args: { p_client: string; p_date: string; p_type: string }
-        Returns: string
-      }
+      next_sales_number:
+        | {
+            Args: { p_client: string; p_date: string; p_type: string }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_client: string
+              p_client_id: string
+              p_date: string
+              p_type: string
+            }
+            Returns: string
+          }
       record_payment: {
         Args: {
           p_amount: number
@@ -1542,6 +1586,10 @@ export type Database = {
         Args: { p_entity_id: string; p_entity_type: string; p_reason: string }
         Returns: undefined
       }
+      sales_client_code: {
+        Args: { p_client: string; p_client_id: string; p_tenant: string }
+        Returns: string
+      }
       sales_pricelist: {
         Args: never
         Returns: {
@@ -1551,6 +1599,7 @@ export type Database = {
           unit: string
         }[]
       }
+      sales_sequence_value: { Args: { p_number: string }; Returns: number }
       sales_totals: { Args: { p_entity: string; p_id: string }; Returns: Json }
       save_order_atomic: {
         Args: { p_items: Json; p_order: Json; p_order_id: string }
@@ -1564,6 +1613,13 @@ export type Database = {
       set_quotation_status: {
         Args: { p_id: string; p_status: string }
         Returns: undefined
+      }
+      shipment_team_options: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+        }[]
       }
       suggest_invoice_number: {
         Args: { p_client_name: string; p_invoice_date: string }

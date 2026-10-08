@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/table";
 import { SHIPMENT_STATUSES } from "@/lib/docs";
 import { formatDate } from "@/lib/sedyain";
+import { useState } from "react";
+import { ShipmentTeamDialog } from "@/components/shipment-team-dialog";
+import { shipmentName } from "@/lib/client-code";
 
 export const Route = createFileRoute("/_authenticated/shipments")({
   head: () => ({
@@ -56,6 +59,7 @@ const statusTone: Record<string, string> = {
 
 function ShipmentsPage() {
   const qc = useQueryClient();
+  const [assign, setAssign] = useState<{ id: string; stored_by_member_id?: string | null; delivery_by_member_id?: string | null } | null>(null);
 
   const { data: shipments = [], isLoading } = useQuery({
     queryKey: ["shipments-full"],
@@ -100,13 +104,14 @@ function ShipmentsPage() {
       />
 
       <div className="rounded-lg border border-border bg-card">
-        <Table>
+        <Table className="min-w-[1200px]">
           <TableHeader>
             <TableRow>
               <TableHead>Ship To</TableHead>
               <TableHead>DO Number</TableHead>
               <TableHead>Tanggal Kirim</TableHead>
-              <TableHead>Kurir / Delivery By</TableHead>
+              <TableHead>Stored By</TableHead>
+              <TableHead>Delivery By</TableHead>
               <TableHead>Diterima Oleh</TableHead>
               <TableHead className="w-[190px]">Status</TableHead>
               <TableHead className="text-right">Aksi</TableHead>
@@ -115,23 +120,24 @@ function ShipmentsPage() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
                   Memuat data pengiriman…
                 </TableCell>
               </TableRow>
             ) : shipments.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
                   Belum ada pengiriman. Buat dari menu Order &amp; Dokumen.
                 </TableCell>
               </TableRow>
             ) : (
               shipments.map((s) => (
                 <TableRow key={s.id}>
-                  <TableCell className="font-medium">{s.ship_to}</TableCell>
-                  <TableCell>{s.do_number ?? "-"}</TableCell>
+                  <TableCell className="max-w-48 whitespace-normal break-all font-medium">{s.ship_to}</TableCell>
+                  <TableCell className="max-w-48 whitespace-normal break-all">{s.do_number ?? "—"}</TableCell>
                   <TableCell>{s.delivery_date ? formatDate(s.delivery_date) : "-"}</TableCell>
-                  <TableCell>{s.delivery_by ?? "-"}</TableCell>
+                  <TableCell><p className="max-w-40 whitespace-normal break-all">{shipmentName(s.stored_by)}</p><Button variant="ghost" size="sm" onClick={() => setAssign(s)}>Assign tim</Button></TableCell>
+                  <TableCell><p className="max-w-40 whitespace-normal break-all">{shipmentName(s.delivery_by)}</p><Button variant="ghost" size="sm" onClick={() => setAssign(s)}>Assign tim</Button></TableCell>
                   <TableCell>
                     {s.received_by ? (
                       <span>
@@ -194,6 +200,7 @@ function ShipmentsPage() {
           </TableBody>
         </Table>
       </div>
+      {assign && <ShipmentTeamDialog shipment={assign} onClose={() => setAssign(null)} />}
     </div>
   );
 }

@@ -145,15 +145,15 @@ function TrackPage() {
 
             <div className="rounded-xl bg-white p-5 text-sm shadow-sm">
               <p className="text-xs text-neutral-500">Ship To</p>
-              <p className="font-semibold text-neutral-900">{shipment.ship_to}</p>
+              <p className="break-all font-semibold text-neutral-900">{shipment.ship_to}</p>
               <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
                 <div>
                   <p className="text-neutral-500">Tanggal Kirim</p>
                   <p className="font-medium">{formatDocDate(shipment.delivery_date)}</p>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-neutral-500">DO Number</p>
-                  <p className="font-medium">{shipment.do_number ?? "-"}</p>
+                  <p className="break-all font-medium">{shipment.do_number ?? "-"}</p>
                 </div>
               </div>
 
@@ -177,7 +177,7 @@ function TrackPage() {
               {shipment.received_by ? (
                 <p className="text-sm text-neutral-700">
                   Barang sudah dikonfirmasi diterima oleh{" "}
-                  <span className="font-semibold">{shipment.received_by}</span>.
+                  <span className="break-all font-semibold">{shipment.received_by}</span>.
                 </p>
               ) : (
                 <div className="space-y-3">
