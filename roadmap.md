@@ -1,4 +1,8 @@
 # Tahap 2 — Alur transaksi lengkap
+# Tahap 2d — Undangan akun dan onboarding bisnis
+- [ ] Skema undangan aman, RPC buat/cabut/pratinjau/terima, audit, dan akses operator.
+- [ ] UI undangan Master, penerimaan di halaman masuk, serta pemulihan akun tanpa bisnis.
+- [ ] Uji rollback keamanan/idempotensi, pemeriksaan browser, dan dokumentasi verifikasi.
 # Tahap 2c — Perbaikan terbatas (CRM Tahap 2b ditunda)
 - [ ] Penomoran global/client, kode client, tanggal terbit invoice, backfill aman.
 - [ ] Penugasan tim pengiriman, snapshot nama dan nomor panjang.
