@@ -99,6 +99,13 @@
       "when": 1791453667785,
       "tag": "0013_phase2c_numbering_and_shipment_team",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792143155614,
+      "tag": "0014_phase2d_tenant_invitations",
+      "breakpoints": true
     }
   ]
 }

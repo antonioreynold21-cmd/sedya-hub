@@ -11,6 +11,7 @@ import { BRAND_GREEN } from "@/lib/docs";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  validateSearch: (s: Record<string, unknown>) => ({ invite: typeof s.invite === "string" ? s.invite : undefined }),
   head: () => ({
     meta: [
       {property:"og:type",content:"website"},
@@ -34,29 +35,52 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { invite } = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [info, setInfo] = useState<{ business: string; email: string; role: string } | null>(null);
+  const [inviteError, setInviteError] = useState(false);
+
+  async function finish() {
+    if (invite) {
+      const { error } = await supabase.rpc("accept_tenant_invitation", { p_token: invite });
+      if (error) throw error;
+      toast.success("Undangan diterima");
+    }
+    window.location.href = "/";
+  }
 
   useEffect(() => {
+    if (invite) {
+      supabase.rpc("preview_tenant_invitation", { p_token: invite }).then(({ data, error }) => {
+        if (error || !data) { setInviteError(true); return; }
+        const d = data as { business: string; email: string; role: string };
+        setInfo(d); setEmail(d.email); setMode("signup");
+      });
+    }
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/" });
+      if (!data.session) return;
+      if (!invite) { navigate({ to: "/" }); return; }
+      finish().catch((err) => toast.error(err instanceof Error ? err.message : "Gagal menerima undangan"));
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invite]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
       if (mode === "signup") {
+        if (!invite || !info) throw new Error("Pendaftaran hanya melalui undangan");
         const { error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: { emailRedirectTo: `${window.location.origin}/auth` },
+          options: { emailRedirectTo: `${window.location.origin}/auth?invite=${encodeURIComponent(invite)}` },
         });
         if (error) throw error;
-        toast.success("Akun dibuat. Silakan masuk.");
+        toast.success("Akun dibuat. Buka tautan konfirmasi di email Anda, lalu masuk.");
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -64,7 +88,7 @@ function AuthPage() {
           password,
         });
         if (error) throw error;
-        navigate({ to: "/" });
+        await finish();
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gagal memproses permintaan");
@@ -86,6 +110,8 @@ function AuthPage() {
           </div>
         </div>
 
+        {inviteError && <p role="alert" className="rounded-md border border-destructive/40 p-3 text-sm text-destructive">Undangan tidak valid atau sudah tidak berlaku. Minta tautan baru ke Master bisnis.</p>}
+        {info && <p className="rounded-md border border-border p-3 text-sm">Anda diundang ke <b>{info.business}</b> sebagai {info.role === "master" ? "Master" : "Staff"}. Daftar atau masuk dengan email <b>{info.email}</b>.</p>}
         <form className="space-y-4" onSubmit={submit}>
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
@@ -94,6 +120,7 @@ function AuthPage() {
               type="email"
               autoComplete="email"
               required
+              readOnly={Boolean(info)}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nama@sedyain.id"
@@ -117,13 +144,13 @@ function AuthPage() {
           </Button>
         </form>
 
-        <button
+        {info ? <button
           type="button"
           className="w-full text-center text-xs text-neutral-600 underline"
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
         >
-          {mode === "signin" ? "Belum punya akun tim? Daftar" : "Sudah punya akun? Masuk"}
-        </button>
+          {mode === "signin" ? "Belum punya akun? Daftar" : "Sudah punya akun? Masuk"}
+        </button> : <p className="text-center text-xs text-neutral-600">Pendaftaran akun hanya melalui tautan undangan dari Master bisnis.</p>}
       </div>
     </div>
   );
