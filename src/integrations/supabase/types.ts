@@ -1306,6 +1306,62 @@ export type Database = {
           },
         ]
       }
+      tenant_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          created_by: string | null
+          email: string
+          expires_at: string
+          id: string
+          modules: string[]
+          revoked_at: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          status: string
+          tenant_id: string
+          token_hash: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          email: string
+          expires_at?: string
+          id?: string
+          modules?: string[]
+          revoked_at?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string
+          tenant_id: string
+          token_hash: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          modules?: string[]
+          revoked_at?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string
+          tenant_id?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_invitations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_memberships: {
         Row: {
           created_at: string
@@ -1455,6 +1511,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_tenant_invitation: { Args: { p_token: string }; Returns: string }
       active_tenant_id: { Args: never; Returns: string }
       admin_list_users: {
         Args: never
@@ -1505,6 +1562,14 @@ export type Database = {
       }
       convert_quotation: { Args: { p_id: string }; Returns: string }
       create_shipment_atomic: { Args: { p_order_id: string }; Returns: string }
+      create_tenant_invitation: {
+        Args: {
+          p_email: string
+          p_modules: string[]
+          p_role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: Json
+      }
       create_tenant_with_master: {
         Args: {
           p_is_demo?: boolean
@@ -1549,7 +1614,9 @@ export type Database = {
         }
         Returns: boolean
       }
+      invite_hash: { Args: { p_token: string }; Returns: string }
       is_master: { Args: never; Returns: boolean }
+      is_platform_operator: { Args: never; Returns: boolean }
       is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
       issue_invoice: { Args: { p_order_id: string }; Returns: string }
       list_archive: { Args: never; Returns: Json }
@@ -1567,6 +1634,11 @@ export type Database = {
             }
             Returns: string
           }
+      operator_create_business: {
+        Args: { p_master_email: string; p_name: string; p_slug: string }
+        Returns: Json
+      }
+      preview_tenant_invitation: { Args: { p_token: string }; Returns: Json }
       record_payment: {
         Args: {
           p_amount: number
@@ -1586,6 +1658,7 @@ export type Database = {
         Args: { p_entity_id: string; p_entity_type: string; p_reason: string }
         Returns: undefined
       }
+      revoke_tenant_invitation: { Args: { p_id: string }; Returns: undefined }
       sales_client_code: {
         Args: { p_client: string; p_client_id: string; p_tenant: string }
         Returns: string
