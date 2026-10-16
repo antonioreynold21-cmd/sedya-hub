@@ -45,5 +45,5 @@ DO $$ DECLARE t text; t2 text; t3 text; tid uuid; c int; BEGIN
  INSERT INTO r SELECT 'baca undangan non-Master', count(*)::text FROM public.tenant_invitations;
  RESET ROLE;
 END $$;
-SELECT * FROM r;
+DO $$ BEGIN RAISE EXCEPTION 'HASIL: %', (SELECT string_agg(k||' => '||v, E'\n') FROM r); END $$;
 ROLLBACK;
