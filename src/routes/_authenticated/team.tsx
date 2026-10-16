@@ -36,6 +36,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DIVISIONS } from "@/lib/sedyain";
+import { InvitationsPanel } from "@/components/invitations-panel";
+import { useAccess } from "@/hooks/use-access";
 
 export const Route = createFileRoute("/_authenticated/team")({
   head: () => ({
@@ -70,6 +72,7 @@ const emptyForm = { name: "", email: "", division: "Operasional", is_active: tru
 
 function TeamPage() {
   const qc = useQueryClient();
+  const { isMaster } = useAccess();
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -140,6 +143,8 @@ function TeamPage() {
           </Button>
         }
       />
+
+      {isMaster && <InvitationsPanel />}
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {DIVISIONS.map((d) => (
