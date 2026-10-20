@@ -106,6 +106,13 @@
       "when": 1792143155614,
       "tag": "0014_phase2d_tenant_invitations",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1792494164616,
+      "tag": "0015_pricelist_csv_import",
+      "breakpoints": true
     }
   ]
 }

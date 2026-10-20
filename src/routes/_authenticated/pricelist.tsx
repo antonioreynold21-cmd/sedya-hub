@@ -3,7 +3,10 @@ import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ExternalLink, Plus, Trash2 } from "lucide-react";
+import { Download, ExternalLink, FileDown, Plus, Trash2 } from "lucide-react";
+import { PricelistImportDialog } from "@/components/pricelist-import-dialog";
+import { downloadCsv, jakartaDate, toCsv } from "@/lib/csv";
+import { PRICELIST_HEADER, PRICELIST_TEMPLATE_ROWS } from "@/lib/pricelist-csv";
 import { toast } from "sonner";
 
 import { tenantClient as supabase } from "@/lib/tenant-client";
@@ -116,11 +119,20 @@ function PricelistPage() {
         title="Pricelist Harian"
         description="Perbarui harga setiap hari. Perubahan langsung tampil di link publik untuk client."
         actions={
-          <Button asChild variant="outline" size="sm">
-            <Link to="/harga" target="_blank">
-              <ExternalLink className="size-4" /> Lihat Link Publik
-            </Link>
-          </Button>
+          <>
+            <Button variant="outline" size="sm" onClick={() => downloadCsv("template-pricelist.csv", toCsv(PRICELIST_HEADER, PRICELIST_TEMPLATE_ROWS))}>
+              <FileDown className="size-4" /> Unduh template
+            </Button>
+            <Button variant="outline" size="sm" disabled={isLoading} onClick={() => downloadCsv(`pricelist-${jakartaDate()}.csv`, toCsv(PRICELIST_HEADER, items.map((i) => [i.name, i.category, i.unit, Number(i.price), i.is_active ? "ya" : "tidak"])))}>
+              <Download className="size-4" /> Ekspor CSV
+            </Button>
+            <PricelistImportDialog />
+            <Button asChild variant="outline" size="sm">
+              <Link to="/harga" target="_blank">
+                <ExternalLink className="size-4" /> Lihat Link Publik
+              </Link>
+            </Button>
+          </>
         }
       />
 

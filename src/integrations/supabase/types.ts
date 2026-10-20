@@ -1614,6 +1614,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      import_pricelist_rows: {
+        Args: { p_commit: boolean; p_rows: Json }
+        Returns: Json
+      }
       invite_hash: { Args: { p_token: string }; Returns: string }
       is_master: { Args: never; Returns: boolean }
       is_platform_operator: { Args: never; Returns: boolean }
