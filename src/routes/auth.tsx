@@ -11,7 +11,7 @@ import { BRAND_GREEN } from "@/lib/docs";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
-  validateSearch: (s: Record<string, unknown>) => ({ invite: typeof s.invite === "string" ? s.invite : undefined }),
+  validateSearch: (s: Record<string, unknown>) => ({ invite: typeof s["invite"] === "string" ? s["invite"] : undefined }),
   head: () => ({
     meta: [
       {property:"og:type",content:"website"},

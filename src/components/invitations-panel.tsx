@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Copy, MessageCircle, Plus, X } from "lucide-react";
 import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
-import { tenantClient as supabase } from "@/lib/tenant-client";
+import { supabase } from "@/integrations/supabase/client";
 import { MODULES } from "@/lib/access";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,7 @@ export function InvitationsPanel() {
       if (error) throw error;
       return data as Invite[];
     },
+    throwOnError: false,
   });
 
   const create = useMutation({
@@ -65,8 +66,8 @@ export function InvitationsPanel() {
       </div>
       {list.isPending ? <p className="text-sm text-muted-foreground">Memuat undangan…</p>
         : list.isError ? <p role="alert" className="text-sm text-destructive">Gagal memuat undangan. <button className="underline" onClick={() => list.refetch()}>Coba lagi</button></p>
-        : list.data.length === 0 ? <p className="text-sm text-muted-foreground">Tidak ada undangan menunggu.</p>
-        : <ul className="divide-y divide-border">{list.data.map((i) => (
+        : (list.data?.length ?? 0) === 0 ? <p className="text-sm text-muted-foreground">Tidak ada undangan menunggu.</p>
+        : <ul className="divide-y divide-border">{list.data?.map((i) => (
           <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
             <span className="min-w-0 break-all">{i.email} · {i.role === "master" ? "Master" : "Staff"} · berlaku s.d. {fmt(i.expires_at)}</span>
             <Button size="sm" variant="ghost" disabled={revoke.isPending} onClick={() => revoke.mutate(i.id)}><X className="size-4" /> Cabut</Button>
