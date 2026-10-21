@@ -13,15 +13,15 @@ export type ParsedRow = { line: number; name: string; category: string; unit: st
 export function parsePricelistCsv(text: string): { rows: ParsedRow[]; error?: string } {
   const table = parseCsv(text);
   if (table.length === 0) return { rows: [], error: "File kosong" };
-  const head = table[0].map((h) => cleanCell(h).toLowerCase());
+  const head = (table[0] ?? []).map((h) => cleanCell(h).toLowerCase());
   const idx = (k: string) => head.indexOf(k);
   const missing = ["nama", "satuan", "harga"].filter((k) => idx(k) < 0);
   if (missing.length) return { rows: [], error: `Kolom wajib tidak ada: ${missing.join(", ")}` };
   const body = table.slice(1);
   if (body.length > MAX_IMPORT_ROWS) return { rows: [], error: `Maksimal ${MAX_IMPORT_ROWS} baris per unggahan` };
-  const get = (r: string[], k: string) => (idx(k) >= 0 ? cleanCell(r[idx(k)]) : "");
+  const get = (r: string[], k: string) => (idx(k) >= 0 ? cleanCell(r[idx(k)] ?? "") : "");
   const rows = body.map((r, i): ParsedRow => {
-    const price = parseIdNumber(r[idx("harga")] ?? "");
+    const price = parseIdNumber(r[idx("harga") ?? -1] ?? "");
     const active = parseBool(get(r, "aktif"));
     const row: ParsedRow = { line: i + 2, name: get(r, "nama"), category: get(r, "kategori") || "Umum", unit: get(r, "satuan"), price: Number.isNaN(price) ? null : price, is_active: active };
     if (!row.name) row.error = "Nama wajib diisi";
