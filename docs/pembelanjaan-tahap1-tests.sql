@@ -51,7 +51,7 @@ BEGIN
  rejected:=false; BEGIN UPDATE public.vendors SET tenant_id='10000000-0000-0000-0000-000000000002' WHERE id='40000000-0000-0000-0000-000000000001'; EXCEPTION WHEN raise_exception THEN IF SQLERRM='tenant_id tidak boleh diubah' THEN rejected:=true; ELSE RAISE; END IF; END;
  IF NOT rejected THEN RAISE EXCEPTION 'Ubah tenant lolos'; END IF;
  INSERT INTO purchasing_results VALUES('tenant_id tidak dapat diubah','PASS');
- rejected:=false; BEGIN DELETE FROM public.vendors WHERE id='40000000-0000-0000-0000-000000000001'; EXCEPTION WHEN insufficient_privilege THEN rejected:=true; END;
+ rejected:=false; BEGIN DELETE FROM public.vendors WHERE id='40000000-0000-0000-0000-000000000001'; GET DIAGNOSTICS n=ROW_COUNT; rejected:=n=0; EXCEPTION WHEN insufficient_privilege THEN rejected:=true; END;
  IF NOT rejected THEN RAISE EXCEPTION 'Hapus permanen lolos'; END IF;
  INSERT INTO purchasing_results VALUES('Vendor tidak dapat dihapus permanen','PASS');
  PERFORM public.admin_set_modules('20000000-0000-0000-0000-000000000002',ARRAY['pembelanjaan']);
