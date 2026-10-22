@@ -340,6 +340,65 @@ export type Database = {
           },
         ]
       }
+      item_vendor_default: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          tenant_id: string
+          updated_at: string
+          vendor_cadangan_id: string | null
+          vendor_utama_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          tenant_id?: string
+          updated_at?: string
+          vendor_cadangan_id?: string | null
+          vendor_utama_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          tenant_id?: string
+          updated_at?: string
+          vendor_cadangan_id?: string | null
+          vendor_utama_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "item_vendor_default_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "item_vendor_default_tenant_id_item_id_fkey"
+            columns: ["tenant_id", "item_id"]
+            isOneToOne: true
+            referencedRelation: "pricelist_items"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "item_vendor_default_tenant_id_vendor_cadangan_id_fkey"
+            columns: ["tenant_id", "vendor_cadangan_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "item_vendor_default_tenant_id_vendor_utama_id_fkey"
+            columns: ["tenant_id", "vendor_utama_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["tenant_id", "id"]
+          },
+        ]
+      }
       module_access: {
         Row: {
           created_at: string
@@ -1499,6 +1558,101 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_roles_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_pic: {
+        Row: {
+          created_at: string
+          id: string
+          pic_utama: boolean
+          tenant_id: string
+          user_id: string
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pic_utama?: boolean
+          tenant_id?: string
+          user_id: string
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pic_utama?: boolean
+          tenant_id?: string
+          user_id?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_pic_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_pic_tenant_id_vendor_id_fkey"
+            columns: ["tenant_id", "vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["tenant_id", "id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          aktif: boolean
+          catatan: string | null
+          created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          kategori: string | null
+          kontak: string | null
+          nama: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          aktif?: boolean
+          catatan?: string | null
+          created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          kategori?: string | null
+          kontak?: string | null
+          nama: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Update: {
+          aktif?: boolean
+          catatan?: string | null
+          created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          kategori?: string | null
+          kontak?: string | null
+          nama?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
