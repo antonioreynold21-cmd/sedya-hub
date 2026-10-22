@@ -19,6 +19,7 @@ import {
   Building2,
   Archive,
   ClipboardCheck,
+  ShoppingBasket,
 } from "lucide-react";
 
 import {
@@ -45,6 +46,7 @@ const items: { title: string; url: string; icon: typeof Users; module: ModuleKey
   { title: "Order & Dokumen", url: "/orders", icon: FileText, module: "orders" },
   { title: "Pengiriman", url: "/shipments", icon: Truck, module: "shipments" },
   { title: "Pricelist", url: "/pricelist", icon: Tags, module: "pricelist" },
+  { title: "Pembelanjaan", url: "/pembelanjaan", icon: ShoppingBasket, module: "pembelanjaan" },
   { title: "Workflow Tim", url: "/workflow", icon: KanbanSquare, module: "workflow" },
   { title: "Team", url: "/team", icon: UsersRound, module: "team" },
 ];

@@ -1,4 +1,8 @@
 # Tahap 2 — Alur transaksi lengkap
+# Pembelanjaan — Tahap 1 (permintaan aktif)
+- [ ] Modul/izin, tiga tabel master dan pengamanan tenant dalam migrasi baru.
+- [ ] Halaman Vendor baca-saja Staff dan pengelolaan Master, ramah HP.
+- [ ] Uji rollback keamanan/aturan, browser Master dan dokumentasi singkat.
 # Tahap 2d — Undangan akun dan onboarding bisnis
 - [ ] Skema undangan aman, RPC buat/cabut/pratinjau/terima, audit, dan akses operator.
 - [ ] UI undangan Master, penerimaan di halaman masuk, serta pemulihan akun tanpa bisnis.

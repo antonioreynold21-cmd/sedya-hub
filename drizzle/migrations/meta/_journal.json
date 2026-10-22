@@ -120,6 +120,13 @@
       "when": 1792569234865,
       "tag": "0016_fix_import_pricelist_rows_record_bug",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792672200127,
+      "tag": "0017_pembelanjaan_master_vendor",
+      "breakpoints": true
     }
   ]
 }

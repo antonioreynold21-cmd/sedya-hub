@@ -1,4 +1,5 @@
 export const MODULES = [
+  { key: "pembelanjaan", label: "Pembelanjaan", url: "/pembelanjaan" },
   { key: "quotations", label: "Penawaran", url: "/penawaran" },
   { key: "dashboard", label: "Dashboard", url: "/" },
   { key: "crm", label: "CRM", url: "/crm" },
@@ -17,6 +18,7 @@ export const ALWAYS_ALLOWED: ModuleKey[] = [];
 
 /** Petakan pathname internal ke modul yang mengaturnya. */
 export function moduleForPath(pathname: string): ModuleKey | null {
+  if (pathname === "/pembelanjaan" || pathname.startsWith("/pembelanjaan/")) return "pembelanjaan";
   if (pathname === "/" ) return "dashboard";
   if (pathname.startsWith("/penawaran")) return "quotations";
   if (pathname.startsWith("/crm")) return "crm";
