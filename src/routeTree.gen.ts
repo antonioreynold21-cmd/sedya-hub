@@ -18,6 +18,7 @@ import { Route as AuthenticatedArsipRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedClientRouteImport } from './routes/_authenticated/client'
 import { Route as AuthenticatedCrmRouteImport } from './routes/_authenticated/crm'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
+import { Route as AuthenticatedPembelanjaanRouteImport } from './routes/_authenticated/pembelanjaan'
 import { Route as AuthenticatedPenawaranRouteImport } from './routes/_authenticated/penawaran'
 import { Route as AuthenticatedPersetujuanRouteImport } from './routes/_authenticated/persetujuan'
 import { Route as AuthenticatedPricelistRouteImport } from './routes/_authenticated/pricelist'
@@ -75,6 +76,12 @@ const AuthenticatedFinanceRoute = AuthenticatedFinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPembelanjaanRoute =
+  AuthenticatedPembelanjaanRouteImport.update({
+    id: '/pembelanjaan',
+    path: '/pembelanjaan',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPenawaranRoute = AuthenticatedPenawaranRouteImport.update({
   id: '/penawaran',
   path: '/penawaran',
@@ -151,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
+  '/pembelanjaan': typeof AuthenticatedPembelanjaanRoute
   '/penawaran': typeof AuthenticatedPenawaranRouteWithChildren
   '/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -172,6 +180,7 @@ export interface FileRoutesByTo {
   '/client': typeof AuthenticatedClientRoute
   '/crm': typeof AuthenticatedCrmRoute
   '/finance': typeof AuthenticatedFinanceRoute
+  '/pembelanjaan': typeof AuthenticatedPembelanjaanRoute
   '/penawaran': typeof AuthenticatedPenawaranRouteWithChildren
   '/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/pricelist': typeof AuthenticatedPricelistRoute
@@ -196,6 +205,7 @@ export interface FileRoutesById {
   '/_authenticated/client': typeof AuthenticatedClientRoute
   '/_authenticated/crm': typeof AuthenticatedCrmRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
+  '/_authenticated/pembelanjaan': typeof AuthenticatedPembelanjaanRoute
   '/_authenticated/penawaran': typeof AuthenticatedPenawaranRouteWithChildren
   '/_authenticated/persetujuan': typeof AuthenticatedPersetujuanRoute
   '/_authenticated/pricelist': typeof AuthenticatedPricelistRoute
@@ -221,6 +231,7 @@ export interface FileRouteTypes {
     | '/client'
     | '/crm'
     | '/finance'
+    | '/pembelanjaan'
     | '/penawaran'
     | '/persetujuan'
     | '/pricelist'
@@ -242,6 +253,7 @@ export interface FileRouteTypes {
     | '/client'
     | '/crm'
     | '/finance'
+    | '/pembelanjaan'
     | '/penawaran'
     | '/persetujuan'
     | '/pricelist'
@@ -265,6 +277,7 @@ export interface FileRouteTypes {
     | '/_authenticated/client'
     | '/_authenticated/crm'
     | '/_authenticated/finance'
+    | '/_authenticated/pembelanjaan'
     | '/_authenticated/penawaran'
     | '/_authenticated/persetujuan'
     | '/_authenticated/pricelist'
@@ -350,6 +363,13 @@ declare module '@tanstack/react-router' {
       path: '/finance'
       fullPath: '/finance'
       preLoaderRoute: typeof AuthenticatedFinanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pembelanjaan': {
+      id: '/_authenticated/pembelanjaan'
+      path: '/pembelanjaan'
+      fullPath: '/pembelanjaan'
+      preLoaderRoute: typeof AuthenticatedPembelanjaanRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/penawaran': {
@@ -460,6 +480,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClientRoute: typeof AuthenticatedClientRoute
   AuthenticatedCrmRoute: typeof AuthenticatedCrmRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
+  AuthenticatedPembelanjaanRoute: typeof AuthenticatedPembelanjaanRoute
   AuthenticatedPenawaranRoute: typeof AuthenticatedPenawaranRouteWithChildren
   AuthenticatedPersetujuanRoute: typeof AuthenticatedPersetujuanRoute
   AuthenticatedPricelistRoute: typeof AuthenticatedPricelistRoute
@@ -479,6 +500,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClientRoute: AuthenticatedClientRoute,
   AuthenticatedCrmRoute: AuthenticatedCrmRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
+  AuthenticatedPembelanjaanRoute: AuthenticatedPembelanjaanRoute,
   AuthenticatedPenawaranRoute: AuthenticatedPenawaranRouteWithChildren,
   AuthenticatedPersetujuanRoute: AuthenticatedPersetujuanRoute,
   AuthenticatedPricelistRoute: AuthenticatedPricelistRoute,
