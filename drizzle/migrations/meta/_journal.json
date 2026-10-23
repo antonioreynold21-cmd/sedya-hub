@@ -127,6 +127,13 @@
       "when": 1792672200127,
       "tag": "0017_pembelanjaan_master_vendor",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792748453505,
+      "tag": "0018_pembelanjaan_tahap2_rpc",
+      "breakpoints": true
     }
   ]
 }
