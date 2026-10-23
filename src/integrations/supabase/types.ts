@@ -1768,6 +1768,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      import_item_vendor_defaults: {
+        Args: { p_commit: boolean; p_rows: Json }
+        Returns: Json
+      }
       import_pricelist_rows: {
         Args: { p_commit: boolean; p_rows: Json }
         Returns: Json
@@ -1778,6 +1782,26 @@ export type Database = {
       is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
       issue_invoice: { Args: { p_order_id: string }; Returns: string }
       list_archive: { Args: never; Returns: Json }
+      list_pic_candidates: {
+        Args: never
+        Returns: {
+          email: string
+          nama: string
+          role: string
+          user_id: string
+        }[]
+      }
+      list_vendor_pics: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          nama: string
+          pic_utama: boolean
+          user_id: string
+          vendor_id: string
+        }[]
+      }
       next_sales_number:
         | {
             Args: { p_client: string; p_date: string; p_type: string }
@@ -1807,6 +1831,10 @@ export type Database = {
           p_reference?: string
         }
         Returns: string
+      }
+      remove_vendor_pic: {
+        Args: { p_user_id: string; p_vendor_id: string }
+        Returns: undefined
       }
       request_invoice_cancel: {
         Args: { p_order_id: string; p_reason: string }
@@ -1843,6 +1871,10 @@ export type Database = {
       select_active_tenant: { Args: { p_tenant_id: string }; Returns: Json }
       set_quotation_status: {
         Args: { p_id: string; p_status: string }
+        Returns: undefined
+      }
+      set_vendor_pic: {
+        Args: { p_user_id: string; p_utama: boolean; p_vendor_id: string }
         Returns: undefined
       }
       shipment_team_options: {

@@ -19,6 +19,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { VendorDefaultTab } from "@/components/vendor-default-tab";
+import { VendorPicTab } from "@/components/vendor-pic-tab";
 
 export const Route = createFileRoute("/_authenticated/pembelanjaan")({
   head: () => ({ meta: [
@@ -47,6 +49,7 @@ function PurchasingPage() {
   const { tenantId } = useTenant();
   const { isMaster, can } = useAccess();
   const qc = useQueryClient();
+  const [tab, setTab] = useState("vendor");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("aktif");
   const [open, setOpen] = useState(false);
@@ -110,8 +113,11 @@ function PurchasingPage() {
     </div>;
   }
   return <div className="space-y-5">
-    <PageHeader title="Pembelanjaan" actions={isMaster && <Button className={touch} onClick={() => edit(null)}><Plus /> Tambah vendor</Button>} />
-    <Tabs value="vendor"><TabsList><TabsTrigger value="vendor" className={touch}>Vendor</TabsTrigger></TabsList></Tabs>
+    <PageHeader title="Pembelanjaan" actions={isMaster && tab === "vendor" && <Button className={touch} onClick={() => edit(null)}><Plus /> Tambah vendor</Button>} />
+    <Tabs value={tab} onValueChange={setTab}><TabsList><TabsTrigger value="vendor" className={touch}>Vendor</TabsTrigger><TabsTrigger value="default" className={touch}>Vendor Default</TabsTrigger><TabsTrigger value="pic" className={touch}>PIC</TabsTrigger></TabsList></Tabs>
+    {tab === "default" && <VendorDefaultTab />}
+    {tab === "pic" && <VendorPicTab />}
+    {tab === "vendor" && <>
     <div className="flex flex-col gap-3 sm:flex-row">
       <div className="relative flex-1"><Search className="pointer-events-none absolute left-3 top-3 size-5 text-muted-foreground" /><Input className="min-h-11 pl-10" aria-label="Cari nama vendor" placeholder="Cari nama vendor…" value={search} onChange={e => setSearch(e.target.value)} /></div>
       <Select value={filter} onValueChange={setFilter}><SelectTrigger aria-label="Filter status vendor" className="min-h-11 sm:w-44"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="aktif">Aktif</SelectItem><SelectItem value="nonaktif">Nonaktif</SelectItem><SelectItem value="semua">Semua</SelectItem></SelectContent></Select>
@@ -127,6 +133,7 @@ function PurchasingPage() {
         <TableBody>{visible.map(v => <TableRow key={v.id}><TableCell className="break-words font-medium">{v.nama}</TableCell><TableCell className="break-words">{v.kategori || "—"}</TableCell><TableCell className="break-words">{v.kontak || "—"}</TableCell><TableCell className="whitespace-pre-wrap break-words">{v.catatan || "—"}</TableCell><TableCell><Badge variant={v.aktif ? "default" : "secondary"}>{v.aktif ? "Aktif" : "Nonaktif"}</Badge></TableCell>{isMaster && <TableCell>{actions(v)}</TableCell>}</TableRow>)}</TableBody>
       </Table></div>
     </>)}
+    </>}
     <Dialog open={open} onOpenChange={value => { if (!save.isPending) setOpen(value); }}><DialogContent className="max-h-[90dvh] overflow-y-auto"><DialogHeader><DialogTitle>{editing ? "Ubah vendor" : "Tambah vendor"}</DialogTitle><DialogDescription>Data vendor bisnis Anda.</DialogDescription></DialogHeader>
       <form onSubmit={e => { e.preventDefault(); save.mutate(); }} className="space-y-4">
         {(["nama", "kategori", "kontak"] as const).map(key => <div key={key} className="space-y-1.5"><Label htmlFor={`vendor-${key}`}>{key === "nama" ? "Nama vendor *" : key === "kategori" ? "Kategori" : "Kontak"}</Label><Input className={touch} id={`vendor-${key}`} required={key === "nama"} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} /></div>)}
