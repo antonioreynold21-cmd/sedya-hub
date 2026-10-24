@@ -1,3 +1,7 @@
+# Klien/outlet — Tahap 1 (permintaan aktif)
+- [ ] Migrasi pengaturan/outlet/item, proteksi dan penomoran tanpa perubahan data lama.
+- [ ] Dialog Pengaturan Client pada CRM dengan error lokal.
+- [ ] Uji rollback dan dokumentasi ringkas; pemeriksaan build.
 # Tahap 2 — Alur transaksi lengkap
 # Pembelanjaan — Tahap 1 (permintaan aktif)
 - [ ] Modul/izin, tiga tabel master dan pengamanan tenant dalam migrasi baru.

@@ -134,6 +134,13 @@
       "when": 1792748453505,
       "tag": "0018_pembelanjaan_tahap2_rpc",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792875042399,
+      "tag": "0019_client_settings_outlets_stage1",
+      "breakpoints": true
     }
   ]
 }

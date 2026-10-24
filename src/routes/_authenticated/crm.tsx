@@ -4,7 +4,9 @@ import { useTenantQuery as useQuery } from "@/hooks/use-tenant-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2, Settings } from "lucide-react";
+import { ClientSettingsDialog } from '@/components/client-settings-dialog';
+import { QueryState } from '@/components/query-state';
 import { toast } from "sonner";
 
 import { tenantClient as supabase } from "@/lib/tenant-client";
@@ -69,6 +71,9 @@ type Client = {
   status: string;
   pic: string | null;
   notes: string | null;
+  wajib_no_po: boolean;
+  perlu_tukar_faktur: boolean;
+  term_jatuh_tempo_hari: number | null;
 };
 
 const emptyForm = {
@@ -95,9 +100,12 @@ function CrmPage() {
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [settingsClient, setSettingsClient] = useState<Client | null>(null);
+  const canSettings = useAccess().can('crm');
 
-  const { data: clients = [], isLoading } = useQuery({
+  const { data: clients = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["clients"],
+    throwOnError: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("clients")
@@ -207,7 +215,23 @@ function CrmPage() {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-border bg-card card-soft">
+      <QueryState error={isError} retry={() => refetch()} />
+      <div className="space-y-3 md:hidden">
+        {isLoading && <QueryState loading />}
+        {!isLoading && !isError && !shown.length && <p className="py-6 text-sm text-muted-foreground">Belum ada data.</p>}
+        {!isError && shown.map(c => <div key={c.id} className="space-y-3 rounded-lg border border-border bg-card p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2"><p className="break-words font-medium">{c.name}</p><Badge className={statusVariant[c.status] ?? 'bg-muted text-foreground'}>{c.status}</Badge></div>
+          <p className="break-words text-sm text-muted-foreground">{c.contact_person ?? '—'} · {c.phone ?? '—'}</p>
+          <p className="break-words text-sm text-muted-foreground">PIC: {c.pic ?? '—'}</p>
+          {c.notes && <p className="break-words text-sm">{c.notes}</p>}
+          <div className="flex flex-wrap gap-2">
+            {canSettings && <Button variant="outline" className="min-h-11" onClick={() => setSettingsClient(c)}><Settings className="size-4" />Pengaturan</Button>}
+            <Button variant="ghost" size="icon" className="min-h-11 min-w-11" aria-label={`Ubah ${c.name}`} onClick={() => openEdit(c)}><Pencil className="size-4" /></Button>
+            <Button variant="ghost" size="icon" className="min-h-11 min-w-11" aria-label={`Arsipkan ${c.name}`} onClick={() => remove.mutate(c.id)}><Trash2 className="size-4 text-destructive" /></Button>
+          </div>
+        </div>)}
+      </div>
+      <div className="hidden overflow-hidden rounded-lg border border-border bg-card card-soft md:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -221,7 +245,7 @@ function CrmPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
+            {isError ? null : isLoading ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-muted-foreground">
                   Memuat data...
@@ -250,6 +274,7 @@ function CrmPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
+                      {canSettings && <Button variant="outline" className="min-h-11" onClick={() => setSettingsClient(c)}><Settings className="size-4" />Pengaturan</Button>}
                       <Button size="icon" variant="ghost" onClick={() => openEdit(c)}>
                         <Pencil className="size-4" />
                       </Button>
@@ -271,6 +296,7 @@ function CrmPage() {
         </Table>
       </div>
 
+      {settingsClient && <ClientSettingsDialog key={settingsClient.id} client={settingsClient} onClose={() => setSettingsClient(null)} />}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
