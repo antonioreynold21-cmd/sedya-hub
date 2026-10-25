@@ -1,4 +1,7 @@
-# Klien/outlet — Tahap 1 (permintaan aktif)
+# Klien/outlet — Tahap 1b (permintaan aktif)
+- [ ] Lengkapi save_sales_document untuk PO, snapshot outlet dan normalisasi section; RPC list_order_clients terbatas.
+- [ ] Uji rollback server/izin/hash/penomoran dan laporan ringkas; periksa hasil otomatis TypeScript/build.
+# Klien/outlet — Tahap 1
 - [ ] Migrasi pengaturan/outlet/item, proteksi dan penomoran tanpa perubahan data lama.
 - [ ] Dialog Pengaturan Client pada CRM dengan error lokal.
 - [ ] Uji rollback dan dokumentasi ringkas; pemeriksaan build.
