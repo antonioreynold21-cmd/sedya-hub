@@ -1867,6 +1867,17 @@ export type Database = {
       is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
       issue_invoice: { Args: { p_order_id: string }; Returns: string }
       list_archive: { Args: never; Returns: Json }
+      list_order_clients: {
+        Args: never
+        Returns: {
+          code: string
+          id: string
+          name: string
+          outlets: Json
+          perlu_tukar_faktur: boolean
+          wajib_no_po: boolean
+        }[]
+      }
       list_pic_candidates: {
         Args: never
         Returns: {

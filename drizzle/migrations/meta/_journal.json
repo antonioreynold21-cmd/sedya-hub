@@ -141,6 +141,13 @@
       "when": 1792875042399,
       "tag": "0019_client_settings_outlets_stage1",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1792909266336,
+      "tag": "0020_complete_order_client_outlet_server",
+      "breakpoints": true
     }
   ]
 }
