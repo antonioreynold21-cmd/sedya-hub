@@ -50,9 +50,9 @@ BEGIN
  PERFORM public.save_sales_document('orders',oid,j,its);
  SELECT count(*) INTO n FROM public.order_items WHERE order_id=oid AND outlet_id=a AND outlet_name='Outlet A';
  INSERT INTO outlet_results VALUES('Outlet lama nonaktif diterima dan snapshot tetap',CASE WHEN n=3 THEN 'PASS' ELSE 'FAIL' END);
- ok:=false; BEGIN PERFORM public.save_sales_document('orders',NULL,j,jsonb_build_array((its->3-'id')||jsonb_build_object('section_name',repeat('x',41)))); EXCEPTION WHEN others THEN ok:=SQLERRM='Nama section maksimal 40 karakter'; END;
+ ok:=false; BEGIN PERFORM public.save_sales_document('orders',NULL,j,jsonb_build_array(((its->3)-'id')||jsonb_build_object('section_name',repeat('x',41)))); EXCEPTION WHEN others THEN ok:=SQLERRM='Nama section maksimal 40 karakter'; END;
  INSERT INTO outlet_results VALUES('Section 41 karakter ditolak',CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END);
- ok:=false; BEGIN PERFORM public.save_sales_document('orders',NULL,j,jsonb_build_array((its->3-'id')||'{"section_rank":0}')); EXCEPTION WHEN others THEN ok:=SQLERRM='Urutan section minimal 1'; END;
+ ok:=false; BEGIN PERFORM public.save_sales_document('orders',NULL,j,jsonb_build_array(((its->3)-'id')||'{"section_rank":0}')); EXCEPTION WHEN others THEN ok:=SQLERRM='Urutan section minimal 1'; END;
  INSERT INTO outlet_results VALUES('Rank 0 ditolak',CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END);
  PERFORM public.save_sales_document('orders',NULL,j,'[{"item_name":"ZZ Empty","qty":1,"price":100,"section_name":"   ","section_rank":4}]');
  SELECT count(*) INTO n FROM public.order_items WHERE item_name='ZZ Empty' AND outlet_id IS NULL AND outlet_name IS NULL AND section_name IS NULL AND section_rank IS NULL;
