@@ -1,6 +1,7 @@
 # Klien/outlet — Tahap 1b (permintaan aktif)
-- [ ] Lengkapi save_sales_document untuk PO, snapshot outlet dan normalisasi section; RPC list_order_clients terbatas.
-- [ ] Uji rollback server/izin/hash/penomoran dan laporan ringkas; periksa hasil otomatis TypeScript/build.
+- [x] Lengkapi save_sales_document untuk PO, snapshot outlet dan normalisasi section; RPC list_order_clients terbatas.
+- [x] Uji rollback server/izin/penomoran dan laporan ringkas; build otomatis 0 error.
+- [ ] Cocokkan MD5 referensi: menunggu ekspresi serialisasi hash dari pengguna; tsgo terpisah tidak tersedia dalam pemeriksaan yang diizinkan lingkungan.
 # Klien/outlet — Tahap 1
 - [ ] Migrasi pengaturan/outlet/item, proteksi dan penomoran tanpa perubahan data lama.
 - [ ] Dialog Pengaturan Client pada CRM dengan error lokal.
