@@ -8,7 +8,8 @@ import { tenantClient as supabase } from "@/lib/tenant-client";
 import { Button } from "@/components/ui/button";
 import { DocumentBrand, BrandRibbon, ContactBlock, DocHeader, DocSheet } from "@/components/doc-shell";
 import { BRAND_GREEN, DELIVERY_TERMS, formatDocDate } from "@/lib/docs";
-import { useState } from "react";
+import { useState, Fragment } from "react";
+import { groupOrderItems } from "@/lib/item-groups";
 import { ShipmentTeamDialog } from "@/components/shipment-team-dialog";
 import { shipmentName } from "@/lib/client-code";
 
@@ -118,6 +119,37 @@ function SuratJalanPage() {
           <div />
         </div>
 
+        {(() => { const groups = groupOrderItems(items); if (!groups.legacy) return (
+        <table className="doc-grouped mt-8 w-full border-collapse text-[11px]">
+          <thead>
+            <tr className="border-b-2 border-neutral-800 text-left font-bold">
+              <th className="w-10 py-2">No</th>
+              <th className="py-2">Item Name &amp; Description</th>
+              <th className="w-20 py-2 text-right">Qty</th>
+              <th className="w-24 py-2">Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {groups.outlets.map((g, gi) => (
+              <Fragment key={gi}>
+                {g.outlet && <tr className="doc-group-head bg-muted"><td colSpan={4} className="py-1.5 font-bold">{g.outlet}</td></tr>}
+                {g.sections.map((s) => (
+                  <Fragment key={s.name}>
+                    <tr className="doc-group-head"><td colSpan={4} className="pt-2 text-[10px] font-semibold italic">{s.name}</td></tr>
+                    {s.items.map(({ item: it, no }) => (
+                      <tr key={it.id} className="doc-item-row border-b border-neutral-300">
+                        <td className="py-2 align-top">{no}</td>
+                        <td className="py-2 align-top">{it.item_name}</td>
+                        <td className="py-2 text-right align-top">{Number(it.qty)}</td>
+                        <td className="py-2 align-top">{it.unit}</td>
+                      </tr>
+                    ))}
+                  </Fragment>
+                ))}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>); return (
         <table className="mt-8 w-full border-collapse text-[11px]">
           <thead>
             <tr className="border-b-2 border-neutral-800 text-left font-bold">
@@ -144,7 +176,7 @@ function SuratJalanPage() {
               </tr>
             ) : null}
           </tbody>
-        </table>
+        </table>); })()}
 
         <div className="mt-6 text-[11px]">
           <p className="font-bold">Notes:</p>

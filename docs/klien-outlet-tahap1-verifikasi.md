@@ -23,3 +23,9 @@ Uji melalui alat database: BEGIN, JWT sintetis, SET LOCAL ROLE authenticated, DO
 | tsgo terpisah | Tidak teruji; pemeriksaan manual tidak dijalankan sesuai aturan lingkungan |
 
 **Hash referensi pengguna:** persamaan dengan `75a04fe6dc0954ddbf709991e1cb0c1a` / `bca4e42f8f3cf4efef66d4d8148cba2f` **belum dapat diverifikasi** karena ekspresi serialisasi pembentuk MD5 tidak diberikan. Dengan ekspresi `md5(jsonb_agg(t ORDER BY id)::text)` pada kolom yang diminta, hasil order=`9f43a81283a13923f478f79ae48e6204`, item aktif=`b96cc43c83015fdc4e5ff0bc7bb0d338`; identik sebelum/sesudah pengujian, tetapi berbeda dari referensi pengguna. Perbedaan ini bukan bukti data berubah. Semua uji dibatalkan; tidak publish, tidak browser/screenshot.
+**Tahap 2a (cetak), 26 Okt 2026**
+- `groupOrderItems` (src/lib/item-groups.ts) + `calculateItemTotal` (sales.ts, rumus sama dengan kolom Jumlah invoice); tes `item-groups.test.ts` PASS (legacy, urutan, Others default, manual, 1/2 outlet, nomor berlanjut, Σ subtotal section = subtotal−diskon item blok total).
+- Surat Jalan & Invoice: cabang legacy memakai markup lama tanpa perubahan; cabang berkelompok hanya bila ada outlet/section. Query tetap `select('*')`.
+- CSS cetak: thead berulang, judul grup break-after: avoid, baris item break-inside: avoid (hanya kelas `doc-grouped`).
+- tsgo --noEmit: 0 error. Hash order lama = 75a04fe6dc0954ddbf709991e1cb0c1a (sama).
+- Tidak teruji: tampilan cetak A4/HP dengan data nyata berkelompok.
