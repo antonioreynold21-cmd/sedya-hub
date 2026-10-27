@@ -25,6 +25,7 @@ import { Route as AuthenticatedPricelistRouteImport } from './routes/_authentica
 import { Route as AuthenticatedShipmentsRouteImport } from './routes/_authenticated/shipments'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedWorkflowRouteImport } from './routes/_authenticated/workflow'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as TTokenRouteImport } from './routes/t.$token'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders.index'
 import { Route as AuthenticatedPenawaranQuotationIdRouteImport } from './routes/_authenticated/penawaran.$quotationId'
@@ -113,6 +114,11 @@ const AuthenticatedWorkflowRoute = AuthenticatedWorkflowRouteImport.update({
   path: '/workflow',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TTokenRoute = TTokenRouteImport.update({
   id: '/t/$token',
   path: '/t/$token',
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/shipments': typeof AuthenticatedShipmentsRoute
   '/team': typeof AuthenticatedTeamRoute
   '/workflow': typeof AuthenticatedWorkflowRoute
+  '/api/health': typeof ApiHealthRoute
   '/t/$token': typeof TTokenRoute
   '/penawaran/$quotationId': typeof AuthenticatedPenawaranQuotationIdRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/shipments': typeof AuthenticatedShipmentsRoute
   '/team': typeof AuthenticatedTeamRoute
   '/workflow': typeof AuthenticatedWorkflowRoute
+  '/api/health': typeof ApiHealthRoute
   '/t/$token': typeof TTokenRoute
   '/': typeof AuthenticatedIndexRoute
   '/penawaran/$quotationId': typeof AuthenticatedPenawaranQuotationIdRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/shipments': typeof AuthenticatedShipmentsRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
   '/_authenticated/workflow': typeof AuthenticatedWorkflowRoute
+  '/api/health': typeof ApiHealthRoute
   '/t/$token': typeof TTokenRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/penawaran/$quotationId': typeof AuthenticatedPenawaranQuotationIdRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/team'
     | '/workflow'
+    | '/api/health'
     | '/t/$token'
     | '/penawaran/$quotationId'
     | '/orders/'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/team'
     | '/workflow'
+    | '/api/health'
     | '/t/$token'
     | '/'
     | '/penawaran/$quotationId'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/_authenticated/shipments'
     | '/_authenticated/team'
     | '/_authenticated/workflow'
+    | '/api/health'
     | '/t/$token'
     | '/_authenticated/'
     | '/_authenticated/penawaran/$quotationId'
@@ -297,6 +309,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   HargaRoute: typeof HargaRoute
+  ApiHealthRoute: typeof ApiHealthRoute
   TTokenRoute: typeof TTokenRoute
 }
 
@@ -414,6 +427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWorkflowRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/t/$token': {
       id: '/t/$token'
       path: '/t/$token'
@@ -524,6 +544,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   HargaRoute: HargaRoute,
+  ApiHealthRoute: ApiHealthRoute,
   TTokenRoute: TTokenRoute,
 }
 export const routeTree = rootRouteImport
