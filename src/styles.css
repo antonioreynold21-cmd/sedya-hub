@@ -189,3 +189,9 @@
   size: A4;
   margin: 12mm;
 }
+
+@media print {
+  .doc-grouped thead { display: table-header-group; }
+  .doc-grouped .doc-group-head { break-after: avoid; page-break-after: avoid; }
+  .doc-grouped .doc-item-row { break-inside: avoid; page-break-inside: avoid; }
+}

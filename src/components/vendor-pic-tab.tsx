@@ -79,7 +79,7 @@ export function VendorPicTab() {
           </li>)}</ul>}
           {isMaster && <div className="flex gap-2">
             <Select value={pick[v.id] ?? ""} onValueChange={(val) => setPick((p) => ({ ...p, [v.id]: val }))}><SelectTrigger className={`${touch} flex-1`} aria-label={`Pilih PIC untuk ${v.nama}`}><SelectValue placeholder="Pilih anggota tim" /></SelectTrigger><SelectContent>{options.map((c) => <SelectItem key={c.user_id} value={c.user_id}>{c.nama}</SelectItem>)}</SelectContent></Select>
-            <Button className={touch} disabled={busy || !pick[v.id]} onClick={() => setPic.mutate({ vendor: v.id, user: pick[v.id], utama: false })}><Plus /> Tambah</Button>
+            <Button className={touch} disabled={busy || !pick[v.id]} onClick={() => { const sel = pick[v.id]; if (sel) setPic.mutate({ vendor: v.id, user: sel, utama: false }); }}><Plus /> Tambah</Button>
           </div>}
         </article>;
       })}</div>)}

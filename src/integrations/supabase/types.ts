@@ -167,6 +167,63 @@ export type Database = {
           },
         ]
       }
+      client_outlets: {
+        Row: {
+          aktif: boolean
+          alamat: string | null
+          client_id: string
+          created_at: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          nama: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          aktif?: boolean
+          alamat?: string | null
+          client_id: string
+          created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          nama: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          aktif?: boolean
+          alamat?: string | null
+          client_id?: string
+          created_at?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          nama?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_outlets_tenant_id_client_id_fkey"
+            columns: ["tenant_id", "client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "client_outlets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           code: string | null
@@ -178,11 +235,14 @@ export type Database = {
           id: string
           name: string
           notes: string | null
+          perlu_tukar_faktur: boolean
           phone: string | null
           pic: string | null
           status: string
           tenant_id: string
+          term_jatuh_tempo_hari: number | null
           updated_at: string
+          wajib_no_po: boolean
         }
         Insert: {
           code?: string | null
@@ -194,11 +254,14 @@ export type Database = {
           id?: string
           name: string
           notes?: string | null
+          perlu_tukar_faktur?: boolean
           phone?: string | null
           pic?: string | null
           status?: string
           tenant_id: string
+          term_jatuh_tempo_hari?: number | null
           updated_at?: string
+          wajib_no_po?: boolean
         }
         Update: {
           code?: string | null
@@ -210,11 +273,14 @@ export type Database = {
           id?: string
           name?: string
           notes?: string | null
+          perlu_tukar_faktur?: boolean
           phone?: string | null
           pic?: string | null
           status?: string
           tenant_id?: string
+          term_jatuh_tempo_hari?: number | null
           updated_at?: string
+          wajib_no_po?: boolean
         }
         Relationships: [
           {
@@ -487,9 +553,13 @@ export type Database = {
           id: string
           item_name: string
           order_id: string
+          outlet_id: string | null
+          outlet_name: string | null
           position: number
           price: number
           qty: number
+          section_name: string | null
+          section_rank: number | null
           tenant_id: string
           unit: string
           updated_at: string
@@ -504,9 +574,13 @@ export type Database = {
           id?: string
           item_name: string
           order_id: string
+          outlet_id?: string | null
+          outlet_name?: string | null
           position?: number
           price?: number
           qty?: number
+          section_name?: string | null
+          section_rank?: number | null
           tenant_id: string
           unit?: string
           updated_at?: string
@@ -521,9 +595,13 @@ export type Database = {
           id?: string
           item_name?: string
           order_id?: string
+          outlet_id?: string | null
+          outlet_name?: string | null
           position?: number
           price?: number
           qty?: number
+          section_name?: string | null
+          section_rank?: number | null
           tenant_id?: string
           unit?: string
           updated_at?: string
@@ -535,6 +613,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_outlet_fk"
+            columns: ["tenant_id", "outlet_id"]
+            isOneToOne: false
+            referencedRelation: "client_outlets"
+            referencedColumns: ["tenant_id", "id"]
           },
           {
             foreignKeyName: "order_items_tenant_fk"
@@ -1782,6 +1867,17 @@ export type Database = {
       is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
       issue_invoice: { Args: { p_order_id: string }; Returns: string }
       list_archive: { Args: never; Returns: Json }
+      list_order_clients: {
+        Args: never
+        Returns: {
+          code: string
+          id: string
+          name: string
+          outlets: Json
+          perlu_tukar_faktur: boolean
+          wajib_no_po: boolean
+        }[]
+      }
       list_pic_candidates: {
         Args: never
         Returns: {
