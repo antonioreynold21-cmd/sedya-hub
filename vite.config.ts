@@ -1,8 +1,12 @@
-import tailwindcss from "@tailwindcss/vite";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import viteReact from "@vitejs/plugin-react";
-import { nitro } from "nitro/vite";
-import { defineConfig, loadEnv, type ConfigEnv } from "vite";
+// @lovable.dev/vite-tanstack-config already includes the following — do NOT add them manually
+// or the app will break with duplicate plugins:
+//   - TanStack devtools (dev-only, first), tanstackStart (with the server-only import guard),
+//     viteReact, tailwindcss, vite-tsconfig-paths, nitro (build-only, pinned to the layout
+//     Lovable deploys from dist/), VITE_* env injection, @ path alias, React/TanStack dedupe,
+//     error logger plugins, and sandbox detection (port/host/strictPort).
+// You can pass additional config via defineConfig({ vite: { ... }, nitro: { ... } }) if needed.
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { loadEnv, type ConfigEnv, type Plugin } from "vite";
 
 import { assertSameSupabaseProject, browserSupabaseEnv, requireEnv } from "./src/lib/supabase-env";
 
@@ -26,46 +30,26 @@ function loadLocalEnv({ command, mode }: ConfigEnv) {
   }
 }
 
-export default defineConfig((env) => {
-  loadLocalEnv(env);
-  const { command } = env;
+// Runs the project's own Supabase environment guard on every `vite dev` / `vite build`,
+// before the bundler starts, so a mismatched or missing key fails fast.
+const supabaseEnvGuard: Plugin = {
+  name: "sedyain-supabase-env-guard",
+  config(_config, env) {
+    loadLocalEnv(env);
+  },
+};
 
-  return {
-    server: {
-      host: true,
-      port: 8080,
-    },
-    resolve: {
-      tsconfigPaths: true,
-      alias: { "@": `${process.cwd()}/src` },
-      dedupe: [
-        "react",
-        "react-dom",
-        "react/jsx-runtime",
-        "react/jsx-dev-runtime",
-        "@tanstack/react-query",
-        "@tanstack/query-core",
-      ],
-    },
-    plugins: [
-      tailwindcss(),
-      tanstackStart({
-        importProtection: {
-          behavior: "error",
-          client: {
-            files: ["**/server/**"],
-            specifiers: ["server-only"],
-          },
-        },
-        server: { entry: "server" },
-      }),
-      command === "build" &&
-        nitro({
-          // Node is the fallback. Vercel, Netlify, and Cloudflare still
-          // auto-detect when their build environment is present.
-          defaultPreset: "node-server",
-        }),
-      viteReact(),
-    ],
-  };
+export default defineConfig({
+  tanstackStart: {
+    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
+    // nitro/vite builds from this
+    server: { entry: "server" },
+  },
+  nitro: {
+    // Node is the fallback for self-hosted builds (`npm start`). Inside a Lovable build
+    // the platform pins its own Cloudflare preset and dist/ output layout, so this only
+    // applies outside it.
+    preset: "node-server",
+  },
+  plugins: [supabaseEnvGuard],
 });
