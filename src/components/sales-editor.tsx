@@ -28,11 +28,29 @@ function friendly(m:string){return FRIENDLY.find(f=>m.includes(f))??m;}
 export function SalesEditor({entity,doc,initialItems,onClose}:{entity:SalesEntity;doc?:EditorDoc | undefined;initialItems?:SalesItem[] | undefined;onClose:()=>void}) {
  const archive=useArchive();const {tenant}=useTenant();const {isMaster}=useAccess();const qc=useQueryClient();
  const [form,setForm]=useState({client_id:doc?.client_id??null,client_name:doc?.client_name??'',client_address:doc?.client_address??'',document_date:doc?.document_date??doc?.order_date??doc?.invoice_date??jakartaDate(),valid_until:doc?.valid_until??'',due_date:doc?.due_date??'',notes:doc?.notes??'',section:doc?.section??'KITCHEN',discount_type:doc?.discount_type??'percent',discount_value:doc?.discount_value??0,tax_enabled:doc?.tax_enabled??false,number:'',number_reason:'',removal_reason:''});
- const [items,setItems]=useState<SalesItem[]>(initialItems?.length?initialItems:[{...blank}]);
+ const isOrder=entity==='orders';
+ const [items,setItems]=useState<EItem[]>(initialItems?.length?(initialItems as EItem[]):[{...blank}]);
+ const [po,setPo]=useState(doc?.po_number??'');
+ const [manual,setManual]=useState<string[]>(()=>{const seen:string[]=[];[...((initialItems??[]) as EItem[])].sort((a,b)=>(a.section_rank??0)-(b.section_rank??0)).forEach(i=>{const s=i.section_name?.trim();if(s&&!BASE.some(b=>b.toLowerCase()===s.toLowerCase())&&!seen.some(x=>x.toLowerCase()===s.toLowerCase()))seen.push(s);});return seen;});
+ const [newSection,setNewSection]=useState('');const [clientSearch,setClientSearch]=useState('');
+ const [clientId,setClientId]=useState<string|null>(isOrder?(doc?.client_id??null):null);
+ const clientsQ=useTenantQuery({throwOnError:false,enabled:isOrder,queryKey:['order-clients'],queryFn:async()=>{const {data,error}=await supabase.rpc('list_order_clients');if(error)throw error;return (data??[]) as unknown as OrderClient[];}});
+ const client=clientsQ.data?.find(c=>c.id===clientId)??null;
+ const outlets=client?.outlets??[];
+ const sections=[...BASE,...manual];
+ const rankOf=(s:string|null|undefined)=>{if(!s)return null;const l=s.toLowerCase();const b=BASE.findIndex(x=>x.toLowerCase()===l);if(b>=0)return b+1;const m=manual.findIndex(x=>x.toLowerCase()===l);return m>=0?4+m:4;};
+ const newItem=():EItem=>{if(!isOrder||!clientId)return {...blank};const prev=items[items.length-1];return {...blank,outlet_id:prev?.outlet_id??outlets[0]?.id??null,section_name:'Others',section_rank:3};};
+ const pickClient=(id:string)=>{if(id==='none'){setClientId(null);return;}const c=clientsQ.data?.find(x=>x.id===id);if(!c)return;setClientId(c.id);setForm(f=>({...f,client_id:c.id,client_name:f.client_name.trim()?f.client_name:c.name}));setItems(its=>its.map(it=>({...it,outlet_id:it.outlet_id??c.outlets[0]?.id??null,section_name:it.section_name??'Others',section_rank:it.section_rank??3})));};
+ const addSection=()=>{const s=newSection.trim();if(!s||s.length>40){toast.error('Nama section 1–40 karakter');return;}if(sections.some(x=>x.toLowerCase()===s.toLowerCase())){toast.error('Section sudah ada');return;}setManual([...manual,s]);setNewSection('');};
  const prices=useTenantQuery({throwOnError:false,queryKey:['sales-pricelist'],queryFn:async()=>{const {data,error}=await supabase.rpc('sales_pricelist');if(error)throw error;return data;}});
  const totals=calculateSales(items,form.discount_type,form.discount_value,form.tax_enabled,tenant?.settings.ppn_rate??0);
- const save=useMutation({mutationFn:async()=>{validateSales(items,form.discount_type,form.discount_value);if(!form.client_name.trim()||!form.document_date)throw new Error('Client dan tanggal wajib');if(doc&&initialItems?.some(i=>i.id&&!items.some(n=>n.id===i.id))&&!form.removal_reason.trim())throw new Error('Alasan pengeluaran item wajib');const {data,error}=await supabase.rpc('save_sales_document',{p_entity:entity,p_id:doc?.id??null as unknown as string,p_doc:form,p_items:items as unknown as Json});if(error)throw error;return data;},onSuccess:async()=>{await qc.invalidateQueries();toast.success('Dokumen disimpan');onClose();},onError:(e:Error)=>toast.error(e.message)});
- const patch=(i:number,values:Partial<SalesItem>)=>setItems(items.map((it,n)=>n===i?{...it,...values}:it));
+ const save=useMutation({mutationFn:async()=>{validateSales(items,form.discount_type,form.discount_value);if(!form.client_name.trim()||!form.document_date)throw new Error('Client dan tanggal wajib');if(doc&&initialItems?.some(i=>i.id&&!items.some(n=>n.id===i.id))&&!form.removal_reason.trim())throw new Error('Alasan pengeluaran item wajib');
+  let pDoc:Record<string,unknown>=form;let pItems:unknown=items;
+  if(isOrder){if(client?.wajib_no_po&&!po.trim())throw new Error('Client ini mewajibkan Customer PO No.');if(client&&outlets.length&&items.some(i=>!i.outlet_id))throw new Error('Outlet wajib dipilih untuk setiap item');
+   pDoc={...form,client_id:client?clientId:null,po_number:po.trim()||null};
+   pItems=items.map(it=>client?{...it,outlet_id:it.outlet_id||null,section_name:it.section_name||null,section_rank:rankOf(it.section_name)}:{...it,outlet_id:null,outlet_name:null,section_name:null,section_rank:null});}
+  const {data,error}=await supabase.rpc('save_sales_document',{p_entity:entity,p_id:doc?.id??null as unknown as string,p_doc:pDoc as unknown as Json,p_items:pItems as Json});if(error)throw error;return data;},onSuccess:async()=>{await qc.invalidateQueries();toast.success('Dokumen disimpan');onClose();},onError:(e:Error)=>toast.error(friendly(e.message))});
+ const patch=(i:number,values:Partial<EItem>)=>setItems(items.map((it,n)=>n===i?{...it,...values}:it));
  return <Dialog open onOpenChange={v=>{if(!v&&!save.isPending)onClose();}}><DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl"><DialogHeader><DialogTitle>{doc?'Edit':'Buat'} {entity==='orders'?'Order':'Penawaran'}</DialogTitle></DialogHeader><div className="grid gap-3 sm:grid-cols-2">
  <div><Label htmlFor="sales-client">Nama Client</Label><Input id="sales-client" value={form.client_name} onChange={e=>setForm({...form,client_name:e.target.value})}/></div>
  <div><Label htmlFor="sales-date">Tanggal dokumen</Label><Input id="sales-date" type="date" value={form.document_date} onChange={e=>setForm({...form,document_date:e.target.value})}/></div>
