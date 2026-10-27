@@ -29,3 +29,6 @@ Uji melalui alat database: BEGIN, JWT sintetis, SET LOCAL ROLE authenticated, DO
 - CSS cetak: thead berulang, judul grup break-after: avoid, baris item break-inside: avoid (hanya kelas `doc-grouped`).
 - tsgo --noEmit: 0 error. Hash order lama = 75a04fe6dc0954ddbf709991e1cb0c1a (sama).
 - Tidak teruji: tampilan cetak A4/HP dengan data nyata berkelompok.
+- Tahap 2b: form Order kini punya pilihan client (list_order_clients), Customer PO No. (wajib bila client mewajibkan), badge "Perlu tukar faktur", dropdown Outlet/Section per item, dan "+ Tambah section" (1–40 karakter, tanpa duplikat).
+- Tanpa client dipilih: outlet/section dikirim NULL dan client_id null (perilaku lama); jalur Penawaran tidak berubah. tsgo --noEmit 0 error; tes unit node:assert di src/lib lulus.
+- TIDAK TERUJI: tampilan form dan HP (360px) belum diuji di browser; alamat client tidak terisi otomatis karena list_order_clients tidak mengembalikan alamat.
