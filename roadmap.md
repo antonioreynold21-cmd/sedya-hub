@@ -1,3 +1,5 @@
+# Perbaikan build (permintaan aktif)
+- [x] Kembalikan konfigurasi build standar sehingga folder hasil deploy (dist/) dibuat lagi; build, typecheck dan pratinjau lulus.
 # Klien/outlet — Tahap 1b (permintaan aktif)
 - [x] Lengkapi save_sales_document untuk PO, snapshot outlet dan normalisasi section; RPC list_order_clients terbatas.
 - [x] Uji rollback server/izin/penomoran dan laporan ringkas; build otomatis 0 error.
