@@ -111,6 +111,60 @@ export type Database = {
           },
         ]
       }
+      belanja_audit: {
+        Row: {
+          daftar_id: string
+          id: string
+          item_id: string
+          qty_dibeli: number | null
+          status_baru: string
+          status_lama: string | null
+          sumber: string
+          tenant_id: string
+          user_id: string | null
+          waktu: string
+        }
+        Insert: {
+          daftar_id: string
+          id?: string
+          item_id: string
+          qty_dibeli?: number | null
+          status_baru: string
+          status_lama?: string | null
+          sumber: string
+          tenant_id: string
+          user_id?: string | null
+          waktu?: string
+        }
+        Update: {
+          daftar_id?: string
+          id?: string
+          item_id?: string
+          qty_dibeli?: number | null
+          status_baru?: string
+          status_lama?: string | null
+          sumber?: string
+          tenant_id?: string
+          user_id?: string | null
+          waktu?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "belanja_audit_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "belanja_audit_tenant_id_item_id_fkey"
+            columns: ["tenant_id", "item_id"]
+            isOneToOne: false
+            referencedRelation: "daftar_belanja_item"
+            referencedColumns: ["tenant_id", "id"]
+          },
+        ]
+      }
       cash_requests: {
         Row: {
           amount: number
@@ -289,6 +343,170 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      daftar_belanja: {
+        Row: {
+          catatan: string | null
+          created_at: string
+          created_by: string | null
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          ringkasan_terkirim_at: string | null
+          status: string
+          tanggal_kirim: string
+          tenant_id: string
+          terkirim_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          catatan?: string | null
+          created_at?: string
+          created_by?: string | null
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          ringkasan_terkirim_at?: string | null
+          status?: string
+          tanggal_kirim: string
+          tenant_id: string
+          terkirim_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          catatan?: string | null
+          created_at?: string
+          created_by?: string | null
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          ringkasan_terkirim_at?: string | null
+          status?: string
+          tanggal_kirim?: string
+          tenant_id?: string
+          terkirim_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daftar_belanja_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daftar_belanja_item: {
+        Row: {
+          catatan: string | null
+          created_at: string
+          customer_nama: string | null
+          daftar_id: string
+          delete_reason: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          item_name: string
+          order_id: string | null
+          order_item_id: string | null
+          outlet_nama: string | null
+          qty: number
+          qty_dibeli: number | null
+          section_nama: string | null
+          status_item: string
+          tenant_id: string
+          unit: string | null
+          updated_at: string
+          updated_by: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          catatan?: string | null
+          created_at?: string
+          customer_nama?: string | null
+          daftar_id: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          item_name: string
+          order_id?: string | null
+          order_item_id?: string | null
+          outlet_nama?: string | null
+          qty: number
+          qty_dibeli?: number | null
+          section_nama?: string | null
+          status_item?: string
+          tenant_id: string
+          unit?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          catatan?: string | null
+          created_at?: string
+          customer_nama?: string | null
+          daftar_id?: string
+          delete_reason?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          item_name?: string
+          order_id?: string | null
+          order_item_id?: string | null
+          outlet_nama?: string | null
+          qty?: number
+          qty_dibeli?: number | null
+          section_nama?: string | null
+          status_item?: string
+          tenant_id?: string
+          unit?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daftar_belanja_item_tenant_id_daftar_id_fkey"
+            columns: ["tenant_id", "daftar_id"]
+            isOneToOne: false
+            referencedRelation: "daftar_belanja"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "daftar_belanja_item_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daftar_belanja_item_tenant_id_order_id_fkey"
+            columns: ["tenant_id", "order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "daftar_belanja_item_tenant_id_order_item_id_fkey"
+            columns: ["tenant_id", "order_item_id"]
+            isOneToOne: false
+            referencedRelation: "order_items"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "daftar_belanja_item_tenant_id_vendor_id_fkey"
+            columns: ["tenant_id", "vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["tenant_id", "id"]
           },
         ]
       }
@@ -1837,6 +2055,10 @@ export type Database = {
           total: number
         }[]
       }
+      generate_daftar_belanja: {
+        Args: { p_order_ids: string[]; p_tanggal_kirim: string }
+        Returns: Json
+      }
       get_public_pricelist: { Args: never; Returns: Json }
       get_shipment_tracking: { Args: { p_token: string }; Returns: Json }
       has_role: {
@@ -1866,6 +2088,7 @@ export type Database = {
       is_platform_operator: { Args: never; Returns: boolean }
       is_tenant_member: { Args: { p_tenant_id: string }; Returns: boolean }
       issue_invoice: { Args: { p_order_id: string }; Returns: string }
+      kirim_daftar_belanja: { Args: { p_daftar_id: string }; Returns: Json }
       list_archive: { Args: never; Returns: Json }
       list_order_clients: {
         Args: never
@@ -1876,6 +2099,16 @@ export type Database = {
           outlets: Json
           perlu_tukar_faktur: boolean
           wajib_no_po: boolean
+        }[]
+      }
+      list_order_untuk_belanja: {
+        Args: { p_tanggal?: string }
+        Returns: {
+          client_name: string
+          id: string
+          jumlah_item: number
+          order_number: string
+          sudah_ada_di_daftar: boolean
         }[]
       }
       list_pic_candidates: {
@@ -1965,6 +2198,15 @@ export type Database = {
         Returns: string
       }
       select_active_tenant: { Args: { p_tenant_id: string }; Returns: Json }
+      set_item_status: {
+        Args: {
+          p_item_id: string
+          p_qty_dibeli?: number
+          p_status: string
+          p_sumber?: string
+        }
+        Returns: Json
+      }
       set_quotation_status: {
         Args: { p_id: string; p_status: string }
         Returns: undefined
@@ -1985,6 +2227,7 @@ export type Database = {
         Returns: string
       }
       sync_invoice_receivable: { Args: { p_id: string }; Returns: undefined }
+      tutup_daftar_belanja: { Args: { p_daftar_id: string }; Returns: Json }
       void_payment: {
         Args: { p_payment_id: string; p_reason: string }
         Returns: undefined

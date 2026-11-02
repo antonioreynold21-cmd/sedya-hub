@@ -1,0 +1,2 @@
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON public.daftar_belanja_item, public.belanja_audit FROM authenticated;
+REVOKE DELETE, TRUNCATE, REFERENCES, TRIGGER ON public.daftar_belanja FROM authenticated;
