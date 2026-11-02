@@ -162,6 +162,13 @@
       "when": 1793625613972,
       "tag": "0022_daftar_belanja_revoke_anon",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793625654568,
+      "tag": "0023_daftar_belanja_tighten_grants",
+      "breakpoints": true
     }
   ]
 }
