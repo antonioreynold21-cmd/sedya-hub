@@ -1,0 +1,1 @@
+REVOKE ALL ON public.daftar_belanja, public.daftar_belanja_item, public.belanja_audit FROM anon, PUBLIC;

@@ -155,6 +155,13 @@
       "when": 1793625345671,
       "tag": "0021_pembelanjaan_daftar_belanja",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1793625613972,
+      "tag": "0022_daftar_belanja_revoke_anon",
+      "breakpoints": true
     }
   ]
 }
