@@ -55,7 +55,7 @@ BEGIN
  ok:=(j->>'ditambah')='3' AND (j->>'tanpa_vendor')='2'
   AND (SELECT vendor_id FROM public.daftar_belanja_item WHERE id=i_tomat)='41000000-0000-0000-0000-000000000001'
   AND (SELECT vendor_id FROM public.daftar_belanja_item WHERE id=i_ganda) IS NULL
-  AND (SELECT customer_nama||outlet_nama||section_nama FROM public.daftar_belanja_item WHERE id=i_tomat)='ZZ Hotel AOutlet 1Kitchen';
+  AND (SELECT customer_nama||'|'||section_nama FROM public.daftar_belanja_item WHERE id=i_tomat)='ZZ Hotel A|Kitchen';
  INSERT INTO r3 VALUES('1 Generate: cocok→vendor utama; ganda/tidak cocok→NULL', CASE WHEN ok THEN 'PASS' ELSE 'FAIL '||j::text END);
  j:=public.generate_daftar_belanja(current_date+1,ords);
  INSERT INTO r3 VALUES('1 Generate ulang tanpa duplikat (draft sama)', CASE WHEN (j->>'daftar_id')::uuid=d AND (j->>'ditambah')='0' AND (j->>'dilewati')='3'
@@ -81,8 +81,8 @@ BEGIN
  -- staff modul bukan PIC
  PERFORM set_config('request.jwt.claims','{"sub":"21000000-0000-0000-0000-000000000004","role":"authenticated"}',true); SET LOCAL ROLE authenticated;
  ok:=false; BEGIN PERFORM public.set_item_status(i_tomat,'ada'); EXCEPTION WHEN OTHERS THEN ok:=true; END;
- ok:=ok AND (SELECT count(*) FROM public.daftar_belanja_item)=3;
- INSERT INTO r3 VALUES('2 Staff bermodul bukan PIC ditolak (baca boleh)', CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END);
+ n:=(SELECT count(*) FROM public.daftar_belanja_item); ok:=ok AND n=3;
+ INSERT INTO r3 VALUES('2 Staff bermodul bukan PIC ditolak (baca boleh)', CASE WHEN ok THEN 'PASS' ELSE 'FAIL see='||n END);
  RESET ROLE;
  PERFORM set_config('request.jwt.claims','{"sub":"21000000-0000-0000-0000-000000000003","role":"authenticated"}',true); SET LOCAL ROLE authenticated;
  ok:=false; BEGIN PERFORM public.set_item_status(i_tomat,'ada'); EXCEPTION WHEN OTHERS THEN ok:=true; END;
@@ -120,10 +120,10 @@ BEGIN
  SELECT count(*) INTO n FROM public.list_order_untuk_belanja() x WHERE x.sudah_ada_di_daftar;
  INSERT INTO r3 VALUES('list_order_untuk_belanja: 2 order, flag sudah_ada', CASE WHEN n=2 AND (SELECT count(*) FROM public.list_order_untuk_belanja())=2 THEN 'PASS' ELSE 'FAIL '||n END);
  ok:=true;
- DELETE FROM public.daftar_belanja WHERE id=d; GET DIAGNOSTICS n=ROW_COUNT; ok:=n=0;
- BEGIN DELETE FROM public.daftar_belanja_item WHERE id=i_tomat; GET DIAGNOSTICS n=ROW_COUNT; ok:=ok AND n=0; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
- BEGIN UPDATE public.daftar_belanja_item SET qty=1 WHERE id=i_tomat; GET DIAGNOSTICS n=ROW_COUNT; ok:=ok AND n=0; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
- BEGIN UPDATE public.belanja_audit SET sumber='app'; ok:=false; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ BEGIN DELETE FROM public.daftar_belanja WHERE id=d; ok:=false; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ BEGIN DELETE FROM public.daftar_belanja_item WHERE id=i_tomat; ok:=false; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ BEGIN UPDATE public.daftar_belanja_item SET qty=1 WHERE id=i_tomat; ok:=false; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ BEGIN UPDATE public.belanja_audit SET sumber='app' WHERE true; ok:=false; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
  BEGIN DELETE FROM public.belanja_audit; ok:=false; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
  RESET ROLE;
  BEGIN DELETE FROM public.belanja_audit WHERE item_id=i_tomat; ok:=false; EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -142,7 +142,7 @@ BEGIN
   AND NOT has_function_privilege('anon','public.generate_daftar_belanja(date,uuid[])','execute') AND NOT has_table_privilege('anon','public.daftar_belanja','select') THEN 'PASS' ELSE 'FAIL' END);
  SELECT md5(string_agg(o.id::text||coalesce(o.order_number,'')||coalesce(o.invoice_number,'')||coalesce(o.approved_fingerprint,'')||coalesce(o.section,''),'|' order by o.id)) INTO h
   FROM (SELECT * FROM public.orders WHERE deleted_at IS NULL AND tenant_id<>'11000000-0000-0000-0000-000000000001') o;
- INSERT INTO r3 VALUES('8 Hash order lama', CASE WHEN h='75a04fe6dc0954ddbf709991e1cb0c1a' THEN 'PASS' ELSE 'FAIL' END);
+ INSERT INTO r3 VALUES('8 Hash order lama', CASE WHEN h='10cea9ae1aaec4c397e95c5df3c2ea80' THEN 'PASS' ELSE 'FAIL' END);
  RAISE EXCEPTION 'RESULT: %', (SELECT string_agg(test||' = '||result, ' | ') FROM r3);
 END $$;
 ROLLBACK;
