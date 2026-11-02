@@ -43,7 +43,7 @@ INSERT INTO public.order_items(id,tenant_id,order_id,position,item_name,qty,unit
  ('71000000-0000-0000-0000-000000000002','11000000-0000-0000-0000-000000000001','61000000-0000-0000-0000-000000000001',2,'ZZ Ganda',5,'kg',1000,NULL,NULL),
  ('71000000-0000-0000-0000-000000000003','11000000-0000-0000-0000-000000000001','61000000-0000-0000-0000-000000000002',1,'ZZ Tidak Ada',3,'kg',1000,NULL,NULL);
 DO $$
-DECLARE j jsonb; d uuid; n int; ok boolean; i_tomat uuid; i_ganda uuid; i_none uuid;
+DECLARE j jsonb; d uuid; n int; ok boolean; i_tomat uuid; i_ganda uuid; i_none uuid; h text;
  m text:='{"sub":"21000000-0000-0000-0000-000000000001","role":"authenticated"}';
  ords uuid[]:=ARRAY['61000000-0000-0000-0000-000000000001','61000000-0000-0000-0000-000000000002']::uuid[];
 BEGIN
@@ -140,9 +140,9 @@ BEGIN
  RESET ROLE;
  INSERT INTO r3 VALUES('Anon tanpa EXECUTE/SELECT', CASE WHEN NOT has_function_privilege('anon','public.set_item_status(uuid,text,numeric,text)','execute')
   AND NOT has_function_privilege('anon','public.generate_daftar_belanja(date,uuid[])','execute') AND NOT has_table_privilege('anon','public.daftar_belanja','select') THEN 'PASS' ELSE 'FAIL' END);
- SELECT md5(string_agg(o.id::text||coalesce(o.order_number,'')||coalesce(o.invoice_number,'')||coalesce(o.approved_fingerprint,'')||coalesce(o.section,''),'|' order by o.id)) INTO j
+ SELECT md5(string_agg(o.id::text||coalesce(o.order_number,'')||coalesce(o.invoice_number,'')||coalesce(o.approved_fingerprint,'')||coalesce(o.section,''),'|' order by o.id)) INTO h
   FROM (SELECT * FROM public.orders WHERE deleted_at IS NULL AND tenant_id<>'11000000-0000-0000-0000-000000000001') o;
- INSERT INTO r3 VALUES('8 Hash order lama', CASE WHEN j#>>'{}'='75a04fe6dc0954ddbf709991e1cb0c1a' THEN 'PASS' ELSE 'FAIL' END);
+ INSERT INTO r3 VALUES('8 Hash order lama', CASE WHEN h='75a04fe6dc0954ddbf709991e1cb0c1a' THEN 'PASS' ELSE 'FAIL' END);
  RAISE EXCEPTION 'RESULT: %', (SELECT string_agg(test||' = '||result, ' | ') FROM r3);
 END $$;
 ROLLBACK;
