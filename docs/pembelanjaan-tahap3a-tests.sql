@@ -56,10 +56,10 @@ BEGIN
   AND (SELECT vendor_id FROM public.daftar_belanja_item WHERE id=i_tomat)='41000000-0000-0000-0000-000000000001'
   AND (SELECT vendor_id FROM public.daftar_belanja_item WHERE id=i_ganda) IS NULL
   AND (SELECT customer_nama||outlet_nama||section_nama FROM public.daftar_belanja_item WHERE id=i_tomat)='ZZ Hotel AOutlet 1Kitchen';
- INSERT INTO r3 VALUES('1 Generate: cocok→vendor utama; ganda/tidak cocok→NULL', CASE WHEN ok THEN 'PASS' ELSE 'FAIL '||j END);
+ INSERT INTO r3 VALUES('1 Generate: cocok→vendor utama; ganda/tidak cocok→NULL', CASE WHEN ok THEN 'PASS' ELSE 'FAIL '||j::text END);
  j:=public.generate_daftar_belanja(current_date+1,ords);
  INSERT INTO r3 VALUES('1 Generate ulang tanpa duplikat (draft sama)', CASE WHEN (j->>'daftar_id')::uuid=d AND (j->>'ditambah')='0' AND (j->>'dilewati')='3'
-  AND (SELECT count(*) FROM public.daftar_belanja_item WHERE daftar_id=d)=3 THEN 'PASS' ELSE 'FAIL '||j END);
+  AND (SELECT count(*) FROM public.daftar_belanja_item WHERE daftar_id=d)=3 THEN 'PASS' ELSE 'FAIL '||j::text END);
  -- Master set on draft allowed; then reset
  j:=public.set_item_status(i_none,'kosong');
  INSERT INTO r3 VALUES('4 Master boleh ubah saat draft / item tanpa vendor', CASE WHEN (j->>'ok')::boolean THEN 'PASS' ELSE 'FAIL' END);
@@ -76,7 +76,7 @@ BEGIN
  BEGIN PERFORM public.kirim_daftar_belanja(d); ok:=false; EXCEPTION WHEN OTHERS THEN NULL; END;
  BEGIN PERFORM public.generate_daftar_belanja(current_date+1,ords); EXCEPTION WHEN OTHERS THEN ok:=false; END;
  ok:=ok AND (SELECT count(*) FROM public.daftar_belanja_item WHERE daftar_id=d)=3;
- INSERT INTO r3 VALUES('4 Kirim Master draft→terkirim, peringatan tanpa vendor, kirim ulang ditolak, tak menambah ke daftar terkirim', CASE WHEN ok THEN 'PASS' ELSE 'FAIL '||j END);
+ INSERT INTO r3 VALUES('4 Kirim Master draft→terkirim, peringatan tanpa vendor, kirim ulang ditolak, tak menambah ke daftar terkirim', CASE WHEN ok THEN 'PASS' ELSE 'FAIL '||j::text END);
  RESET ROLE;
  -- staff modul bukan PIC
  PERFORM set_config('request.jwt.claims','{"sub":"21000000-0000-0000-0000-000000000004","role":"authenticated"}',true); SET LOCAL ROLE authenticated;
