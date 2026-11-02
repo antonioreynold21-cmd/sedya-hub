@@ -169,6 +169,13 @@
       "when": 1793625654568,
       "tag": "0023_daftar_belanja_tighten_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793625764798,
+      "tag": "0024_daftar_belanja_skip_order_item_any_list",
+      "breakpoints": true
     }
   ]
 }
