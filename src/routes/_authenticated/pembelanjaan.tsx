@@ -115,7 +115,8 @@ function PurchasingPage() {
   }
   return <div className="space-y-5">
     <PageHeader title="Pembelanjaan" actions={isMaster && tab === "vendor" && <Button className={touch} onClick={() => edit(null)}><Plus /> Tambah vendor</Button>} />
-    <Tabs value={tab} onValueChange={setTab}><TabsList className="h-auto flex-wrap"><TabsTrigger value="vendor" className={touch}>Vendor</TabsTrigger><TabsTrigger value="default" className={touch}>Vendor Default</TabsTrigger><TabsTrigger value="pic" className={touch}>PIC</TabsTrigger><TabsTrigger value="belanja" className={touch}>Daftar Belanja</TabsTrigger></TabsList></Tabs>
+    <TelegramPanel />
+    <Tabs value={tab}  onValueChange={setTab}><TabsList className="h-auto flex-wrap"><TabsTrigger value="vendor" className={touch}>Vendor</TabsTrigger><TabsTrigger value="default" className={touch}>Vendor Default</TabsTrigger><TabsTrigger value="pic" className={touch}>PIC</TabsTrigger><TabsTrigger value="belanja" className={touch}>Daftar Belanja</TabsTrigger></TabsList></Tabs>
     {tab === "default" && <VendorDefaultTab />}
     {tab === "pic" && <VendorPicTab />}
     {tab === "belanja" && <DaftarBelanjaTab />}
