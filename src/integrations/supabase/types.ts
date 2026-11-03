@@ -2207,6 +2207,10 @@ export type Database = {
         }
         Returns: Json
       }
+      set_item_vendor: {
+        Args: { p_item_id: string; p_vendor_id: string }
+        Returns: undefined
+      }
       set_quotation_status: {
         Args: { p_id: string; p_status: string }
         Returns: undefined

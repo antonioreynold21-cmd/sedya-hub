@@ -21,6 +21,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { VendorDefaultTab } from "@/components/vendor-default-tab";
 import { VendorPicTab } from "@/components/vendor-pic-tab";
+import { DaftarBelanjaTab } from "@/components/daftar-belanja-tab";
 
 export const Route = createFileRoute("/_authenticated/pembelanjaan")({
   head: () => ({ meta: [
@@ -114,9 +115,10 @@ function PurchasingPage() {
   }
   return <div className="space-y-5">
     <PageHeader title="Pembelanjaan" actions={isMaster && tab === "vendor" && <Button className={touch} onClick={() => edit(null)}><Plus /> Tambah vendor</Button>} />
-    <Tabs value={tab} onValueChange={setTab}><TabsList><TabsTrigger value="vendor" className={touch}>Vendor</TabsTrigger><TabsTrigger value="default" className={touch}>Vendor Default</TabsTrigger><TabsTrigger value="pic" className={touch}>PIC</TabsTrigger></TabsList></Tabs>
+    <Tabs value={tab} onValueChange={setTab}><TabsList className="h-auto flex-wrap"><TabsTrigger value="vendor" className={touch}>Vendor</TabsTrigger><TabsTrigger value="default" className={touch}>Vendor Default</TabsTrigger><TabsTrigger value="pic" className={touch}>PIC</TabsTrigger><TabsTrigger value="belanja" className={touch}>Daftar Belanja</TabsTrigger></TabsList></Tabs>
     {tab === "default" && <VendorDefaultTab />}
     {tab === "pic" && <VendorPicTab />}
+    {tab === "belanja" && <DaftarBelanjaTab />}
     {tab === "vendor" && <>
     <div className="flex flex-col gap-3 sm:flex-row">
       <div className="relative flex-1"><Search className="pointer-events-none absolute left-3 top-3 size-5 text-muted-foreground" /><Input className="min-h-11 pl-10" aria-label="Cari nama vendor" placeholder="Cari nama vendor…" value={search} onChange={e => setSearch(e.target.value)} /></div>
