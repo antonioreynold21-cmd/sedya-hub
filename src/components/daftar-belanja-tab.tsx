@@ -184,7 +184,7 @@ function Detail({ id, back }: { id: string; back: () => void }) {
           <SelectContent>{(vendors.data ?? []).filter((v) => v.aktif).map((v) => <SelectItem key={v.id} value={v.id}>{v.nama}</SelectItem>)}</SelectContent></Select>}
         {canAct(i) && <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <Button size="sm" className={touch} disabled={run.isPending} onClick={() => status(i, "ada")}>Ada</Button>
-          <Button size="sm" variant="outline" className={touch} disabled={run.isPending || Number(i.qty) <= 1 && false} onClick={() => { setPartial(i); setQtyText(""); }}>Sebagian</Button>
+          <Button size="sm" variant="outline" className={touch} disabled={run.isPending} onClick={() => { setPartial(i); setQtyText(""); }}>Sebagian</Button>
           <Button size="sm" variant="outline" className={touch} disabled={run.isPending} onClick={() => status(i, "kosong")}>Kosong</Button>
           <Button size="sm" variant="ghost" className={touch} disabled={run.isPending || i.status_item === "belum_dibeli"} onClick={() => status(i, "belum_dibeli")}>Belum</Button>
         </div>}
