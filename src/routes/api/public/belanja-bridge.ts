@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const STATUS = ["ada", "sebagian", "kosong", "belum_dibeli"];
 const MAX = 10 * 1024;
-type Body = Record<string, unknown>;
+type Body = { action?: unknown; token?: unknown; chat_id?: unknown; tenant_id?: unknown; item_id?: unknown; status?: unknown; qty_dibeli?: unknown; daftar_id?: unknown };
 type Spec = { fn: string; params: (b: Body) => Record<string, unknown> | string };
 
 const json = (status: number, body: { ok: boolean; message: string; data?: unknown }) =>
@@ -40,7 +40,7 @@ const ACTIONS: Record<string, Spec> = {
 };
 
 async function handle(request: Request) {
-  const expected = process.env.BRIDGE_SECRET;
+  const expected = process.env["BRIDGE_SECRET"];
   if (!expected) return json(500, { ok: false, message: "Terjadi kesalahan" });
   if (!safeEqual(request.headers.get("x-bridge-secret") ?? "", expected)) return json(401, { ok: false, message: "Tidak berizin" });
   if (Number(request.headers.get("content-length") ?? 0) > MAX) return json(413, { ok: false, message: "Body terlalu besar" });
