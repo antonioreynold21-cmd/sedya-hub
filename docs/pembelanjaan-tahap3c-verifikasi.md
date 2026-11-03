@@ -9,3 +9,10 @@
 Semua uji dalam satu transaksi yang di-ROLLBACK; tidak ada data uji tersisa.
 Belum teruji: bridge_list_pengingat (isi), get_belanja_settings/get_my_telegram_status/disconnect_telegram, lintas tenant via bridge.
 Belum ada: Edge Function, UI, Telegram/n8n nyata (Tahap 3c-2).
+
+## Tahap 3c-2
+- Jembatan dibuat sebagai rute server `/api/public/belanja-bridge` (bukan Edge Function baru, sesuai aturan platform); kunci service hanya di server.
+- Cek: x-bridge-secret dibandingkan waktu-konstan, body maks 10 KB, validasi UUID/chat_id/status/qty/token/action; 401/405/413/400/500 generik.
+- Uji HTTP: GET → 405 PASS; POST tanpa secret → 500 karena BRIDGE_SECRET belum dipasang (akan 401 setelah dipasang — belum diverifikasi).
+- Panel Telegram di /pembelanjaan: status, hubungkan (tautan/token), putuskan, pengaturan belanja khusus Master. tsgo 0 error.
+- Belum teruji: panggilan dengan secret benar, alur Telegram/n8n, tampilan browser/HP.

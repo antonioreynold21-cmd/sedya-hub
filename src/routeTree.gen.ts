@@ -29,6 +29,7 @@ import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as TTokenRouteImport } from './routes/t.$token'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders.index'
 import { Route as AuthenticatedPenawaranQuotationIdRouteImport } from './routes/_authenticated/penawaran.$quotationId'
+import { Route as ApiPublicBelanjaBridgeRouteImport } from './routes/api/public/belanja-bridge'
 import { Route as AuthenticatedFinanceInvoiceOrderIdRouteImport } from './routes/_authenticated/finance_.invoice.$orderId'
 import { Route as AuthenticatedOrdersOrderIdInvoiceRouteImport } from './routes/_authenticated/orders.$orderId.invoice'
 import { Route as AuthenticatedOrdersOrderIdSuratJalanRouteImport } from './routes/_authenticated/orders.$orderId.surat-jalan'
@@ -136,6 +137,11 @@ const AuthenticatedPenawaranQuotationIdRoute =
     path: '/$quotationId',
     getParentRoute: () => AuthenticatedPenawaranRoute,
   } as any)
+const ApiPublicBelanjaBridgeRoute = ApiPublicBelanjaBridgeRouteImport.update({
+  id: '/api/public/belanja-bridge',
+  path: '/api/public/belanja-bridge',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedFinanceInvoiceOrderIdRoute =
   AuthenticatedFinanceInvoiceOrderIdRouteImport.update({
     id: '/finance_/invoice/$orderId',
@@ -174,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/api/health': typeof ApiHealthRoute
   '/t/$token': typeof TTokenRoute
   '/penawaran/$quotationId': typeof AuthenticatedPenawaranQuotationIdRoute
+  '/api/public/belanja-bridge': typeof ApiPublicBelanjaBridgeRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
   '/finance/invoice/$orderId': typeof AuthenticatedFinanceInvoiceOrderIdRoute
   '/orders/$orderId/invoice': typeof AuthenticatedOrdersOrderIdInvoiceRoute
@@ -198,6 +205,7 @@ export interface FileRoutesByTo {
   '/t/$token': typeof TTokenRoute
   '/': typeof AuthenticatedIndexRoute
   '/penawaran/$quotationId': typeof AuthenticatedPenawaranQuotationIdRoute
+  '/api/public/belanja-bridge': typeof ApiPublicBelanjaBridgeRoute
   '/orders': typeof AuthenticatedOrdersIndexRoute
   '/finance/invoice/$orderId': typeof AuthenticatedFinanceInvoiceOrderIdRoute
   '/orders/$orderId/invoice': typeof AuthenticatedOrdersOrderIdInvoiceRoute
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/t/$token': typeof TTokenRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/penawaran/$quotationId': typeof AuthenticatedPenawaranQuotationIdRoute
+  '/api/public/belanja-bridge': typeof ApiPublicBelanjaBridgeRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
   '/_authenticated/finance_/invoice/$orderId': typeof AuthenticatedFinanceInvoiceOrderIdRoute
   '/_authenticated/orders/$orderId/invoice': typeof AuthenticatedOrdersOrderIdInvoiceRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/t/$token'
     | '/penawaran/$quotationId'
+    | '/api/public/belanja-bridge'
     | '/orders/'
     | '/finance/invoice/$orderId'
     | '/orders/$orderId/invoice'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/t/$token'
     | '/'
     | '/penawaran/$quotationId'
+    | '/api/public/belanja-bridge'
     | '/orders'
     | '/finance/invoice/$orderId'
     | '/orders/$orderId/invoice'
@@ -299,6 +310,7 @@ export interface FileRouteTypes {
     | '/t/$token'
     | '/_authenticated/'
     | '/_authenticated/penawaran/$quotationId'
+    | '/api/public/belanja-bridge'
     | '/_authenticated/orders/'
     | '/_authenticated/finance_/invoice/$orderId'
     | '/_authenticated/orders/$orderId/invoice'
@@ -311,6 +323,7 @@ export interface RootRouteChildren {
   HargaRoute: typeof HargaRoute
   ApiHealthRoute: typeof ApiHealthRoute
   TTokenRoute: typeof TTokenRoute
+  ApiPublicBelanjaBridgeRoute: typeof ApiPublicBelanjaBridgeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -455,6 +468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPenawaranQuotationIdRouteImport
       parentRoute: typeof AuthenticatedPenawaranRoute
     }
+    '/api/public/belanja-bridge': {
+      id: '/api/public/belanja-bridge'
+      path: '/api/public/belanja-bridge'
+      fullPath: '/api/public/belanja-bridge'
+      preLoaderRoute: typeof ApiPublicBelanjaBridgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/finance_/invoice/$orderId': {
       id: '/_authenticated/finance_/invoice/$orderId'
       path: '/finance/invoice/$orderId'
@@ -546,6 +566,7 @@ const rootRouteChildren: RootRouteChildren = {
   HargaRoute: HargaRoute,
   ApiHealthRoute: ApiHealthRoute,
   TTokenRoute: TTokenRoute,
+  ApiPublicBelanjaBridgeRoute: ApiPublicBelanjaBridgeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
