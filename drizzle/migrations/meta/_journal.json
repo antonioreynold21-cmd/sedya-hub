@@ -176,6 +176,13 @@
       "when": 1793625764798,
       "tag": "0024_daftar_belanja_skip_order_item_any_list",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1793692428306,
+      "tag": "0025_set_item_vendor",
+      "breakpoints": true
     }
   ]
 }
