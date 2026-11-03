@@ -355,6 +355,7 @@ export type Database = {
           deleted_at: string | null
           deleted_by: string | null
           id: string
+          pic_notified_at: string | null
           ringkasan_terkirim_at: string | null
           status: string
           tanggal_kirim: string
@@ -370,6 +371,7 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           id?: string
+          pic_notified_at?: string | null
           ringkasan_terkirim_at?: string | null
           status?: string
           tanggal_kirim: string
@@ -385,6 +387,7 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           id?: string
+          pic_notified_at?: string | null
           ringkasan_terkirim_at?: string | null
           status?: string
           tanggal_kirim?: string
@@ -1173,6 +1176,7 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          telegram_chat_id: number | null
           updated_at: string
         }
         Insert: {
@@ -1181,6 +1185,7 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
+          telegram_chat_id?: number | null
           updated_at?: string
         }
         Update: {
@@ -1189,6 +1194,7 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          telegram_chat_id?: number | null
           updated_at?: string
         }
         Relationships: [
@@ -1668,6 +1674,44 @@ export type Database = {
           },
         ]
       }
+      telegram_link_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          tenant_id: string
+          token_hash: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          tenant_id: string
+          token_hash: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          tenant_id?: string
+          token_hash?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "telegram_link_tokens_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_invitations: {
         Row: {
           accepted_at: string | null
@@ -1760,6 +1804,7 @@ export type Database = {
         Row: {
           address: string
           bank: Json
+          belanja_jam_batas: string
           contact: Json
           currency: string
           discount_approval_threshold_pct: number
@@ -1769,11 +1814,14 @@ export type Database = {
           ppn_rate: number
           primary_color: string
           sales_numbering: Json
+          telegram_bot_username: string | null
+          telegram_kurir_chat_id: number | null
           tenant_id: string
         }
         Insert: {
           address?: string
           bank?: Json
+          belanja_jam_batas?: string
           contact?: Json
           currency?: string
           discount_approval_threshold_pct?: number
@@ -1783,11 +1831,14 @@ export type Database = {
           ppn_rate?: number
           primary_color?: string
           sales_numbering?: Json
+          telegram_bot_username?: string | null
+          telegram_kurir_chat_id?: number | null
           tenant_id: string
         }
         Update: {
           address?: string
           bank?: Json
+          belanja_jam_batas?: string
           contact?: Json
           currency?: string
           discount_approval_threshold_pct?: number
@@ -1797,6 +1848,8 @@ export type Database = {
           ppn_rate?: number
           primary_color?: string
           sales_numbering?: Json
+          telegram_bot_username?: string | null
+          telegram_kurir_chat_id?: number | null
           tenant_id?: string
         }
         Relationships: [
@@ -2003,6 +2056,31 @@ export type Database = {
         Returns: undefined
       }
       bootstrap_current_user: { Args: never; Returns: Json }
+      bridge_link_telegram: {
+        Args: { p_chat_id: number; p_token: string }
+        Returns: Json
+      }
+      bridge_list_notifikasi_pic: { Args: { p_tenant: string }; Returns: Json }
+      bridge_list_pengingat: { Args: { p_tenant: string }; Returns: Json }
+      bridge_list_ringkasan_kurir: { Args: { p_tenant: string }; Returns: Json }
+      bridge_mark_pic_notified: {
+        Args: { p_daftar_id: string; p_tenant: string }
+        Returns: Json
+      }
+      bridge_mark_ringkasan_terkirim: {
+        Args: { p_daftar_id: string; p_tenant: string }
+        Returns: Json
+      }
+      bridge_set_item_status: {
+        Args: {
+          p_chat_id: number
+          p_item_id: string
+          p_qty_dibeli?: number
+          p_status: string
+          p_tenant: string
+        }
+        Returns: Json
+      }
       can_access: { Args: { _module: string }; Returns: boolean }
       can_access_any: { Args: { _modules: string[] }; Returns: boolean }
       can_access_tenant_module: {
@@ -2019,6 +2097,7 @@ export type Database = {
       }
       convert_quotation: { Args: { p_id: string }; Returns: string }
       create_shipment_atomic: { Args: { p_order_id: string }; Returns: string }
+      create_telegram_link_token: { Args: never; Returns: string }
       create_tenant_invitation: {
         Args: {
           p_email: string
@@ -2040,6 +2119,7 @@ export type Database = {
         Args: { p_approve: boolean; p_reason: string; p_request_id: string }
         Returns: undefined
       }
+      disconnect_telegram: { Args: never; Returns: undefined }
       entity_module: { Args: { p_table: string }; Returns: string }
       finance_invoice_balances: {
         Args: never
@@ -2059,6 +2139,8 @@ export type Database = {
         Args: { p_order_ids: string[]; p_tanggal_kirim: string }
         Returns: Json
       }
+      get_belanja_settings: { Args: never; Returns: Json }
+      get_my_telegram_status: { Args: never; Returns: Json }
       get_public_pricelist: { Args: never; Returns: Json }
       get_shipment_tracking: { Args: { p_token: string }; Returns: Json }
       has_role: {
@@ -2198,6 +2280,14 @@ export type Database = {
         Returns: string
       }
       select_active_tenant: { Args: { p_tenant_id: string }; Returns: Json }
+      set_belanja_settings: {
+        Args: {
+          p_bot_username: string
+          p_jam_batas: string
+          p_kurir_chat_id: number
+        }
+        Returns: undefined
+      }
       set_item_status: {
         Args: {
           p_item_id: string

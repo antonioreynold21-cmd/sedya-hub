@@ -183,6 +183,13 @@
       "when": 1793692428306,
       "tag": "0025_set_item_vendor",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1793696725622,
+      "tag": "0026_telegram_bridge",
+      "breakpoints": true
     }
   ]
 }
