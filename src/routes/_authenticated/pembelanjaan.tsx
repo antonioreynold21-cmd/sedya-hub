@@ -22,6 +22,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { VendorDefaultTab } from "@/components/vendor-default-tab";
 import { VendorPicTab } from "@/components/vendor-pic-tab";
 import { DaftarBelanjaTab } from "@/components/daftar-belanja-tab";
+import { TelegramPanel } from "@/components/telegram-panel";
 
 export const Route = createFileRoute("/_authenticated/pembelanjaan")({
   head: () => ({ meta: [

@@ -47,7 +47,7 @@ export function TelegramPanel() {
   });
   const disconnect = useMutation({
     mutationFn: async () => { const { error } = await supabase.rpc("disconnect_telegram"); if (error) throw error; },
-    onSuccess: () => { setToken(null); toast.success("Telegram diputuskan"); qc.invalidateQueries({ queryKey: [] , predicate: (q) => q.queryKey.includes("telegram") }); },
+    onSuccess: () => { setToken(null); toast.success("Telegram diputuskan"); qc.invalidateQueries({ predicate: (q) => q.queryKey.includes("telegram") }); },
     onError: (e) => toast.error(msg(e)),
   });
   const save = useMutation({
