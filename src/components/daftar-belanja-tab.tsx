@@ -160,7 +160,7 @@ function Detail({ id, back }: { id: string; back: () => void }) {
   const tanpaVendor = all.filter((i) => !i.vendor_id).length;
   const belum = all.length - done;
   const canAct = (i: Item) => d.status !== "selesai" && (isMaster || (d.status === "terkirim" && !!i.vendor_id && (pics.data ?? []).some((p) => p.vendor_id === i.vendor_id && p.user_id === me.data)));
-  const status = (i: Item, s: string, q: number | null = null) => run.mutate(() => supabase.rpc("set_item_status", { p_item_id: i.id, p_status: s, p_qty_dibeli: q ?? undefined, p_sumber: "app" }));
+  const status = (i: Item, s: string, q: number | null = null) => run.mutate(() => supabase.rpc("set_item_status", q === null ? { p_item_id: i.id, p_status: s, p_sumber: "app" } : { p_item_id: i.id, p_status: s, p_qty_dibeli: q, p_sumber: "app" }));
   const qtyNum = Number(qtyText.replace(",", "."));
   const qtyValid = partial && Number.isFinite(qtyNum) && qtyNum > 0 && qtyNum < Number(partial.qty);
   return <div className="space-y-4">
